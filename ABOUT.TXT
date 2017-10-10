@@ -1,0 +1,34 @@
+********************************************************************************
+*                                 ABOUT.TXT                                  *
+********************************************************************************
+
+COSI Measure is an Open Source 3D Multipurpose Measurement System with submillimetre 
+fidelity. It has been developed at the Berlin Ultrahigh Field Facility (B.U.F.F.) 
+of the Max Delbrück Center for Molecular Medicine, Berlin, Germany. The documentation 
+for the hardware and the software is made freely available to the community. 
+
+This work is part of the Open Source Imaging Initiative (www.opensourceimaging.org)
+and was supported in part by the Federal Ministry for Education and Research (BMBF, 
+KMU innovativ Medizintechnik, 3-in-1 THERAHEAT, FKZ 13GW0102A and 13GW0102B). 
+
+--------------------------
+Contact persons for the project: 
+
+Lukas Winter (lukas.winter@mdc-berlin.de)
+Haopeng Han (haopeng.han@mdc-berlin.de)
+Thoralf Niendorf (thoralf.niendorf@mdc-berlin.de)
+
+--------------------------
+
+If you find COSI Measure useful in your work, please cite this paper:
+
+H. Han, R. Moritz, E. Oberacker, H. Waiczies, T. Niendorf and L. Winter, "Open 
+Source 3D Multipurpose Measurement System with Submillimetre Fidelity and First
+Application in Magnetic Resonance", Nature Scientific Reports, 2017, [in press] 
+
+
+********************************************************************************
+
+
+
+
