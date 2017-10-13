@@ -24,8 +24,9 @@ If you find COSI Measure useful in your work, please cite this paper:
 
 H. Han, R. Moritz, E. Oberacker, H. Waiczies, T. Niendorf and L. Winter, "Open 
 Source 3D Multipurpose Measurement System with Submillimetre Fidelity and First
-Application in Magnetic Resonance", Nature Scientific Reports, 2017, [in press] 
+Application in Magnetic Resonance", Nature Scientific Reports, 2017, [in press]
 
+www.nature.com/articles/s41598-017-13824-z 
 
 ********************************************************************************
 
