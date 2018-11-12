@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="61.2mm" height="281.2mm" viewBox="0 0 61.2 281.2" xmlns="http://www.w3.org/2000/svg" version="1.1">
+<g id="Shape2DView002" transform="translate(-4.400000,-9.400000) scale(1,-1)">
+<path id="Shape2DView002_nwe0000"  d="M 65.0 -290.0 L 65.0 -10.0 " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:none;fill-rule: evenodd "/>
+<path id="Shape2DView002_nwe0001"  d="M 65.0 -290.0 L 5.0 -290.0 " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:none;fill-rule: evenodd "/>
+<path id="Shape2DView002_nwe0002"  d="M 65.0 -10.0 L 5.0 -10.0 " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:none;fill-rule: evenodd "/>
+<path id="Shape2DView002_nwe0003"  d="M 5.0 -290.0 L 5.0 -10.0 " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:none;fill-rule: evenodd "/>
+<circle cx="20.0" cy="-20.0" r="2.1" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:none"/>
+<circle cx="50.0" cy="-20.0" r="2.1" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:none"/>
+<circle cx="55.0" cy="-220.0" r="1.25" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:none"/>
+<circle cx="35.0" cy="-240.0" r="20.0" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:none"/>
+<circle cx="15.0" cy="-260.0" r="1.25" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:none"/>
+<circle cx="55.0" cy="-260.0" r="1.25" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:none"/>
+<circle cx="15.0" cy="-220.0" r="1.25" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:none"/>
+<title>Right 2D</title>
+</g>
+</svg>

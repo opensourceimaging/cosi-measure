@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="61.2mm" height="496.2mm" viewBox="0 0 61.2 496.2" xmlns="http://www.w3.org/2000/svg" version="1.1">
+<g id="Shape2DView006" transform="translate(65.600000,580.600000) scale(1,-1)">
+<path id="Shape2DView006_nwe0000"  d="M -5.0 85.0 L -65.0 85.0 " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:none;fill-rule: evenodd "/>
+<path id="Shape2DView006_nwe0001"  d="M -5.0 580.0 L -5.0 85.0 " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:none;fill-rule: evenodd "/>
+<path id="Shape2DView006_nwe0002"  d="M -65.0 85.0 L -65.0 580.0 " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:none;fill-rule: evenodd "/>
+<path id="Shape2DView006_nwe0003"  d="M -65.0 580.0 L -5.0 580.0 " stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:none;fill-rule: evenodd "/>
+<circle cx="-15.0" cy="520.0" r="4.4" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:none"/>
+<circle cx="-55.0" cy="520.0" r="4.4" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:none"/>
+<circle cx="-15.0" cy="120.0" r="4.4" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:none"/>
+<circle cx="-55.0" cy="120.0" r="4.4" stroke="#191919" stroke-width="0.35 px" style="stroke-width:0.35;stroke-miterlimit:4;stroke-dasharray:none;fill:none"/>
+<title>Mount X-axis 1 of 2</title>
+</g>
+</svg>
