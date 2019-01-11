@@ -1,0 +1,8 @@
+INTSTYLE=impact
+INFILE=E:\work_ise\cosi_pwr\impact.xsl
+OUTFILE=E:\work_ise\cosi_pwr\impact.xsl
+FAMILY=None
+PART=None
+WORKINGDIR=E:\work_ise\cosi_pwr
+LICENSE=iMPACT
+USER_INFO=iMPACT

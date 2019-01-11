@@ -1,0 +1,36 @@
+Pin Freeze File:  version P.20131013
+
+2C64A44VQ XC2C64A-5-VQ44
+clkPin106 S:PIN1
+pushBtnPin104 S:PIN43
+pushBtnPin109 S:PIN5
+ledPin100 S:PIN39
+ledPin200 S:PIN38
+relayACPin215 S:PIN19
+relayDCPin115 S:PIN16
+
+
+;The remaining section of the .gyd file is for documentation purposes only.
+;It shows where your internal equations were placed in the last successful fit.
+
+PARTITION FB1_1 ledPin200 cnt<14> cnt<15> cnt<21>
+		 cnt<22> cnt<23> cnt<24> cnt_en
+		 cnt<16> cnt<17> cnt<18> cnt<19>
+		 cnt<20> pushBtnPin109_db2 pushBtnPin104_db2 cnt_en__or0000
+		
+PARTITION FB2_1 ledPin100 cnt<8> cnt<1> cnt<0>
+		 cnt<7> cnt<6> u0/PB_sync_0 cnt<5>
+		 N_PZ_250 cnt<4> u1/PB_sync_1 cnt<3>
+		 cnt<2> u0/PB_sync_1 pushBtnPin109_db1 pushBtnPin104_db1
+		
+PARTITION FB3_1 u1/PB_cnt<2> u1/PB_cnt<1> u1/PB_cnt<0> u0/PB_cnt<6>
+		 u0/PB_cnt<5> u0/PB_cnt<10> u0/PB_cnt<4> u0/PB_cnt<3>
+		 u0/PB_cnt<2> pushBtnPin104_db u0/PB_cnt<9> u0/PB_cnt<8>
+		 u0/PB_cnt<1> relayACPin215 u0/PB_cnt<7> u0/PB_cnt<0>
+		
+PARTITION FB4_1 u1/PB_sync_0 cnt<13> u1/PB_cnt<10> pushBtnPin109_db
+		 u1/PB_cnt<9> u1/PB_cnt<8> cnt<12> u1/PB_cnt<7>
+		 u1/PB_cnt<6> u1/PB_cnt<5> cnt<11> u1/PB_cnt<4>
+		 cnt<10> cnt<9> relayDCPin115 u1/PB_cnt<3>
+		
+
