@@ -1,16 +1,11 @@
-update=7/31/2016 4:09:18 AM
+update=25.01.2019 09:19:01
 version=1
-last_client=kicad
+last_client=eeschema
 [cvpcb]
 version=1
 NetIExt=net
 [general]
 version=1
-[eeschema]
-version=1
-LibDir=
-[eeschema/libraries]
-LibName1=cosi_pwr
 [pcbnew]
 version=1
 PageLayoutDescrFile=
@@ -30,3 +25,6 @@ SolderMaskMinWidth=0
 DrawSegmentWidth=0.2
 BoardOutlineThickness=0.15
 ModuleOutlineThickness=0.15
+[eeschema]
+version=1
+LibDir=
