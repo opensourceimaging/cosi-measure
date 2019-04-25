@@ -1,0 +1,1 @@
+Here are the 3D models of the limit switch holders. The files were designed with SketchUp.
