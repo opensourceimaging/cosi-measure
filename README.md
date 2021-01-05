@@ -3,7 +3,7 @@ Cost effective open source imaging (COSI) is a collaborative initiative currentl
 
 COSI Measure is an open source multipurpose 3-axis robot operating in a large volume, that can be equipped with e.g. field mapping probes for static or dynamic field measurements (electromagnetic, temperature etc.). Submillimeter fidelity and reproducibility/backlash performance were evaluated experimentally. It can be potentially upgraded to be used as a CNC, for 3D printing or other applications, that require reproducible submillimeter movements.
 
-
+![Photograph of COSI Measure](/Publications/cosi_measure_photo.jpg)
 
 ## System specifications:
 * Dimension: (80x90x105)cm³
@@ -18,17 +18,19 @@ COSI Measure is an open source multipurpose 3-axis robot operating in a large vo
 * Open Source Software GUI (python)
 * Estimated material costs: ~2000€
 
-Some more photos and videos can be found on opensourceimaging.org: https://www.opensourceimaging.org/project/cosi-measure/
+More photos and videos can be found on opensourceimaging.org: https://www.opensourceimaging.org/project/cosi-measure/
 
 
 ## (Re)builds & contacts
 
-Original design and general contact:
+General contact:
 Name | Email | Institution | COSI Measure Applications
 -----|-----|-----|-----|
 Lukas Winter | lukas.winter@ptb.de | Physikalisch-Technische Bundesanstalt (PTB), Berlin, Germany | Magnetic field mapping of MR magnets, implant safety measurements, RF field mapping of RF coils using time-domain H- and E-field sensors, Measurements within an MR scanner, 3D printing
 
-(Known) rebuilds
+![COSI Measure Builds](/Publications/cosi_measure_builds.jpg)
+
+(Known) builds
 Name | Email | Institution | COSI Measure Applications
 -----|-----|-----|-----|
 Haopeng Han | haopeng.han@mdc-berlin.de | Max-Delbrück Center for Molecular Medicine, Berlin, Germany | Temperature and RF field mapping of RF coils
