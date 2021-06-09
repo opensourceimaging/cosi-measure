@@ -40,7 +40,18 @@ Mark Bason | M.Bason@sussex.ac.uk | Quantum Systems and Devices, University of S
 Wolfgang Kilian | Wolfgang.Kilian@ptb.de | Physikalisch-Technische Bundesanstalt (PTB), Berlin, Germany | 3D printing of phantoms
 
 
-
+## Contributors (alphabetical order)
+Nils Allek
+Mark Bason
+Haopeng Han
+Amjad Kasabashy
+Wolfgang Kilian
+Benjamin Menküc
+Tom O'Reilly
+David Shiers
+Berk Silemek
+Karl Stupic
+Lukas Winter
 
 ____________________________________________________
 If you find COSI Measure useful in your work, please cite this paper:
