@@ -40,7 +40,6 @@ class cosimeasure(object):
             return
         
         os.system('sudo service klipper stop')
-        os.system('sudo service klipper stop')
 
         time.sleep(2)
 
@@ -49,6 +48,7 @@ class cosimeasure(object):
         time.sleep(1)
 
         self.ser = serial.Serial('/tmp/printer', 250000)
+        print('serial connection opened')
         time.sleep(1)
 
     def command(self,command:str):
@@ -58,8 +58,9 @@ class cosimeasure(object):
         if self.isfake:
             print('no serial connection to cosi, writing %s',command)
             return
+        print('sending ', command)
         self.ser.write(str.encode(command)) 
-        #time.sleep(1)
+
         while True:
             line = self.ser.readline()
             print(line)
@@ -93,14 +94,14 @@ class cosimeasure(object):
                 self.command("G28 X%.2f"%minx) # homing zero x
 
             else:
-                self.command("G28 X%.2f"%maxx) # homing max x
+                self.command("G0 X%.2f"%maxx) # homing max x
 
         if axis == 'y':
             print('homing Y, direction:%s'%direction)
             if dir < 0:
                 self.command("G28 Y%.2f"%miny) # homing zero y
             else:
-                self.command("G28 Y%.2f"%maxy) # homing max y            
+                self.command("G0 Y%.2f"%maxy) # homing max y            
 
                 
         if axis == 'z':
@@ -108,11 +109,11 @@ class cosimeasure(object):
             if dir < 0:
                 self.command("G28 Z%.2f"%minz) # homing zero z
             else:
-                self.command("G28 Z%.2f"%maxz) # homing max z               
+                self.command("G0 Z%.2f"%maxz) # homing max z               
 
     def moveto(self,x:float,y:float,z:float):
         print('moving head to %.2f, %.2f, %.2f'%(x,y,z))
-        self.command("G92 X%.2f Y%.2f Z%.2f"%(x,y,z))
+        self.command("G0 X%.2f Y%.2f Z%.2f"%(x,y,z))
         self.head_position = [x,y,z]
 
     def init_path(self):
@@ -133,6 +134,8 @@ class cosimeasure(object):
         if len(self.path.path):
             for pt in self.path.path:
                 print(pt)
+                self.moveto(pt[0],pt[1],pt[2])
+                print('pt reached, magnetometer?')
         else:
             print('load path first!')
 

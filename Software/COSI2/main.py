@@ -1,4 +1,35 @@
 """ 2024 rst PTB rst030@protonmail.com"""
+
+
+'''
+### 3. Going into Bootloader Mode
+
+1. Power On
+2. Press and hold "boot"
+3. Press "reset"
+4. release "boot"
+
+### 4. Searching Device ID:
+
+     lsusb
+
+Will show up something like
+
+     Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+     Bus 001 Device 031: ID 0483:df11 STMicroelectronics STM Device in DFU Mode
+     Bus 001 Device 002: ID 2109:3431 VIA Labs, Inc. Hub
+
+
+### 5. Compiling and Downloading to MCU
+
+Replace 0483:df11 with your hardware's ID from step 4 And execute the following command:
+
+     cd klipper
+     make flash FLASH_DEVICE=0483:df11
+     
+'''
+
+
 from PyQt5 import QtWidgets, uic
 import sys # for finding the script path and importing scripts
 #import communication
@@ -89,8 +120,8 @@ class Ui(QtWidgets.QMainWindow):
         '''connect to the robot. dont home, just connect, read acks'''
         print('connecting to COSI.')
         print('Starting klipper. doing things.')
-        self.cosimeasure = cosimeasure.cosimeasure(isfake=True) # DEBUG mode
-        #self.cosimeasure = cosimeasure.cosimeasure(isfake=False) # testing mode
+        #self.cosimeasure = cosimeasure.cosimeasure(isfake=True) # DEBUG mode
+        self.cosimeasure = cosimeasure.cosimeasure(isfake=False) # testing mode
 
         self.init_btn.setEnabled(True)
         self.run_btn.setEnabled(True)

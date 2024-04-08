@@ -41,7 +41,6 @@ class PlotterCanvas(FigureCanvas):
             self.axes = fig.add_subplot(111,projection='3d')
         else:
             self.axes = fig.add_subplot(111)
-        plt.style.use('seaborn-colorblind')
 #        fig.subplots_adjust(left = 0.18, right=0.99, top=0.94, bottom=0.1)
 
         FigureCanvas.__init__(self, fig)
