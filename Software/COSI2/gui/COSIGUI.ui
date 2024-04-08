@@ -21,7 +21,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../../../../PycharmProjects/EMRE/gui/icons/icon.png</normaloff>../../../../PycharmProjects/EMRE/gui/icons/icon.png</iconset>
+    <normaloff>../../../../../PycharmProjects/EMRE/gui/icons/icon.png</normaloff>../../../../../PycharmProjects/EMRE/gui/icons/icon.png</iconset>
   </property>
   <property name="autoFillBackground">
    <bool>false</bool>
@@ -43,6 +43,20 @@
     <property name="spacing">
      <number>9</number>
     </property>
+    <item row="0" column="2">
+     <layout class="QVBoxLayout" name="verticalLayout_plotter">
+      <item>
+       <widget class="QWidget" name="plotterWidget" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>480</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
     <item row="0" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="sizeConstraint">
@@ -83,28 +97,63 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="load_button">
-          <property name="maximumSize">
-           <size>
-            <width>200</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Load Script</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QPushButton" name="home_x_minus_btn">
+            <property name="text">
+             <string>|^| X-</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="home_x_plus_btn">
+            <property name="text">
+             <string>|^| X+</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
-         <widget class="QLabel" name="infoLabel">
-          <property name="maximumSize">
-           <size>
-            <width>200</width>
-            <height>16777215</height>
-           </size>
-          </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QPushButton" name="home_y_minus_btn">
+            <property name="text">
+             <string>|^| Y-</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="home_y_plus_btn">
+            <property name="text">
+             <string>|^| Y+</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <item>
+           <widget class="QPushButton" name="home_z_minus_btn">
+            <property name="text">
+             <string>|^| Z-</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="home_z_plus_btn">
+            <property name="text">
+             <string>|^| Z+</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QPushButton" name="load_path_file_btn">
           <property name="text">
-           <string>Welcome to COSI</string>
+           <string>Load Path</string>
           </property>
          </widget>
         </item>
@@ -120,48 +169,6 @@
            </size>
           </property>
          </spacer>
-        </item>
-        <item>
-         <widget class="QPushButton" name="CV_button">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>200</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>CV</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="CHG_button">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>200</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>CHG</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="CWEPR_button">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>CWEPR</string>
-          </property>
-         </widget>
         </item>
         <item>
          <spacer name="verticalSpacer">
@@ -182,7 +189,7 @@
            <enum>QLayout::SetDefaultConstraint</enum>
           </property>
           <item>
-           <widget class="QPushButton" name="initialize_button">
+           <widget class="QPushButton" name="init_btn">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -204,7 +211,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="run_button">
+           <widget class="QPushButton" name="run_btn">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -223,7 +230,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="abort_button">
+           <widget class="QPushButton" name="abort_btn">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -244,7 +251,7 @@
       </item>
      </layout>
     </item>
-    <item row="0" column="1">
+    <item row="0" column="3">
      <spacer name="horizontalSpacer">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
