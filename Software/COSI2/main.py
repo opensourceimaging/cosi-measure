@@ -42,6 +42,7 @@ from multiprocessing import Process, Queue
 from time import sleep
 
 import cosimeasure # the beast
+import gaussmeter # the accesoir
 
 import Plotter  # an EMRE module for plotting
 
@@ -65,11 +66,12 @@ QUIET=my_args.quiet # todo suppress gui and messages when called with -q
 class Ui(QtWidgets.QMainWindow):
     """the main User Interface window."""
     def __init__(self):
+        isfake = True # by default, the thing is fake as tested outside
         self.cosimeasure = cosimeasure.cosimeasure # just define type here
-
+        self.gaussmeter = gaussmeter.gaussmeter
         #self.DevManGui = None # to be added later: device manager gui
 
-        #self.communicator = None
+        #self.communicator = None # later: make a dev manager
 
         self.qGlob = Queue(maxsize = 100000) # the global queue that is used to store the data before plotting
 
@@ -118,10 +120,21 @@ class Ui(QtWidgets.QMainWindow):
 
     def connect_to_cosi(self):
         '''connect to the robot. dont home, just connect, read acks'''
+        self.isfake = False # todo: make a user friendly tick box
         print('connecting to COSI.')
+<<<<<<< HEAD
         print('Starting klipper. doing things.')
         self.cosimeasure = cosimeasure.cosimeasure(isfake=True) # DEBUG mode
         #self.cosimeasure = cosimeasure.cosimeasure(isfake=False) # testing mode
+=======
+        self.cosimeasure = cosimeasure.cosimeasure(isfake=self.isfake) # testing mode
+        print('connecting to Gaussmeter.')
+        self.gaussmeter= gaussmeter.gaussmeter(isfake=self.isfake)
+
+        for i in range(10):
+            sleep(0.5)
+            print(self.gaussmeter.read_gaussmeter())
+>>>>>>> origin/master
 
         self.init_btn.setEnabled(True)
         self.run_btn.setEnabled(True)
