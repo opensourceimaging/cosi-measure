@@ -120,8 +120,8 @@ class Ui(QtWidgets.QMainWindow):
         '''connect to the robot. dont home, just connect, read acks'''
         print('connecting to COSI.')
         print('Starting klipper. doing things.')
-        #self.cosimeasure = cosimeasure.cosimeasure(isfake=True) # DEBUG mode
-        self.cosimeasure = cosimeasure.cosimeasure(isfake=False) # testing mode
+        self.cosimeasure = cosimeasure.cosimeasure(isfake=True) # DEBUG mode
+        #self.cosimeasure = cosimeasure.cosimeasure(isfake=False) # testing mode
 
         self.init_btn.setEnabled(True)
         self.run_btn.setEnabled(True)
@@ -135,6 +135,16 @@ class Ui(QtWidgets.QMainWindow):
         self.home_y_minus_btn.clicked.connect(self.cosimeasure.home_y_minus)  # home Y-
         self.home_z_plus_btn.clicked.connect(self.cosimeasure.home_z_plus)  # home Z+
         self.home_z_minus_btn.clicked.connect(self.cosimeasure.home_z_minus)  # home Z-
+
+        self.x_right_btn.clicked.connect(self.cosimeasure.x_step_up)
+        self.x_left_btn.clicked.connect(self.cosimeasure.x_step_down)
+        self.y_right_btn.clicked.connect(self.cosimeasure.y_step_up)
+        self.y_left_btn.clicked.connect(self.cosimeasure.y_step_down)
+        self.z_right_btn.clicked.connect(self.cosimeasure.z_step_up)
+        self.z_left_btn.clicked.connect(self.cosimeasure.z_step_down)
+        
+        
+
 
         self.init_btn.clicked.connect(self.cosimeasure.init_path)  
         self.run_btn.clicked.connect(self.cosimeasure.run_measurement)

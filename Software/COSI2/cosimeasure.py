@@ -83,6 +83,22 @@ class cosimeasure(object):
         self.home_axis(axis='z',dir=1)        
     def home_z_minus(self):
         self.home_axis(axis='z',dir=-1)
+    '''stepwise head movements'''
+    def x_step_up(self):
+        print('move x+ one /step/')
+        self.command('')
+
+    def x_step_down(self):
+        print('move x- one /step/')
+    def y_step_up(self):
+        print('move y+ one /step/')
+    def y_step_down(self):
+        print('move y- one /step/')
+    def z_step_up(self):
+        print('move z+ one /step/')
+    def z_step_down(self):
+        print('move z- one /step/')
+
 
 
     def home_axis(self,axis:str,dir:int):

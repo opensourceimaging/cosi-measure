@@ -16,6 +16,8 @@ import tp
 import pth
 
 import cosimeasure # for plotting path irl
+import osi2magnet
+
 
 matplotlib.use("Qt5Agg")
 import matplotlib.pyplot as plt
@@ -127,6 +129,24 @@ class PlotterCanvas(FigureCanvas):
         pthDummy = pth.pth('./dummies/pathfiles/2021-10-14_PathfileTest_Spherical.path')
         self.plotPth(pthDummy)
         
+    def plot_magnet(self,magnet:osi2magnet):
+        print('plotting a magnet with radius ',magnet.bore_radius,' at',magnet.origin)
+
+        magnet_origin  = magnet.origin
+        xvec = magnet.xvector
+        yvec = magnet.yvector
+        zvec = magnet.zvector
+        
+
+
+        self.axes.quiver(magnet_origin[0],magnet_origin[1],magnet_origin[2], xvec[0], xvec[1], xvec[2], color='r')
+        self.axes.quiver(magnet_origin[0],magnet_origin[1],magnet_origin[2], yvec[0], yvec[1], yvec[2], color='g')
+        self.axes.quiver(magnet_origin[0],magnet_origin[1],magnet_origin[2], zvec[0], zvec[1], zvec[2], color='b')
+        
+        self.axes.plot(magnet.bore_X,magnet.bore_Y,magnet.bore_Z,zdir='z',label='magnet front')
+
+        #todo: make osi2magnet class and plot here the damn cylinder. with the axes!
+
     def plot_head_on_path(self,cosimeasure: cosimeasure.cosimeasure):
         xheadpos = cosimeasure.head_position[0]
         yheadpos = cosimeasure.head_position[1]
@@ -144,6 +164,8 @@ class PlotterCanvas(FigureCanvas):
         self.axes.set_ylabel(self.ylabel)
         self.axes.set_zlabel(self.zlabel)        
         self.axes.set_title(self.title)
+        dummy_magnet = osi2magnet.osi2magnet()
+        self.plot_magnet(dummy_magnet)
         self.axes.plot(xpathvalues,ypathvalues,zpathvalues,'ko--')
         self.axes.plot(xheadpos,yheadpos,zheadpos,'gx',linewidth=5)
         self.axes.autoscale(True)
