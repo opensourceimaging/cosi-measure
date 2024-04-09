@@ -43,6 +43,7 @@ from time import sleep
 
 import cosimeasure # the beast
 import gaussmeter # the accesoir
+import gaussmeter # the accesoir
 
 import Plotter  # an EMRE module for plotting
 
@@ -67,10 +68,13 @@ class Ui(QtWidgets.QMainWindow):
     """the main User Interface window."""
     def __init__(self):
         isfake = True # by default, the thing is fake as tested outside
+        isfake = True # by default, the thing is fake as tested outside
         self.cosimeasure = cosimeasure.cosimeasure # just define type here
+        self.gaussmeter = gaussmeter.gaussmeter
         self.gaussmeter = gaussmeter.gaussmeter
         #self.DevManGui = None # to be added later: device manager gui
 
+        #self.communicator = None # later: make a dev manager
         #self.communicator = None # later: make a dev manager
 
         self.qGlob = Queue(maxsize = 100000) # the global queue that is used to store the data before plotting
