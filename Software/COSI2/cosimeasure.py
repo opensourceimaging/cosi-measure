@@ -86,7 +86,6 @@ class cosimeasure(object):
     '''stepwise head movements'''
     def x_step_up(self):
         print('move x+ one /step/')
-        self.command('')
 
     def x_step_down(self):
         print('move x- one /step/')
