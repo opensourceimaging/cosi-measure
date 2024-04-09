@@ -31,6 +31,8 @@ class gaussmeter(object):
 
 
     def read_gaussmeter(self):
+        if self.isfake:
+            return None,None,None,None
         self.ser.write('ALLF?'.encode())
         value = ''
         sleep(0.1)
