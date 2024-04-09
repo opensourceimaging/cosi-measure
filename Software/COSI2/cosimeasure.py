@@ -48,7 +48,7 @@ class cosimeasure(object):
         time.sleep(1)
 
         self.ser = serial.Serial('/tmp/printer', 250000)
-        print('serial connection opened')
+        print('serial connection for cosimeasure opened')
         time.sleep(1)
 
     def command(self,command:str):
@@ -115,6 +115,17 @@ class cosimeasure(object):
         print('moving head to %.2f, %.2f, %.2f'%(x,y,z))
         self.command("G0 X%.2f Y%.2f Z%.2f"%(x,y,z))
         self.head_position = [x,y,z]
+
+
+    def get_current_position(self): # return position of the head
+        self.command("M114")
+        while True:
+            line = self.ser.readline()
+            print(line)
+            if line == b'ok\n':
+                break
+        return line
+
 
     def init_path(self):
         if len(self.path.path):
