@@ -417,7 +417,11 @@
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="euler_edit"/>
+             <widget class="QLineEdit" name="euler_edit">
+              <property name="text">
+               <string>0,0,0</string>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QLabel" name="label_9">

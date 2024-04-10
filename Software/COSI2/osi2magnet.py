@@ -15,7 +15,7 @@ class osi2magnet():
 
     vec_length = 32 # vectors are 32 mm long
     bore_radius = 150 # mm - adjust!
-    bore_depth = 
+    bore_depth = 500
 
     xvector = 0
     yvector = 0
@@ -36,3 +36,7 @@ class osi2magnet():
         self.bore_X = np.sin(t)*self.bore_radius+self.origin[0]
         self.bore_Y = t*0+self.origin[1]
         self.bore_Z = np.cos(t)*self.bore_radius+self.origin[2]
+
+        self.bore_back_X = np.sin(t)*self.bore_radius+self.origin[0]
+        self.bore_back_Y = t*0+self.origin[1]+self.bore_depth
+        self.bore_back_Z = np.cos(t)*self.bore_radius+self.origin[2]
