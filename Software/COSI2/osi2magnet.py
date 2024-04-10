@@ -15,6 +15,7 @@ class osi2magnet():
 
     vec_length = 32 # vectors are 32 mm long
     bore_radius = 150 # mm - adjust!
+    bore_depth = 
 
     xvector = 0
     yvector = 0
