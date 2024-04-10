@@ -10,6 +10,8 @@ import os
 
 import pth # path object
 
+import gaussmeter # for mapping the field
+
 # endpoints - adjust them
 minx = 0
 miny = 0
@@ -27,15 +29,17 @@ class cosimeasure(object):
     magnetometer = None
     working_directory = r'./dummies/pathfiles/'
 
-    def __init__(self,isfake:bool): # if isfake then dont do serial and sudo
+    def __init__(self,isfake:bool,gaussmeter:gaussmeter.gaussmeter): # if isfake then dont do serial and sudo
         print('initiating an instance of the cosimeasure object')
         self.path = pth.pth(filename='') # default path = dummy path
         self.head_position = [0,0,0]
         self.isfake = isfake   
         self.ser = None # serial connection is a field of cosimeasure 
-        
+
+        self.gaussmeter=gaussmeter
         print(self)
-            
+        print('COSI configured with a gaussmeter')       
+        
         if isfake:
             return
         
@@ -56,17 +60,18 @@ class cosimeasure(object):
         #global ser
         command = command + "\r\n"
         if self.isfake:
-            print('no serial connection to cosi, writing %s',command)
+            print('no serial connection to COSI, writing %s',command)
             return
         print('sending ', command)
         self.ser.write(str.encode(command)) 
+        line = ''
 
         while True:
+            lastline = line
             line = self.ser.readline()
             print(line)
-
             if line == b'ok\n':
-                break
+                return lastline
 
     '''====== MOVING HEAD ======'''
 
@@ -86,17 +91,27 @@ class cosimeasure(object):
     '''stepwise head movements'''
     def x_step_up(self):
         print('move x+ one /step/')
+        pos = self.get_current_position()
 
     def x_step_down(self):
         print('move x- one /step/')
+        pos = self.get_current_position()
+
     def y_step_up(self):
         print('move y+ one /step/')
+        pos = self.get_current_position()
+
     def y_step_down(self):
         print('move y- one /step/')
+        pos = self.get_current_position()
+
     def z_step_up(self):
         print('move z+ one /step/')
+        pos = self.get_current_position()
+
     def z_step_down(self):
         print('move z- one /step/')
+        pos = self.get_current_position()
 
 
 
@@ -133,13 +148,12 @@ class cosimeasure(object):
 
 
     def get_current_position(self): # return position of the head
-        self.command("M114")
-        while True:
-            line = self.ser.readline()
-            print(line)
-            if line == b'ok\n':
-                break
-        return line
+        if self.isfake:
+            return None,None,None
+        vals = self.command("M114")#.split(' ') # b'X:386.620 Y:286.000 Z:558.280 E:0.000\n'
+        print('get_current_position: ',vals)
+
+        return vals
 
 
     def init_path(self):
@@ -168,8 +182,23 @@ class cosimeasure(object):
     ''' MEASUREMENTS '''
 
     def run_measurement(self):
-        print('TEMP: Only following the path, no magnetometer!')
-        self.run_path_no_measure()
+        print('following the path, measuring the field!')
+        #self.run_path_no_measure()
+        self.run_path_measure_field()
+
+    def run_path_measure_field(self):
+        print('running along pass')
+        if len(self.path.path):
+            for pt in self.path.path:
+                print(pt)
+                self.moveto(pt[0],pt[1],pt[2])
+                pos = self.get_current_position()
+                bx,by,bz,babs = self.gaussmeter.read_gaussmeter()
+                print('pt',pos,'reached, B0 [%.1f,%.1f,%.1f]'%(bx,by,bz))
+        else:
+            print('load path first!')
+
+
 
     def abort(self):
         print('STOP MOVING AND SWITCH MOTORS OFF!')
