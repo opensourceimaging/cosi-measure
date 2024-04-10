@@ -21,6 +21,8 @@ maxx = 487
 maxy = 460
 maxz = 300 
 
+manstep = 5 # mm manual step
+
 class cosimeasure(object):
     
     head_position = [0,0,0];
@@ -88,31 +90,43 @@ class cosimeasure(object):
         self.home_axis(axis='z',dir=1)        
     def home_z_minus(self):
         self.home_axis(axis='z',dir=-1)
+    
     '''stepwise head movements'''
     def x_step_up(self):
         print('move x+ one /step/')
-        pos = self.get_current_position()
+        x,y,z = self.get_current_position()
+        x=x+manstep
+        self.moveto(x,y,z)
 
     def x_step_down(self):
         print('move x- one /step/')
-        pos = self.get_current_position()
+        x,y,z = self.get_current_position()
+        x=x-manstep
+        self.moveto(x,y,z)
 
     def y_step_up(self):
         print('move y+ one /step/')
-        pos = self.get_current_position()
+        x,y,z = self.get_current_position()
+        y=y+manstep
+        self.moveto(x,y,z)
 
     def y_step_down(self):
         print('move y- one /step/')
-        pos = self.get_current_position()
+        x,y,z = self.get_current_position()
+        y=y-manstep
+        self.moveto(x,y,z)
 
     def z_step_up(self):
         print('move z+ one /step/')
-        pos = self.get_current_position()
+        x,y,z = self.get_current_position()
+        z=z+manstep
+        self.moveto(x,y,z)
 
     def z_step_down(self):
         print('move z- one /step/')
-        pos = self.get_current_position()
-
+        x,y,z = self.get_current_position()
+        z=z-manstep
+        self.moveto(x,y,z)
 
 
     def home_axis(self,axis:str,dir:int):
@@ -144,16 +158,24 @@ class cosimeasure(object):
     def moveto(self,x:float,y:float,z:float):
         print('moving head to %.2f, %.2f, %.2f'%(x,y,z))
         self.command("G0 X%.2f Y%.2f Z%.2f"%(x,y,z))
-        self.head_position = [x,y,z]
+        self.head_position = self.get_current_position()
 
 
     def get_current_position(self): # return position of the head
         if self.isfake:
             return None,None,None
-        vals = self.command("M114")#.split(' ') # b'X:386.620 Y:286.000 Z:558.280 E:0.000\n'
-        print('get_current_position: ',vals)
+        vals = self.command("M114").decode().split(' ') # b'X:386.620 Y:286.000 Z:558.280 E:0.000\n'
+        xpos = float(vals[0].split(':')[1])
+        ypos = float(vals[1].split(':')[1])
+        zpos = float(vals[2].split(':')[1])
+        
+        print('x: ',xpos, 'mm')
+        print('y: ',xpos, 'mm')
+        print('z: ',xpos, 'mm')
 
-        return vals
+        self.head_position=[xpos,ypos,zpos]
+
+        return xpos,ypos,zpos
 
 
     def init_path(self):
@@ -194,7 +216,7 @@ class cosimeasure(object):
                 self.moveto(pt[0],pt[1],pt[2])
                 pos = self.get_current_position()
                 bx,by,bz,babs = self.gaussmeter.read_gaussmeter()
-                print('pt',pos,'reached, B0 [%.1f,%.1f,%.1f]'%(bx,by,bz))
+                print('pt',pos,'mm reached, B0=[%.1f,%.1f,%.1f] G'%(bx,by,bz))
         else:
             print('load path first!')
 
@@ -211,7 +233,7 @@ class cosimeasure(object):
             return
         self.path = pth.pth(filename=self.pathfile_path)
         print('path successfully imported')
-        self.head_position = self.path.path[0]
+        self.head_position = self.get_current_position()
 
         self.calculatePathCenter()
 

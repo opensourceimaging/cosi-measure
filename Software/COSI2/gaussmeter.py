@@ -50,10 +50,13 @@ class gaussmeter(object):
         
         if raw_reading !='':
             strvals=raw_reading.split(',')
-            b0x = float(strvals[0])
-            #todo: b0y test with healthy sensor
-            b0z = float(strvals[2])
-            
+            try:
+                b0x = float(strvals[0])
+                #b0y = float(strvals[0])
+                b0z = float(strvals[2])
+                #b0abs = float(strvals[3])
+            except:
+                pass
         return b0x,b0y,b0z,b0abs
         
 

@@ -28,7 +28,9 @@ Replace 0483:df11 with your hardware's ID from step 4 And execute the following 
      make flash FLASH_DEVICE=0483:df11
      
 '''
-
+#TODO quick home button
+#TODO magnet buttons
+#TODO multithreading
 
 from PyQt5 import QtWidgets, uic
 import sys # for finding the script path and importing scripts
