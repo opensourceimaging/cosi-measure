@@ -144,6 +144,8 @@ class PlotterCanvas(FigureCanvas):
         self.axes.quiver(magnet_origin[0],magnet_origin[1],magnet_origin[2], zvec[0], zvec[1], zvec[2], color='b')
         
         self.axes.plot(magnet.bore_X,magnet.bore_Y,magnet.bore_Z,zdir='z',label='magnet front')
+        self.axes.plot(magnet.bore_back_X,magnet.bore_back_Y,magnet.bore_back_Z,zdir='z',label='magnet back')
+        
 
         #todo: make osi2magnet class and plot here the damn cylinder. with the axes!
 

@@ -123,7 +123,7 @@ class Ui(QtWidgets.QMainWindow):
 
     def connect_to_cosi(self):
         '''connect to the robot. dont home, just connect, read acks'''
-        self.isfake = False # todo: make a user friendly tick box
+        self.isfake = True # todo: make a user friendly tick box
 
         print('connecting to Gaussmeter.')
         self.gaussmeter= gaussmeter.gaussmeter(isfake=self.isfake)
@@ -138,11 +138,15 @@ class Ui(QtWidgets.QMainWindow):
 
         self.home_x_plus_btn.clicked.connect(self.cosimeasure.home_x_plus)  # home X+
         self.home_x_minus_btn.clicked.connect(self.cosimeasure.home_x_minus)  # home X-
+        self.x_quickhome_btn.clicked.connect(self.cosimeasure.quickhome_x)  # home X- quick
 
         self.home_y_plus_btn.clicked.connect(self.cosimeasure.home_y_plus)  # home Y+
         self.home_y_minus_btn.clicked.connect(self.cosimeasure.home_y_minus)  # home Y-
+        self.y_quickhome_btn.clicked.connect(self.cosimeasure.quickhome_y)  # home Y- quick
+
         self.home_z_plus_btn.clicked.connect(self.cosimeasure.home_z_plus)  # home Z+
         self.home_z_minus_btn.clicked.connect(self.cosimeasure.home_z_minus)  # home Z-
+        self.z_quickhome_btn.clicked.connect(self.cosimeasure.quickhome_z)  # home Z- quick
 
         self.x_right_btn.clicked.connect(self.cosimeasure.x_step_up)
         self.x_left_btn.clicked.connect(self.cosimeasure.x_step_down)

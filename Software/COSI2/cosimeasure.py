@@ -129,6 +129,14 @@ class cosimeasure(object):
         self.moveto(x,y,z)
 
 
+    def quickhome_x(self):
+        self.command("G0 X%.2f"%minx) # quick home x
+    def quickhome_y(self):
+        self.command("G0 X%.2f"%miny) # quick home y
+    def quickhome_z(self):
+        self.command("G0 X%.2f"%minz) # quick home z
+
+
     def home_axis(self,axis:str,dir:int):
         '''individually home axis in direction dir'''
         direction = '+' if dir > 0 else '-'
@@ -163,7 +171,7 @@ class cosimeasure(object):
 
     def get_current_position(self): # return position of the head
         if self.isfake:
-            return None,None,None
+            return 0,0,0
         vals = self.command("M114").decode().split(' ') # b'X:386.620 Y:286.000 Z:558.280 E:0.000\n'
         xpos = float(vals[0].split(':')[1])
         ypos = float(vals[1].split(':')[1])
