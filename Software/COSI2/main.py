@@ -20,7 +20,7 @@ Will show up something like
      Bus 001 Device 002: ID 2109:3431 VIA Labs, Inc. Hub
 
 
-### 5. Compiling and Downloading to MCU
+### 5. Compiling and Downloading to MCU test
 
 Replace 0483:df11 with your hardware's ID from step 4 And execute the following command:
 
