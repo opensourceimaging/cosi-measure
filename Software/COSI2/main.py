@@ -45,7 +45,6 @@ from time import sleep
 
 import cosimeasure # the beast
 import gaussmeter # the accesoir
-import gaussmeter # the accesoir
 
 import Plotter  # an EMRE module for plotting
 
@@ -123,7 +122,7 @@ class Ui(QtWidgets.QMainWindow):
 
     def connect_to_cosi(self):
         '''connect to the robot. dont home, just connect, read acks'''
-        self.isfake = True # todo: make a user friendly tick box
+        self.isfake = False # todo: make a user friendly tick box
 
         print('connecting to Gaussmeter.')
         self.gaussmeter= gaussmeter.gaussmeter(isfake=self.isfake)
