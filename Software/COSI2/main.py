@@ -128,7 +128,7 @@ class Ui(QtWidgets.QMainWindow):
 
         print(cmd, 'will be sent to cosi')
         response = self.cosimeasure.command(cmd)
-        self.cmd_to_cosi_edit.setText(str(response))
+        #self.cmd_to_cosi_edit.setText(str(response))
         return response
 
 
