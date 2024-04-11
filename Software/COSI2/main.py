@@ -68,7 +68,6 @@ QUIET=my_args.quiet # todo suppress gui and messages when called with -q
 class Ui(QtWidgets.QMainWindow):
     """the main User Interface window."""
     def __init__(self):
-        isfake = True # by default, the thing is fake as tested outside
         self.cosimeasure = cosimeasure.cosimeasure # just define type here
         self.gaussmeter = gaussmeter.gaussmeter
         #self.DevManGui = None # to be added later: device manager gui
@@ -102,12 +101,15 @@ class Ui(QtWidgets.QMainWindow):
             exit()
         self.show() # Show the GUI
 
+        self.isfake = True  #True # by default, the thing is fake as tested outside
 
         # binding methods to buttons:
         self.connect_button.clicked.connect(self.connect_to_cosi)  # Remember to pass the definition/method, not the return value!
         self.devman_button.clicked.connect(self.open_dev_man)  # Remember to pass the definition/method, not the return value!
         self.load_path_file_btn.clicked.connect(self.load_path)
         self.abort_btn.clicked.connect(self.abort_experiment)
+
+        self.cmd_send_cosi_btn.clicked.connect(self.send_cmd_to_cosi)
 
         '''plotter'''
         plotterWidgetFound = self.findChild(QtWidgets.QWidget, 'plotterWidget')
@@ -119,10 +121,21 @@ class Ui(QtWidgets.QMainWindow):
 
         # todo: add head position tracking
 
+    def send_cmd_to_cosi(self):
+        cmd = self.cmd_to_cosi_edit.text()
+        if cmd == '':
+            return
+
+        print(cmd, 'will be sent to cosi')
+        response = self.cosimeasure.command(cmd)
+        self.cmd_to_cosi_edit.setText(str(response))
+        return response
+
 
     def connect_to_cosi(self):
         '''connect to the robot. dont home, just connect, read acks'''
-        self.isfake = False # todo: make a user friendly tick box
+        self.isfake = self.fake_check_box.isChecked()  #True # by default, the thing is fake as tested outside
+
 
         print('connecting to Gaussmeter.')
         self.gaussmeter= gaussmeter.gaussmeter(isfake=self.isfake)
