@@ -7,6 +7,7 @@ import serial
 import time
 from datetime import datetime
 import os
+import subprocess
 
 import pth # path object
 
@@ -44,14 +45,15 @@ class cosimeasure(object):
         
         if isfake:
             return
-        
-        os.system('sudo service klipper stop')
 
+        os.system('sudo service klipper stop')
         time.sleep(2)
+        process = subprocess.Popen(['./backend/flash-mcu-start-klipper.sh'])
+        process.wait()
 
         os.system('sudo service klipper start')
+        time.sleep(2)
 
-        time.sleep(1)
 
         self.ser = serial.Serial('/tmp/printer', 250000)
         print('serial connection for cosimeasure opened')
@@ -132,9 +134,9 @@ class cosimeasure(object):
     def quickhome_x(self):
         self.command("G0 X%.2f"%minx) # quick home x
     def quickhome_y(self):
-        self.command("G0 X%.2f"%miny) # quick home y
+        self.command("G0 Y%.2f"%miny) # quick home y
     def quickhome_z(self):
-        self.command("G0 X%.2f"%minz) # quick home z
+        self.command("G0 Z%.2f"%minz) # quick home z
 
 
     def home_axis(self,axis:str,dir:int):
@@ -178,8 +180,8 @@ class cosimeasure(object):
         zpos = float(vals[2].split(':')[1])
         
         print('x: ',xpos, 'mm')
-        print('y: ',xpos, 'mm')
-        print('z: ',xpos, 'mm')
+        print('y: ',ypos, 'mm')
+        print('z: ',zpos, 'mm')
 
         self.head_position=[xpos,ypos,zpos]
 
