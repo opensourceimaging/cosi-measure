@@ -32,6 +32,7 @@ class cosimeasure(object):
     magnetometer = None
     working_directory = r'./dummies/pathfiles/'
     bvalues = [] # list of strings
+    measurement_time_delay = 0.2
 
 
     def __init__(self,isfake:bool,gaussmeter:gaussmeter.gaussmeter,b0_filename=None): # if isfake then dont do serial and sudo
@@ -192,6 +193,12 @@ class cosimeasure(object):
 
         return xpos,ypos,zpos
 
+    def enable_motors(self):
+        self.command("hard_enable_drives")
+
+    def disable_motors(self):
+        self.command("hard_disable_drives")
+
 
     def init_path(self):
         if len(self.path.path):
@@ -230,7 +237,10 @@ class cosimeasure(object):
                 print(pt)
                 self.moveto(pt[0],pt[1],pt[2])
                 pos = self.get_current_position()
+                self.disable_motors()
+                time.sleep(self.measurement_time_delay)
                 bx,by,bz,babs = self.gaussmeter.read_gaussmeter()
+                self.enable_motors()
                 print('pt',pos,'mm reached, B0=[%.1f,%.1f,%.1f] G'%(bx,by,bz))
                 self.bvalues.append('%f %f %f %f\n'%(bx,by,bz,babs))
             print('path scanning done. saving file')
