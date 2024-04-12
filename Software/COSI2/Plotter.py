@@ -143,13 +143,13 @@ class PlotterCanvas(FigureCanvas):
         self.axes.quiver(magnet_origin[0],magnet_origin[1],magnet_origin[2], yvec[0], yvec[1], yvec[2], color='g')
         self.axes.quiver(magnet_origin[0],magnet_origin[1],magnet_origin[2], zvec[0], zvec[1], zvec[2], color='b')
         
-        self.axes.plot(magnet.bore_X,magnet.bore_Y,magnet.bore_Z,zdir='z',label='magnet front')
+        self.axes.plot(magnet.bore_front_X,magnet.bore_front_Y,magnet.bore_front_Z,zdir='z',label='magnet front')
         self.axes.plot(magnet.bore_back_X,magnet.bore_back_Y,magnet.bore_back_Z,zdir='z',label='magnet back')
         
 
         #todo: make osi2magnet class and plot here the damn cylinder. with the axes!
 
-    def plot_head_on_path(self,cosimeasure: cosimeasure.cosimeasure):
+    def plot_head_on_path(self,cosimeasure: cosimeasure.cosimeasure,magnet:osi2magnet.osi2magnet):
         xheadpos = cosimeasure.head_position[0]
         yheadpos = cosimeasure.head_position[1]
         zheadpos = cosimeasure.head_position[2]
@@ -166,8 +166,7 @@ class PlotterCanvas(FigureCanvas):
         self.axes.set_ylabel(self.ylabel)
         self.axes.set_zlabel(self.zlabel)        
         self.axes.set_title(self.title)
-        dummy_magnet = osi2magnet.osi2magnet()
-        self.plot_magnet(dummy_magnet)
+        self.plot_magnet(magnet)
         self.axes.plot(xpathvalues,ypathvalues,zpathvalues,'ko--')
         self.axes.plot(xheadpos,yheadpos,zheadpos,'gx',linewidth=5)
         self.axes.autoscale(True)

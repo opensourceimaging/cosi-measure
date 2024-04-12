@@ -31,8 +31,10 @@ class cosimeasure(object):
     pathfile = None
     magnetometer = None
     working_directory = r'./dummies/pathfiles/'
+    bvalues = [] # list of strings
 
-    def __init__(self,isfake:bool,gaussmeter:gaussmeter.gaussmeter): # if isfake then dont do serial and sudo
+
+    def __init__(self,isfake:bool,gaussmeter:gaussmeter.gaussmeter,b0_filename=None): # if isfake then dont do serial and sudo
         print('initiating an instance of the cosimeasure object')
         self.path = pth.pth(filename='') # default path = dummy path
         self.head_position = [0,0,0]
@@ -40,6 +42,9 @@ class cosimeasure(object):
         self.ser = None # serial connection is a field of cosimeasure 
 
         self.gaussmeter=gaussmeter
+        self.b0_filename = b0_filename
+        print(b0_filename)
+
         print(self)
         print('COSI configured with a gaussmeter')       
         
@@ -227,6 +232,14 @@ class cosimeasure(object):
                 pos = self.get_current_position()
                 bx,by,bz,babs = self.gaussmeter.read_gaussmeter()
                 print('pt',pos,'mm reached, B0=[%.1f,%.1f,%.1f] G'%(bx,by,bz))
+                self.bvalues.append('%f %f %f %f\n'%(bx,by,bz,babs))
+            print('path scanning done. saving file')
+             #write shim orientations to file
+        
+            if self.b0_filename:
+                with open(self.b0_filename, 'w') as file:
+                    file.writelines(self.bvalues)
+
         else:
             print('load path first!')
 

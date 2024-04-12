@@ -31,12 +31,15 @@ class osi2magnet():
         self.xvector = np.array([1,0,0])*self.bore_radius
         self.yvector = np.array([0,1,0])*self.bore_radius
         self.zvector = np.array([0,0,1])*self.bore_radius
+        self.make_bores()
 
+
+    def make_bores(self):
         t = np.linspace(0, 2*np.pi, 64)
-        self.bore_X = np.sin(t)*self.bore_radius+self.origin[0]
-        self.bore_Y = t*0+self.origin[1]
-        self.bore_Z = np.cos(t)*self.bore_radius+self.origin[2]
+        self.bore_front_X = np.sin(t)*self.bore_radius+self.origin[0]
+        self.bore_front_Y = t*0+self.origin[1]+self.bore_depth/2
+        self.bore_front_Z = np.cos(t)*self.bore_radius+self.origin[2]
 
         self.bore_back_X = np.sin(t)*self.bore_radius+self.origin[0]
-        self.bore_back_Y = t*0+self.origin[1]+self.bore_depth
+        self.bore_back_Y = t*0+self.origin[1]-self.bore_depth/2
         self.bore_back_Z = np.cos(t)*self.bore_radius+self.origin[2]

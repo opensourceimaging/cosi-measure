@@ -28,8 +28,7 @@ Replace 0483:df11 with your hardware's ID from step 4 And execute the following 
      make flash FLASH_DEVICE=0483:df11
      
 '''
-#TODO quick home button
-#TODO magnet buttons
+#TODO center the magnet by buttons
 #TODO multithreading
 
 from PyQt5 import QtWidgets, uic
@@ -45,8 +44,10 @@ from time import sleep
 
 import cosimeasure # the beast
 import gaussmeter # the accesoir
+import osi2magnet # the patient
 
 import Plotter  # an EMRE module for plotting
+import pathgen.sphere_path
 
 # utility windows:
 #import deviceManagerUtility
@@ -70,6 +71,7 @@ class Ui(QtWidgets.QMainWindow):
     def __init__(self):
         self.cosimeasure = cosimeasure.cosimeasure # just define type here
         self.gaussmeter = gaussmeter.gaussmeter
+        self.magnet = osi2magnet.osi2magnet()
         #self.DevManGui = None # to be added later: device manager gui
 
         #self.communicator = None # later: make a dev manager
@@ -106,7 +108,6 @@ class Ui(QtWidgets.QMainWindow):
         # binding methods to buttons:
         self.connect_button.clicked.connect(self.connect_to_cosi)  # Remember to pass the definition/method, not the return value!
         self.devman_button.clicked.connect(self.open_dev_man)  # Remember to pass the definition/method, not the return value!
-        self.load_path_file_btn.clicked.connect(self.load_path)
         self.abort_btn.clicked.connect(self.abort_experiment)
 
         self.cmd_send_cosi_btn.clicked.connect(self.send_cmd_to_cosi)
@@ -120,6 +121,11 @@ class Ui(QtWidgets.QMainWindow):
         self.pathPlotter.preset_PTH()  # just add some labels
 
         # todo: add head position tracking
+
+        ''' PATH GENERATOR '''
+        self.load_path_file_btn.clicked.connect(self.load_path)
+        self.path_gen_btn.clicked.connect(self.gen_path)
+
 
     def send_cmd_to_cosi(self):
         cmd = self.cmd_to_cosi_edit.text()
@@ -141,12 +147,14 @@ class Ui(QtWidgets.QMainWindow):
         self.gaussmeter= gaussmeter.gaussmeter(isfake=self.isfake)
 
         print('connecting to COSI.')
-        self.cosimeasure = cosimeasure.cosimeasure(isfake=self.isfake,gaussmeter=self.gaussmeter) # testing mode
+        self.cosimeasure = cosimeasure.cosimeasure(isfake=self.isfake,gaussmeter=self.gaussmeter,b0_filename='./data/240412/sphere_test_bvalues.txt') # testing mode
 
         self.init_btn.setEnabled(True)
         self.run_btn.setEnabled(True)
         self.abort_btn.setEnabled(True)
-    
+
+        self.mag_pos_btn.clicked.connect(self.recenter_magnet) # get xyz of the magnet center and plot it 
+
 
         self.home_x_plus_btn.clicked.connect(self.cosimeasure.home_x_plus)  # home X+
         self.home_x_minus_btn.clicked.connect(self.cosimeasure.home_x_minus)  # home X-
@@ -171,35 +179,62 @@ class Ui(QtWidgets.QMainWindow):
         self.run_btn.clicked.connect(self.cosimeasure.run_measurement)
         self.abort_btn.clicked.connect(self.cosimeasure.abort)
             
+    def recenter_magnet(self):
+            magcoords = self.mag_pos_edit.text().split(',')
+            x = float(magcoords[0])
+            y = float(magcoords[1])
+            z = float(magcoords[2])  
+            self.magnet.set_origin(x,y,z)          
+            self.pathPlotter.plot_head_on_path(cosimeasure=self.cosimeasure,magnet=self.magnet)
+
 
     def open_dev_man(self):
         '''open device manager window'''
         print('List known devices. See if connected.')
 
-    def load_path(self):
+
+    def abort_experiment(self):
+        print('stop all! TEMP:')
+        self.pathPlotter.plot_head_on_path(cosimeasure=self.cosimeasure,magnet=self.magnet)
+
+
+
+    ''' PATHS '''
+    def gen_path(self):
+        xc = float(self.path_dim_edit.text().split(",")[0])
+        yc = float(self.path_dim_edit.text().split(",")[1])
+        zc = float(self.path_dim_edit.text().split(",")[2])
+        rad = float(self.path_dim_edit.text().split(",")[3]) # mm
+        phipts = int(self.path_res_edit.text().split(",")[0])
+        thetapts = int(self.path_res_edit.text().split(",")[1])
+        
+        fnm = r'../data/240412/sphere_test_path'
+        sphere_path = pathgen.sphere_path.sphere_path(filename_input=fnm,center_point_input=(xc,yc,zc),phinumber_input=phipts,thetanumber_input=thetapts,radius_input=rad,maxradius_input=rad+5)
+        self.load_path(r'./data/240412/sphere_test_path.path')
+
+    def load_path(self,pathfilename=None):
+
 
         print('load the path file.')
-        # open file dialog
 
-        try:
-            self.cosimeasure.pathfile_path, _ = QtWidgets.QFileDialog.getOpenFileName(self, caption="Select path data",
-                                                                   directory=self.cosimeasure.working_directory,
-                                                                   filter="path Files (*.path);;CSV Files (*.csv)")
-            self.cosimeasure.working_directory = os.path.split(os.path.abspath(self.cosimeasure.pathfile_path))[0]
+        if pathfilename:
+            print("given filename: ",pathfilename)
+            self.cosimeasure.pathfile_path = pathfilename
+        # if no filename given, open file dialog
+        else:
+            try:
+                self.cosimeasure.pathfile_path, _ = QtWidgets.QFileDialog.getOpenFileName(self, caption="Select path data",
+                                                                       directory=self.cosimeasure.working_directory,
+                                                                       filter="path Files (*.path);;CSV Files (*.csv)")
+                self.cosimeasure.working_directory = os.path.split(os.path.abspath(self.cosimeasure.pathfile_path))[0]
 
-        except:
-            print('no filename given, do it again.')
+            except:
+                print('no filename given, do it again.')
             return 0
         if self.cosimeasure.pathfile_path:
             print('loading path %s with cosimeasure.',self.cosimeasure.pathfile_path)
             self.cosimeasure.load_path()
-            self.pathPlotter.plot_head_on_path(cosimeasure=self.cosimeasure)
-
-    def abort_experiment(self):
-        print('stop all! TEMP:')
-        self.pathPlotter.plot_head_on_path(cosimeasure=self.cosimeasure)
-
-
+            self.pathPlotter.plot_head_on_path(cosimeasure=self.cosimeasure,magnet=self.magnet)
 
 
 if __name__ == "__main__":

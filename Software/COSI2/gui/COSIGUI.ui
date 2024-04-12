@@ -322,6 +322,49 @@
          </widget>
         </item>
         <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <item>
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>ctr,rds</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="path_dim_edit">
+            <property name="text">
+             <string>241.5,180.8,138.6,70</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <item>
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string># ang pts</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="path_res_edit">
+            <property name="text">
+             <string>32,32</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QPushButton" name="path_gen_btn">
+          <property name="text">
+           <string>Generate Path</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="verticalSpacer_2">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -369,69 +412,25 @@
             <item>
              <widget class="QLabel" name="label_2">
               <property name="text">
-               <string>X</string>
+               <string>X,Y,Z</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="x_mag_pos_edit">
+             <widget class="QLineEdit" name="mag_pos_edit">
+              <property name="maximumSize">
+               <size>
+                <width>120</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
-               <string>0</string>
+               <string>241.5,180.8,138.6</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QLabel" name="label_5">
-              <property name="text">
-               <string>mm</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_7">
-            <item>
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>Y</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="y_mag_pos_edit">
-              <property name="text">
-               <string>0</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>mm</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_8">
-            <item>
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>Z</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="z_mag_pos_edit">
-              <property name="text">
-               <string>0</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_7">
               <property name="text">
                <string>mm</string>
               </property>
