@@ -51,10 +51,10 @@ class gaussmeter(object):
         if raw_reading !='':
             strvals=raw_reading.split(',')
             try:
-                #b0x = float(strvals[0])
-                #b0y = float(strvals[0])
+                b0x = float(strvals[0])
+                b0y = float(strvals[1])
                 b0z = float(strvals[2])
-                #b0abs = float(strvals[3])
+                b0abs = float(strvals[3])
             except:
                 pass
         return b0x,b0y,b0z,b0abs
