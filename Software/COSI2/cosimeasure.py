@@ -231,28 +231,30 @@ class cosimeasure(object):
         self.run_path_measure_field()
 
     def run_path_measure_field(self):
-        print('running along pass')
-        if len(self.path.path):
-            for pt in self.path.path:
-                print(pt)
-                self.moveto(pt[0],pt[1],pt[2])
-                pos = self.get_current_position()
-                self.disable_motors()
-                time.sleep(self.measurement_time_delay)
-                bx,by,bz,babs = self.gaussmeter.read_gaussmeter()
-                self.enable_motors()
-                print('pt',pos,'mm reached, B0=[%.1f,%.1f,%.1f] G'%(bx,by,bz))
-                self.bvalues.append('%f %f %f %f\n'%(bx,by,bz,babs))
-            print('path scanning done. saving file')
-             #write shim orientations to file
-        
-            if self.b0_filename:
-                with open(self.b0_filename, 'w') as file:
-                    file.writelines(self.bvalues)
+        print('running along path')
+        if self.b0_filename: # if filename was given
+            with open(self.b0_filename, 'w') as file: # open that file
+                if len(self.path.path): # if path was given
+                    for pt in self.path.path: # follow the path
+                        print(pt)
+                        self.moveto(pt[0],pt[1],pt[2])
+                        pos = self.get_current_position()
+                        self.disable_motors()
+                        time.sleep(self.measurement_time_delay)
+                        bx,by,bz,babs = self.gaussmeter.read_gaussmeter()
+                        self.enable_motors()
+                        print('pt',pos,'mm reached, B0=[%.1f,%.1f,%.1f] G'%(bx,by,bz))
+                        bval_str = '%f %f %f %f\n'%(bx,by,bz,babs)
+                        self.bvalues.append(bval_str) # save bvalues to ram
+                        file.write(bval_str)    
+                    print('path scanning done. saving file')
+                    #write shim orientations to file
 
+                else:
+                    print('give path! No scan without path!')
         else:
-            print('load path first!')
-
+            print('give B0 filename! No scan without filename!')
+    
 
 
     def abort(self):

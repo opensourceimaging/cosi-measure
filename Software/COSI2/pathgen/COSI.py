@@ -74,15 +74,16 @@ def displayPath(fileID):
             zCoords += [point[2]]
 
     def plot1Layer(xCoords, yCoords, zCoord):
-        _, ax = plt.subplots()
-        ax.plot(xCoords, yCoords, marker='.', label='path (n={})'.format(len(xCoords)), zorder=-1)
-        ax.scatter(xCoords[0], yCoords[0], marker='x', color='green', label='begin')
-        ax.scatter(xCoords[-1], yCoords[-1], marker='+', color='red', label='end')
-        ax.set_xlabel('x-coordinate in mm')
-        ax.set_ylabel('y-coordinate in mm')
-        ax.set_title('{} @ z={}'.format(filename, zCoord))
-        plt.legend()
-        plt.grid()
+        pass
+        # _, ax = plt.subplots()
+        # ax.plot(xCoords, yCoords, marker='.', label='path (n={})'.format(len(xCoords)), zorder=-1)
+        # ax.scatter(xCoords[0], yCoords[0], marker='x', color='green', label='begin')
+        # ax.scatter(xCoords[-1], yCoords[-1], marker='+', color='red', label='end')
+        # ax.set_xlabel('x-coordinate in mm')
+        # ax.set_ylabel('y-coordinate in mm')
+        # ax.set_title('{} @ z={}'.format(filename, zCoord))
+        # plt.legend()
+        # plt.grid()
         #plt.savefig('../data/figures/{}{}.png'.format(filename, zCoord))
 
     zCoordsUnique, zCoordsUniqueIndices = unique(zCoords, return_index=True)

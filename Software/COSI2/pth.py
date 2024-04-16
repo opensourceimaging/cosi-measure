@@ -1,5 +1,6 @@
 '''rst@PTB 240408 rst030@protonmail.com'''
 import numpy as np
+import os
 
 class pth():
     '''path object. created for cosi.'''

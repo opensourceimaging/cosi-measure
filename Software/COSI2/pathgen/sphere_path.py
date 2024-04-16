@@ -39,8 +39,12 @@ class sphere_path(object):
         ##############################################################################
         ##############################################################################
 
-        path2file = Path(__file__).resolve().parent
-        fileID = Path.joinpath(path2file, self.filename).with_suffix('.path')
+
+        #path2file = Path(__file__).resolve().parent
+        fileID = self.filename#Path.joinpath(path2file, self.filename).with_suffix('.path')
+        import os
+        print('pathgen module is in:')
+        input(os.getcwd())
 
 
         phiRad, thetaRad = calcAngles(self.phiNumber, self.thetaNumber)
@@ -60,7 +64,7 @@ class sphere_path(object):
         print('Pathfile is written.')
         print('Started to write angles.')
 
-        fileIDangles = Path.joinpath(path2file, self.filename).with_suffix('.angles')
+        fileIDangles = self.filename+'.angles'#Path.joinpath(path2file, self.filename).with_suffix('.angles')
         with open(fileIDangles, 'w+') as f:
             for theta in thetaRad:
                 for phi in phiRad:

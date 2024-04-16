@@ -94,6 +94,8 @@ class Ui(QtWidgets.QMainWindow):
         self.log.debug('Main working directory: %s'% ROOT_PATH)
         os.chdir(ROOT_PATH)
         print(os.getcwd())
+        self.working_directory = ROOT_PATH 
+        print('working directory: ',self.working_directory)
 
         super(Ui, self).__init__() # Call the inherited classes __init__ method
         try:
@@ -147,7 +149,8 @@ class Ui(QtWidgets.QMainWindow):
         self.gaussmeter= gaussmeter.gaussmeter(isfake=self.isfake)
 
         print('connecting to COSI.')
-        self.cosimeasure = cosimeasure.cosimeasure(isfake=self.isfake,gaussmeter=self.gaussmeter,b0_filename='./data/240412/sphere_test_bvalues.txt') # testing mode
+
+        self.cosimeasure = cosimeasure.cosimeasure(isfake=self.isfake,gaussmeter=self.gaussmeter,b0_filename=self.working_directory+'sphere_test_bvalues.txt') # testing mode
 
         self.init_btn.setEnabled(True)
         self.run_btn.setEnabled(True)
@@ -208,9 +211,10 @@ class Ui(QtWidgets.QMainWindow):
         phipts = int(self.path_res_edit.text().split(",")[0])
         thetapts = int(self.path_res_edit.text().split(",")[1])
         
-        fnm = r'../data/240412/sphere_test_path'
+
+        fnm = './data/240415/sphere_test_path.path'
         sphere_path = pathgen.sphere_path.sphere_path(filename_input=fnm,center_point_input=(xc,yc,zc),phinumber_input=phipts,thetanumber_input=thetapts,radius_input=rad,maxradius_input=rad+5)
-        self.load_path(r'./data/240412/sphere_test_path.path')
+        self.load_path(fnm)
 
     def load_path(self,pathfilename=None):
 
@@ -219,7 +223,7 @@ class Ui(QtWidgets.QMainWindow):
 
         if pathfilename:
             print("given filename: ",pathfilename)
-            self.cosimeasure.pathfile_path = pathfilename
+            self.cosimeasure.pathfile_path = pathfilename#+'.path'
         # if no filename given, open file dialog
         else:
             try:
