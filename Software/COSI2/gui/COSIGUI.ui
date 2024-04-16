@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>887</width>
-    <height>600</height>
+    <height>611</height>
    </rect>
   </property>
   <property name="cursor">
@@ -326,14 +326,14 @@
           <item>
            <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>ctr,rds</string>
+             <string>Ro,R</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QLineEdit" name="path_dim_edit">
             <property name="text">
-             <string>241.5,180.8,138.6,70</string>
+             <string>265.17,182.35,163.75,70</string>
             </property>
            </widget>
           </item>
@@ -344,14 +344,14 @@
           <item>
            <widget class="QLabel" name="label_4">
             <property name="text">
-             <string># ang pts</string>
+             <string># pt per R</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QLineEdit" name="path_res_edit">
             <property name="text">
-             <string>32,32</string>
+             <string>10</string>
             </property>
            </widget>
           </item>
@@ -425,7 +425,7 @@
                </size>
               </property>
               <property name="text">
-               <string>241.5,180.8,138.6</string>
+               <string>265.17,182.35,163.75</string>
               </property>
              </widget>
             </item>

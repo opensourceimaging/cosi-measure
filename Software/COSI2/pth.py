@@ -43,7 +43,7 @@ class pth():
                     self.y.append(y)
                     self.z.append(z)
                                        
-                    print('imported pth pt:',headPosition)
+                    #print('imported pth pt:',headPosition)
 
             
     def saveAs(self,filename: str):

@@ -47,6 +47,7 @@ import gaussmeter # the accesoir
 import osi2magnet # the patient
 
 import Plotter  # an EMRE module for plotting
+import pathgen.ball_path
 import pathgen.sphere_path
 
 # utility windows:
@@ -126,7 +127,7 @@ class Ui(QtWidgets.QMainWindow):
 
         ''' PATH GENERATOR '''
         self.load_path_file_btn.clicked.connect(self.load_path)
-        self.path_gen_btn.clicked.connect(self.gen_path)
+        self.path_gen_btn.clicked.connect(self.gen_ball_path)
 
 
     def send_cmd_to_cosi(self):
@@ -215,6 +216,21 @@ class Ui(QtWidgets.QMainWindow):
         fnm = './data/240415/sphere_test_path.path'
         sphere_path = pathgen.sphere_path.sphere_path(filename_input=fnm,center_point_input=(xc,yc,zc),phinumber_input=phipts,thetanumber_input=thetapts,radius_input=rad,maxradius_input=rad+5)
         self.load_path(fnm)
+
+
+    def gen_ball_path(self):
+        xc = float(self.path_dim_edit.text().split(",")[0])
+        yc = float(self.path_dim_edit.text().split(",")[1])
+        zc = float(self.path_dim_edit.text().split(",")[2])
+        rad = float(self.path_dim_edit.text().split(",")[3]) # mm
+        radpts = int(self.path_res_edit.text())
+        
+
+        fnm = './data/240416/sphere_test_path.path'
+        sphere_path = pathgen.ball_path.ball_path(filename_input=fnm,center_point_input=(xc,yc,zc),radius_input=rad,radius_npoints_input=radpts)
+        self.load_path(fnm)
+
+
 
     def load_path(self,pathfilename=None):
 
