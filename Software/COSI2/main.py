@@ -151,7 +151,7 @@ class Ui(QtWidgets.QMainWindow):
 
         print('connecting to COSI.')
 
-        self.cosimeasure = cosimeasure.cosimeasure(isfake=self.isfake,gaussmeter=self.gaussmeter,b0_filename=self.working_directory+'/240216/sphere_test_bvalues.txt',magnet=self.magnet) # testing mode
+        self.cosimeasure = cosimeasure.cosimeasure(isfake=self.isfake,gaussmeter=self.gaussmeter,b0_filename=self.working_directory+'/data/240416/sphere_test_bvalues.txt',magnet=self.magnet) # testing mode
 
         self.init_btn.setEnabled(True)
         self.run_btn.setEnabled(True)
