@@ -12,6 +12,7 @@ import subprocess
 import pth # path object
 
 import gaussmeter # for mapping the field
+import osi2magnet
 
 # endpoints - adjust them
 minx = 0
@@ -33,9 +34,10 @@ class cosimeasure(object):
     working_directory = r'./dummies/pathfiles/'
     bvalues = [] # list of strings
     measurement_time_delay = 0.2
+    magnet = osi2magnet.osi2magnet
 
 
-    def __init__(self,isfake:bool,gaussmeter:gaussmeter.gaussmeter,b0_filename=None): # if isfake then dont do serial and sudo
+    def __init__(self,isfake:bool,gaussmeter:gaussmeter.gaussmeter,b0_filename=None,magnet=None): # if isfake then dont do serial and sudo
         print('initiating an instance of the cosimeasure object')
         self.path = pth.pth(filename='') # default path = dummy path
         self.head_position = [0,0,0]
@@ -49,6 +51,8 @@ class cosimeasure(object):
         print(self)
         print('COSI configured with a gaussmeter')       
         
+        self.magnet = magnet
+
         if isfake:
             return
 
@@ -228,13 +232,21 @@ class cosimeasure(object):
     def run_measurement(self):
         print('following the path, measuring the field!')
         #self.run_path_no_measure()
-        self.run_path_measure_field()
+        self.run_path_measure_field(self.magnet)
 
-    def run_path_measure_field(self):
+    def run_path_measure_field(self,magnet:osi2magnet.osi2magnet):
         print('running along path')
         if self.b0_filename: # if filename was given
             with open(self.b0_filename, 'w') as file: # open that file
                 if len(self.path.path): # if path was given
+                    file.write('COSI2 B0 scan\n')
+                    from datetime import datetime
+                    # Convert date and time to string
+                    dateTimeStr = str(datetime.now())
+                    file.write(dateTimeStr+'\n')
+                    file.write('MAGNET CENTER IN LAB: x %.3f mm, y %.3f mm, z %.3f mm\n'%(magnet.origin[0],magnet.origin[1],magnet.origin[2]))
+                    file.write('MAGNET AXES WRT LAB: alpha %.2f deg, beta %.2f deg, gamma %.2f deg\n'%(magnet.alpha,magnet.beta,magnet.gamma))                    
+                    
                     for pt in self.path.path: # follow the path
                         print(pt)
                         self.moveto(pt[0],pt[1],pt[2])

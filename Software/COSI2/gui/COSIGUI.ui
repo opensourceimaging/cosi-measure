@@ -443,12 +443,18 @@
             <item>
              <widget class="QLabel" name="label_8">
               <property name="text">
-               <string>a,ß,y</string>
+               <string>a[z],ß[y],y[x]</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QLineEdit" name="euler_edit">
+              <property name="maximumSize">
+               <size>
+                <width>100</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>0,0,0</string>
               </property>

@@ -151,7 +151,7 @@ class Ui(QtWidgets.QMainWindow):
 
         print('connecting to COSI.')
 
-        self.cosimeasure = cosimeasure.cosimeasure(isfake=self.isfake,gaussmeter=self.gaussmeter,b0_filename=self.working_directory+'sphere_test_bvalues.txt') # testing mode
+        self.cosimeasure = cosimeasure.cosimeasure(isfake=self.isfake,gaussmeter=self.gaussmeter,b0_filename=self.working_directory+'/240216/sphere_test_bvalues.txt',magnet=self.magnet) # testing mode
 
         self.init_btn.setEnabled(True)
         self.run_btn.setEnabled(True)
@@ -188,7 +188,15 @@ class Ui(QtWidgets.QMainWindow):
             x = float(magcoords[0])
             y = float(magcoords[1])
             z = float(magcoords[2])  
-            self.magnet.set_origin(x,y,z)          
+            mageulers = self.euler_edit.text().split(',')
+            alpha = float(mageulers[0])
+            beta = float(mageulers[1])
+            gamma = float(mageulers[2])
+            
+
+            self.magnet.set_origin(x,y,z)
+            self.cosimeasure.head_position = [x,y,z]
+            self.magnet.rotate_euler(alpha,beta,gamma)          
             self.pathPlotter.plot_head_on_path(cosimeasure=self.cosimeasure,magnet=self.magnet)
 
 
