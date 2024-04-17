@@ -28,20 +28,20 @@ class ball_path(object):
         #print(np.shape(res))
         #print(res)
 
-        it = np.nditer(res, flags=['f_index'])
-        for entry in it:
-            if entry:
-                pass
-                #print(it.index)
 
         with open(self.filename, 'w+') as f:
-
+            snakeup = True
             for iz in range(len(z)):
                 for iy in range(len(y)):
+                    snakeup =  not snakeup
                     for ix in range(len(x)):
                         if res[ix,iy,iz]:
-                            g0 =  'x%.2f y%.2f z%.2f\n'%(x[ix],y[iy],z[iz])
-                            print(g0)
+                            if snakeup:
+                                g0 =  'x%.2f y%.2f z%.2f\n'%(x[ix],y[iy],z[iz])
+                                print('slice z=%.2f snake UP\n'%z[iz],g0)
+                            else:
+                                g0 =  'x%.2f y%.2f z%.2f\n'%(x[len(x)-ix],y[iy],z[iz])
+                                print('slice z=%.2f snake DOWN\n'%z[iz],g0)
                             f.write( g0 ) 
 
 

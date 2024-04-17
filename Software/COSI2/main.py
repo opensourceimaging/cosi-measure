@@ -28,7 +28,7 @@ Replace 0483:df11 with your hardware's ID from step 4 And execute the following 
      make flash FLASH_DEVICE=0483:df11
      
 '''
-#TODO center the magnet by buttons
+#TODO snake in path
 #TODO multithreading
 
 from PyQt5 import QtWidgets, uic
