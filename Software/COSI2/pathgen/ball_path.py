@@ -15,49 +15,34 @@ class ball_path(object):
 
 
     def make_ball(self, center, radius:float, radius_npoints:int):
-        x = np.linspace(start=(center[0]-radius),stop=(center[0]+radius),num=2*radius_npoints)
-        y = np.linspace(start=(center[1]-radius),stop=(center[1]+radius),num=2*radius_npoints)
-        z = np.linspace(start=(center[2]-radius),stop=(center[2]+radius),num=2*radius_npoints)
+
+        npoints = radius_npoints
+
+        x = np.linspace(center[0]-radius, center[0]+radius, 2*npoints)
+        y = np.linspace(center[1]-radius, center[1]+radius, 2*npoints)
+        z = np.linspace(center[2]-radius, center[2]+radius, 2*npoints)
+
+        xx, yy, zz = np.meshgrid(x,y,z)
+
+        res = (xx-center[0])**2+(yy-center[1])**2+(zz-center[2])**2<=radius**2
+        #print(np.shape(res))
+        #print(res)
+
+        it = np.nditer(res, flags=['f_index'])
+        for entry in it:
+            if entry:
+                pass
+                #print(it.index)
+
+        with open(self.filename, 'w+') as f:
+
+            for iz in range(len(z)):
+                for iy in range(len(y)):
+                    for ix in range(len(x)):
+                        if res[ix,iy,iz]:
+                            g0 =  'x%.2f y%.2f z%.2f\n'%(x[ix],y[iy],z[iz])
+                            print(g0)
+                            f.write( g0 ) 
 
 
-        zslices = []
-
-        for z_ in z:
-    
-            slc = xySlice()
-            slc.slice_height = z_
-    
-            for y_ in y:
-                for x_ in x:
-                    if (x_-center[0])**2 + (y_-center[1])**2 + (z_-center[2])**2 < radius**2:
-                        slc.xpts_in_slice = np.append(slc.xpts_in_slice,x_)
-                        slc.ypts_in_slice = np.append(slc.ypts_in_slice,y_)
-                        #print('slice z=',z_,' : ',x_,y_)
-                        #input('point in ball')
-        
-            
-            zslices.append(slc)
-
-
-        fileID = self.filename
-
-
-        with open(fileID, 'w+') as f:
-
-            for slc in zslices:
-                for x1 in slc.xpts_in_slice:
-                    for y1 in slc.ypts_in_slice:
-                        z1 = slc.slice_height
-                        g0 = 'x%.2f y%.2f z%.2f\n'%(x1,y1,z1)
-                        #print('ball path gen: ', g0)
-                        f.write(g0) 
-
-
-class xySlice(object):
-    xpts_in_slice = np.array([])
-    ypts_in_slice = np.array([])
-    slice_height = None
-    def __init__(self) -> None:
-        pass
-    
-
+        print('Ball pathfile is written.')
