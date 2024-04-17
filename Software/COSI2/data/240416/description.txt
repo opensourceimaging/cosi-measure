@@ -1,0 +1,5 @@
+field probed with Lakeshore Hall magnetometer
+black pla 3d printed holder v.1.1
+magnet center position:
+MAGNET CENTER IN LAB: x 265.170 mm, y 182.350 mm, z 163.750
+magnet turned with its back wo the COSI2

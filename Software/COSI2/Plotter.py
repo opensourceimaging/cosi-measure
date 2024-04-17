@@ -122,9 +122,9 @@ class PlotterCanvas(FigureCanvas):
 
     def preset_PTH(self):
         self.clear()
-        self.xlabel = 'X'
-        self.ylabel = 'Y'
-        self.zlabel = 'Z'
+        self.xlabel = 'X COSI'
+        self.ylabel = 'Y COSI'
+        self.zlabel = 'Z COSI'
         self.title = 'dummy path'
         pthDummy = pth.pth('./dummies/pathfiles/2021-10-14_PathfileTest_Spherical.path')
         self.plotPth(pthDummy)
