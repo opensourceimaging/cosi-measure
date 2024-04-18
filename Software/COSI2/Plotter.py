@@ -41,6 +41,9 @@ class PlotterCanvas(FigureCanvas):
         fig = Figure(figsize=(16, 16), dpi=100)
         if plotType == 'PTH':
             self.axes = fig.add_subplot(111,projection='3d')
+            fig.subplots_adjust(left=0.1,right=0.1,
+                            bottom=0.1,top=0.9,
+                            hspace=0.2,wspace=0.2)
         else:
             self.axes = fig.add_subplot(111)
 #        fig.subplots_adjust(left = 0.18, right=0.99, top=0.94, bottom=0.1)
