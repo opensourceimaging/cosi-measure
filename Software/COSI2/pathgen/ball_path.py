@@ -30,18 +30,26 @@ class ball_path(object):
 
 
         with open(self.filename, 'w+') as f:
-            snakeup = True
+            snakeup_x = True
+            snakeup_y = True
             for iz in range(len(z)):
+                snakeup_y =  not snakeup_y
                 for iy in range(len(y)):
-                    snakeup =  not snakeup
+                    snakeup_x =  not snakeup_x
                     for ix in range(len(x)):
                         if res[ix,iy,iz]:
-                            if snakeup:
-                                g0 =  'x%.2f y%.2f z%.2f\n'%(x[ix],y[iy],z[iz])
-                                print('slice z=%.2f snake UP\n'%z[iz],g0)
+                            
+                            if snakeup_y:
+                                y_idx = iy
                             else:
-                                g0 =  'x%.2f y%.2f z%.2f\n'%(x[len(x)-ix],y[iy],z[iz])
-                                print('slice z=%.2f snake DOWN\n'%z[iz],g0)
+                                y_idx = len(y)-iy
+
+                            if snakeup_x:
+                                x_idx = ix
+                            else:
+                                x_idx = len(x)-ix
+                            
+                            g0 =  'x%.2f y%.2f z%.2f\n'%(x[x_idx],y[y_idx],z[iz])
                             f.write( g0 ) 
 
 

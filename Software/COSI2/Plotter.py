@@ -35,13 +35,17 @@ class PlotterCanvas(FigureCanvas):
     title = 'ultimate grapfh'
     parent = None # parent widget, [have to] pass it on construction for live updates
     plotType = 'GEN' # available: 'GEN,CV,CHG,EPR,TP'
+    fig = Figure
 
     def __init__(self, plotType:str):
         self.plotType = plotType # assign and dont worry anymore!
-        fig = Figure(figsize=(16, 16), dpi=100)
+        self.fig = Figure(figsize=(16, 16), dpi=100)
+        fig = self.fig
+
         if plotType == 'PTH':
             self.axes = fig.add_subplot(111,projection='3d')
-            fig.subplots_adjust(left=0.1,right=0.1,
+            self.axes.set_aspect("equal")
+            fig.subplots_adjust(left=0.1,right=0.9,
                             bottom=0.1,top=0.9,
                             hspace=0.2,wspace=0.2)
         else:
@@ -258,6 +262,10 @@ class PlotterCanvas(FigureCanvas):
 
 
     def update_plotter(self): # very useful and important method for live plotting.
+        if self.plotType == 'PTH':
+            self.fig.subplots_adjust(left=0.0,right=1.0,
+                            bottom=0.0,top=1.0,
+                            hspace=0.0,wspace=0.0)
         self.figure.canvas.draw()
         #self.figure.canvas.flush_events()
 
