@@ -1,5 +1,5 @@
 '''rst@PTB 240408 rst030@protonmail.com'''
-### SEND G90 before any path movement to make sure we are in absolute mode
+
 import numpy as np
 import os
 

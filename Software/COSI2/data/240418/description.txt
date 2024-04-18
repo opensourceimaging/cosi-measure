@@ -1,0 +1,12 @@
+field probed with Lakeshore Hall magnetometer in mT with 10 averages each axis
+white pla 3d printed holder v.2.0
+in printer.cfg 
+[gcode_macro hard_disable_drives]
+changed from 500 to 125 ms dead time G4 P125
+magnet position:
+pr X:33.000 Y:420.6 Z:154.500 mm 
+pl X:492.500 Y:424.100 Z:165.700 mm
+pt X:265.500 Y:424.800 Z:387.700
+MAGNET CENTER IN LAB: 265.28711853 166.33179886 163.23786815
+magnet turned with its front to the COSI2
+euler angles -90 -90 0

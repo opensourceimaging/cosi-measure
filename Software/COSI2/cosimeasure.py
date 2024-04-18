@@ -246,7 +246,8 @@ class cosimeasure(object):
                     file.write(dateTimeStr+'\n')
                     file.write('MAGNET CENTER IN LAB: x %.3f mm, y %.3f mm, z %.3f mm\n'%(magnet.origin[0],magnet.origin[1],magnet.origin[2]))
                     file.write('MAGNET AXES WRT LAB: alpha %.2f deg, beta %.2f deg, gamma %.2f deg\n'%(magnet.alpha,magnet.beta,magnet.gamma))                    
-                    
+                    self.command('G90') ### SEND G90 before any path movement to make sure we are in absolute mode
+
                     for pt in self.path.path: # follow the path
                         print(pt)
                         self.moveto(pt[0],pt[1],pt[2])
