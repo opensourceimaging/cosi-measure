@@ -17,6 +17,7 @@ class pth():
     def __init__(self,filename=''):
         self.filename = 'dummy'
         if filename != '':
+            self.filename = filename
             self.path = []
             self.x = []
             self.y = []

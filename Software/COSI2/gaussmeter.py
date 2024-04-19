@@ -30,6 +30,21 @@ class gaussmeter(object):
         print('serial connection for gaussmeter opened')
 
 
+    def fast(self,state):
+        if self.isfake:
+            return 'no gm'
+        if state:
+            self.ser.write('FAST 1'.encode())
+        else:
+            self.ser.write('FAST 0'.encode())
+        value = ''
+        sleep(0.1)
+        while self.ser.inWaiting() > 0:
+            prey = self.ser.read(1)
+            value += prey.decode()
+        return value
+
+
     def read_gaussmeter(self):
         if self.isfake:
             return 0,0,0,0

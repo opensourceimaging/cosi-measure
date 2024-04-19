@@ -33,7 +33,7 @@ class cosimeasure(object):
     magnetometer = None
     working_directory = r'./dummies/pathfiles/'
     bvalues = [] # list of strings
-    measurement_time_delay = 0.2
+    measurement_time_delay = 5 # s
     magnet = osi2magnet.osi2magnet
 
 
@@ -235,7 +235,8 @@ class cosimeasure(object):
         self.run_path_measure_field(self.magnet)
 
     def run_path_measure_field(self,magnet:osi2magnet.osi2magnet):
-        print('running along path')
+        print('running along path, no display on GM')
+        self.gaussmeter.fast(state=True)
         if self.b0_filename: # if filename was given
             with open(self.b0_filename, 'w') as file: # open that file
                 if len(self.path.path): # if path was given
@@ -245,21 +246,25 @@ class cosimeasure(object):
                     dateTimeStr = str(datetime.now())
                     file.write(dateTimeStr+'\n')
                     file.write('MAGNET CENTER IN LAB: x %.3f mm, y %.3f mm, z %.3f mm\n'%(magnet.origin[0],magnet.origin[1],magnet.origin[2]))
-                    file.write('MAGNET AXES WRT LAB: alpha %.2f deg, beta %.2f deg, gamma %.2f deg\n'%(magnet.alpha,magnet.beta,magnet.gamma))                    
+                    file.write('MAGNET AXES WRT LAB: alpha %.2f deg, beta %.2f deg, gamma %.2f deg\n'%(magnet.alpha,magnet.beta,magnet.gamma))   
+                    file.write('path: '+self.path.filename+'\n')   
+                                     
                     self.command('G90') ### SEND G90 before any path movement to make sure we are in absolute mode
-
+                    time.sleep(1)
+                    ptidx = 0
                     for pt in self.path.path: # follow the path
-                        print(pt)
                         self.moveto(pt[0],pt[1],pt[2])
                         pos = self.get_current_position()
-                        self.disable_motors()
+                        print(pt)
+                        #self.disable_motors()
                         time.sleep(self.measurement_time_delay)
                         bx,by,bz,babs = self.gaussmeter.read_gaussmeter()
-                        self.enable_motors()
-                        print('pt',pos,'mm reached, B0=[%.1f,%.1f,%.1f] G'%(bx,by,bz))
+                        #self.enable_motors()
+                        print('pt %d of %d'%(ptidx,len(self.path.path)),pos,'mm reached, B0=[%.1f,%.4f,%.1f] mT'%(bx,by,bz))
                         bval_str = '%f %f %f %f\n'%(bx,by,bz,babs)
                         self.bvalues.append(bval_str) # save bvalues to ram
-                        file.write(bval_str)    
+                        file.write(bval_str)
+                        ptidx +=1    
                     print('path scanning done. saving file')
                     #write shim orientations to file
 
@@ -267,7 +272,7 @@ class cosimeasure(object):
                     print('give path! No scan without path!')
         else:
             print('give B0 filename! No scan without filename!')
-    
+        self.gaussmeter.fast(state=False)
 
 
     def abort(self):

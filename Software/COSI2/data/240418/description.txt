@@ -1,8 +1,6 @@
 field probed with Lakeshore Hall magnetometer in mT with 10 averages each axis
 white pla 3d printed holder v.2.0
-in printer.cfg 
-[gcode_macro hard_disable_drives]
-changed from 500 to 125 ms dead time G4 P125
+motors always on
 magnet position:
 pr X:33.000 Y:420.6 Z:154.500 mm 
 pl X:492.500 Y:424.100 Z:165.700 mm

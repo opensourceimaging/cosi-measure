@@ -151,7 +151,7 @@ class Ui(QtWidgets.QMainWindow):
 
         print('connecting to COSI.')
 
-        self.cosimeasure = cosimeasure.cosimeasure(isfake=self.isfake,gaussmeter=self.gaussmeter,b0_filename=self.working_directory+'/data/240418/sphere_test_bvalues.txt',magnet=self.magnet) # testing mode
+        self.cosimeasure = cosimeasure.cosimeasure(isfake=self.isfake,gaussmeter=self.gaussmeter,magnet=self.magnet) # testing mode
 
         self.init_btn.setEnabled(True)
         self.run_btn.setEnabled(True)
@@ -234,7 +234,8 @@ class Ui(QtWidgets.QMainWindow):
         radpts = int(self.path_res_edit.text())
         
 
-        fnm = './data/240418/ball_path_100mm.path'
+        fnm = './data/240418/a00_ball_path_%.0fmm_coarse_5s_FAST.path'%rad
+        self.cosimeasure.b0_filename=self.working_directory+'/data/240418/a00_ball_R%.0fmm_bvalues_coarse_5s_FAST.txt'%rad
         sphere_path = pathgen.ball_path.ball_path(filename_input=fnm,center_point_input=(xc,yc,zc),radius_input=rad,radius_npoints_input=radpts)
         self.load_path(fnm)
 
