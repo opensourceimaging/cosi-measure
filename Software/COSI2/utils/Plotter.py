@@ -14,6 +14,7 @@ import chg
 import cv
 import tp
 import pth
+import b0
 
 import cosimeasure # for plotting path irl
 import osi2magnet
@@ -42,7 +43,7 @@ class PlotterCanvas(FigureCanvas):
         self.fig = Figure(figsize=(16, 16), dpi=100)
         fig = self.fig
 
-        if plotType == 'PTH':
+        if plotType == 'PTH' or plotType == 'B0M':
             self.axes = fig.add_subplot(111,projection='3d')
             self.axes.set_aspect("equal")
             fig.subplots_adjust(left=0.1,right=0.9,
@@ -90,6 +91,9 @@ class PlotterCanvas(FigureCanvas):
             self.preset_TP()
         if self.plotType == 'PTH':
             self.preset_PTH()
+        if self.plotType == 'B0M':
+            self.preset_B0M()
+        
 
         self.axes.set_xlabel(self.xlabel)
         self.axes.set_ylabel(self.ylabel)
@@ -136,6 +140,17 @@ class PlotterCanvas(FigureCanvas):
         pthDummy = pth.pth('./dummies/pathfiles/2021-10-14_PathfileTest_Spherical.path')
         self.plotPth(pthDummy)
         
+        
+    def preset_B0M(self):
+        self.clear()
+        self.xlabel = 'X MAGNET'
+        self.ylabel = 'Y MAGNET'
+        self.zlabel = 'Z MAGNET'
+        self.title = 'dummy B0 map'
+        b0Dummy = b0.b0(b0_filename='./dummies/b0_maps/a00_ball_R80mm_bvalues_coarse_5s_FAST.txt',path_filename='./dummies/pathfiles/2021-10-14_PathfileTest_Spherical.path')
+        self.plotB0M(b0map_object=b0Dummy)
+        
+        
     def plot_magnet(self,magnet:osi2magnet):
         print('plotting a magnet with radius ',magnet.bore_radius,' at',magnet.origin)
 
@@ -178,6 +193,15 @@ class PlotterCanvas(FigureCanvas):
         self.axes.plot(xheadpos,yheadpos,zheadpos,'gx',linewidth=5)
         self.axes.autoscale(True)
         self.update_plotter()
+
+
+
+
+    def plotB0M(self,b0map_object:b0.b0):
+        self.axes.cla()
+        self.axes.set_xlabel('plot the b0 object, you can do it man')
+        self.update_plotter()
+
 
 
     def plotPth(self,pathInput: pth.pth):
@@ -262,7 +286,7 @@ class PlotterCanvas(FigureCanvas):
 
 
     def update_plotter(self): # very useful and important method for live plotting.
-        if self.plotType == 'PTH':
+        if self.plotType == 'PTH' or self.plotType == 'B0M' :
             self.fig.subplots_adjust(left=0.0,right=1.0,
                             bottom=0.0,top=1.0,
                             hspace=0.0,wspace=0.0)

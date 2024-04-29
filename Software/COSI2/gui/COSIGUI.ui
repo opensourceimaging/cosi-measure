@@ -21,7 +21,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../../../../../PycharmProjects/EMRE/gui/icons/icon.png</normaloff>../../../../../PycharmProjects/EMRE/gui/icons/icon.png</iconset>
+    <normaloff>../../../../PycharmProjects/EMRE/gui/icons/icon.png</normaloff>../../../../PycharmProjects/EMRE/gui/icons/icon.png</iconset>
   </property>
   <property name="autoFillBackground">
    <bool>false</bool>
@@ -43,15 +43,19 @@
     <property name="spacing">
      <number>9</number>
     </property>
-    <item row="0" column="2">
-     <layout class="QVBoxLayout" name="verticalLayout_plotter">
+    <item row="0" column="3">
+     <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
-       <widget class="QWidget" name="plotterWidget" native="true">
-        <property name="minimumSize">
-         <size>
-          <width>480</width>
-          <height>0</height>
-         </size>
+       <widget class="QPushButton" name="field_viewer_btn">
+        <property name="text">
+         <string>Field Viewer</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string/>
         </property>
        </widget>
       </item>
@@ -559,18 +563,19 @@
       </item>
      </layout>
     </item>
-    <item row="0" column="3">
-     <spacer name="horizontalSpacer">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
+    <item row="0" column="2">
+     <layout class="QVBoxLayout" name="verticalLayout_plotter">
+      <item>
+       <widget class="QWidget" name="plotterWidget" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>480</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
