@@ -33,7 +33,7 @@ class cosimeasure(object):
     magnetometer = None
     working_directory = r'./dummies/pathfiles/'
     bvalues = [] # list of strings
-    measurement_time_delay = 5 # s
+    measurement_time_delay = 3 # s
     magnet = osi2magnet.osi2magnet
 
 
