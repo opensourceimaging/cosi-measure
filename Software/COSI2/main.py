@@ -46,12 +46,12 @@ import cosimeasure # the beast
 import gaussmeter # the accesoir
 import osi2magnet # the patient
 
-import Plotter  # an EMRE module for plotting
-import pathgen.ball_path
-import pathgen.sphere_path
+from utils import Plotter  # an EMRE module for plotting
+from pathgen import ball_path, sphere_path
 
 # utility windows:
 #import deviceManagerUtility
+from utils import field_viewer
 
 
 # logging for debug info and cmdline arg parsing
@@ -114,14 +114,20 @@ class Ui(QtWidgets.QMainWindow):
         self.abort_btn.clicked.connect(self.abort_experiment)
 
         self.cmd_send_cosi_btn.clicked.connect(self.send_cmd_to_cosi)
+        
+        '''utility buttons'''
+        self.field_viewer_btn.clicked.connect(self.open_field_viewer)
 
-        '''plotter'''
+
+        '''PATH plotter'''
         plotterWidgetFound = self.findChild(QtWidgets.QWidget, 'plotterWidget')
         self.pathPlotterWGT = Plotter.Plotter(parent=plotterWidgetFound, plotType='PTH')
         self.verticalLayout_plotter.addWidget(self.pathPlotterWGT)
         # self.verticalLayout_CV_plotter.addWidget(self.CHGplotter.toolbar)
         self.pathPlotter = self.pathPlotterWGT.PlotterCanvas
         self.pathPlotter.preset_PTH()  # just add some labels
+
+
 
         # todo: add head position tracking
 
@@ -264,6 +270,16 @@ class Ui(QtWidgets.QMainWindow):
             print('loading path %s with cosimeasure.',self.cosimeasure.pathfile_path)
             self.cosimeasure.load_path()
             self.pathPlotter.plot_head_on_path(cosimeasure=self.cosimeasure,magnet=self.magnet)
+
+
+
+
+    '''utuilities'''
+    def open_field_viewer(self):
+        print('opening a window with a B0 field viewer')
+        self.field_viewer_gui = field_viewer.field_viewer_gui()
+
+
 
 
 if __name__ == "__main__":
