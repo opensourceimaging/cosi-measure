@@ -242,9 +242,9 @@ class Ui(QtWidgets.QMainWindow):
         radpts = int(self.path_res_edit.text())
         
 
-        fnm = './data/240418/a00_ball_path_%.0fmm_coarse_5s_FAST.path'%rad
-        self.cosimeasure.b0_filename=self.working_directory+'/data/240418/a00_ball_R%.0fmm_bvalues_coarse_5s_FAST.txt'%rad
-        sphere_path = ball_path.ball_path(filename_input=fnm,center_point_input=(xc,yc,zc),radius_input=rad,radius_npoints_input=radpts)
+        fnm = './data/240429/a01_ball_path_%.0fmm.path'%rad
+        self.cosimeasure.b0_filename=self.working_directory+'/data/240429/a01_ball_R%.0fmm_bvalues_fine.txt'%rad
+        sphere_path = pathgen.ball_path.ball_path(filename_input=fnm,center_point_input=(xc,yc,zc),radius_input=rad,radius_npoints_input=radpts)
         self.load_path(fnm)
 
 
