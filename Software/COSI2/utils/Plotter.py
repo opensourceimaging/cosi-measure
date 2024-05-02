@@ -160,7 +160,6 @@ class PlotterCanvas(FigureCanvas):
         zvec = magnet.zvector
         
 
-
         self.axes.quiver(magnet_origin[0],magnet_origin[1],magnet_origin[2], xvec[0]-magnet_origin[0], xvec[1]-magnet_origin[1], xvec[2]-magnet_origin[2], color='r')
         self.axes.quiver(magnet_origin[0],magnet_origin[1],magnet_origin[2], yvec[0]-magnet_origin[0], yvec[1]-magnet_origin[1], yvec[2]-magnet_origin[2], color='g')
         self.axes.quiver(magnet_origin[0],magnet_origin[1],magnet_origin[2], zvec[0]-magnet_origin[0], zvec[1]-magnet_origin[1], zvec[2]-magnet_origin[2], color='b')
@@ -178,9 +177,7 @@ class PlotterCanvas(FigureCanvas):
 
         
         pathInput = cosimeasure.path
-        xpathvalues = pathInput.x
-        ypathvalues = pathInput.y
-        zpathvalues = pathInput.z
+        r = pathInput.r
         self.title = 'head at [%.2f %.2f %.2f] '%(xheadpos,yheadpos,zheadpos)
 
         self.axes.cla()
@@ -189,7 +186,7 @@ class PlotterCanvas(FigureCanvas):
         self.axes.set_zlabel(self.zlabel)        
         self.axes.set_title(self.title)
         self.plot_magnet(magnet)
-        self.axes.plot(xpathvalues,ypathvalues,zpathvalues,'ko--')
+        self.axes.plot(r[:,0],r[:,1],r[:,2],'ko--')
         self.axes.plot(xheadpos,yheadpos,zheadpos,'gx',linewidth=5)
         self.axes.autoscale(True)
         self.update_plotter()
@@ -197,24 +194,33 @@ class PlotterCanvas(FigureCanvas):
 
 
 
-    def plotB0M(self,b0map_object:b0.b0):
+    def plotB0M(self,b0map_object:b0.b0,coordinate_system=None):
         self.axes.cla()
-        self.axes.set_xlabel('plot the b0 object, you can do it man')
+        self.xlabel = 'X COSI /tmp'
+        self.ylabel = 'Y COSI /tmp'
+        self.zlabel = 'Z COSI /tmp'
+        if coordinate_system == 'magnet':
+            self.xlabel = 'X magnet'
+            self.ylabel = 'Y magnet'
+            self.zlabel = 'Z magnet'
+
+        self.axes.set_title(str(b0map_object.datetime))
+        pth = b0map_object.path
+        self.plotPth(pathInput=pth)
+        self.plot_magnet(b0map_object.magnet)
         self.update_plotter()
 
 
 
     def plotPth(self,pathInput: pth.pth):
-        xvalues = pathInput.x
-        yvalues = pathInput.y
-        zvalues = pathInput.z
-
+        r = pathInput.r
+        
         self.axes.cla()
         self.axes.set_xlabel(self.xlabel)
         self.axes.set_ylabel(self.ylabel)
         self.axes.set_zlabel(self.zlabel)        
         self.axes.set_title(self.title)
-        self.axes.plot(xvalues,yvalues,zvalues,'k+:')
+        self.axes.plot(r[:,0],r[:,1],r[:,2],'k+:')
         self.axes.autoscale(True)
         self.update_plotter()
 

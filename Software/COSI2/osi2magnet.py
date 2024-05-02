@@ -11,9 +11,7 @@ class osi2magnet():
     beta = 0 
     gamma = 0
 
-    xcenter = 0
-    ycenter = 0
-    zcenter = 0
+    origin = [0,0,0]
 
     vec_length = 32 # vectors are 32 mm long
     bore_radius = 150 # mm - adjust!
@@ -23,9 +21,13 @@ class osi2magnet():
     yvector = 0
     zvector = 0
 
-    def __init__(self):
+    def __init__(self,origin=None,euler_angles_zyx=None):
         # initially the magnet is aligned with the lab frame
         self.set_origin(0,0,0)
+        if origin:
+            self.set_origin(origin[0],origin[1],origin[2])
+        if euler_angles_zyx:
+            self.rotate_euler(alpha=euler_angles_zyx[0],beta=euler_angles_zyx[1],gamma=euler_angles_zyx[2])
 
 
     def set_origin(self,x,y,z):
@@ -33,6 +35,7 @@ class osi2magnet():
         self.xvector = self.origin+np.array([1,0,0])*self.bore_radius
         self.yvector = self.origin+np.array([0,1,0])*self.bore_radius
         self.zvector = self.origin+np.array([0,0,1])*self.bore_radius
+
         self.make_bores()
 
     def rotate_euler(self,alpha,beta,gamma):
@@ -40,12 +43,27 @@ class osi2magnet():
         self.xvector = rotatePoint_zyx(point = self.xvector,origin=self.origin,alpha=alpha,beta=beta,gamma=gamma)
         self.yvector = rotatePoint_zyx(point = self.yvector,origin=self.origin,alpha=alpha,beta=beta,gamma=gamma)
         self.zvector = rotatePoint_zyx(point = self.zvector,origin=self.origin,alpha=alpha,beta=beta,gamma=gamma)
-        
+
         self.alpha = alpha
         self.beta = beta
         self.gamma = gamma
 
         self.make_bores()
+
+    def rotate_euler_backwards(self,alpha,beta,gamma):
+        
+        self.xvector = rotatePoint_xyz(point = self.xvector,origin=self.origin,gamma=-gamma,beta=-beta,alpha=-alpha)
+        self.yvector = rotatePoint_xyz(point = self.yvector,origin=self.origin,gamma=-gamma,beta=-beta,alpha=-alpha)
+        self.zvector = rotatePoint_xyz(point = self.zvector,origin=self.origin,gamma=-gamma,beta=-beta,alpha=-alpha)
+
+        self.make_bores()
+
+        self.alpha = self.alpha - alpha
+        self.beta = self.beta - beta
+        self.gamma = self.gamma - gamma
+        print('warning! euler angles of the magnet changed!')
+        
+
 
 
 
@@ -80,3 +98,27 @@ def rotatePoint_zyx(point:np.array, origin:np.array, alpha, beta, gamma):
     turned_point = np.add(rotation_matrix@np.add(init_point,-origin_point),origin_point) 
 
     return turned_point
+
+
+def rotatePoint_xyz(point:np.array, origin:np.array, gamma, beta, alpha):
+    # all rotations are extrinsic rotations in the laboratory frame of reference   
+
+    # 1. rotate about x by gamma
+    # 2. rotate about y by beta
+    # 3. rotate about z by alpha
+
+    # https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.transform.Rotation.from_euler.html
+
+    init_point = np.array([point[0], point[1], point[2]])
+    origin_point = np.array([origin[0], origin[1], origin[2]])
+        
+    r = R.from_euler('xyz', [gamma, beta, alpha], degrees=True)
+        
+    rotation_matrix = r.as_matrix()
+    #print(rotation_matrix)
+
+    turned_point = np.add(rotation_matrix@np.add(init_point,-origin_point),origin_point) 
+
+    return turned_point
+ 
+

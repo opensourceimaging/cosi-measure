@@ -14,9 +14,9 @@ from PyQt5 import QtWidgets
 class field_viewer_gui(QtWidgets.QMainWindow):
     '''the field viewer window.'''
     
-    b0map = None  # instance of b0 scan, make an object.
+    b0map = b0.b0  # instance of b0 scan, make an object.
 
-    workingFolder = r"./dummies/"  # where the openfiledialog opens
+    workingFolder = r"./dummies/b0_maps"  # where the openfiledialog opens
 
     def __init__(self):
         super(field_viewer_gui, self).__init__()  # Call the inherited classes __init__ method
@@ -57,10 +57,26 @@ class field_viewer_gui(QtWidgets.QMainWindow):
             print('no filename given, do it again.')
             return 0
 
-        # import the cv curve as an object
-        self.b0map = b0.b0(b0_filename = self.b0Path)
+        # open file dialog
+        try:
+            self.pathPath, _ = QtWidgets.QFileDialog.getOpenFileName(self, caption="Select path data",
+                                                                   directory=self.workingFolder,
+                                                                   filter="All Files (*);;path Files (*.path)")
+            self.workingFolder = os.path.split(os.path.abspath(self.pathPath))[0]
+
+        except:
+            print('no filename given, do it again.')
+            return 0
+
+        # import the b0 as an object
+        self.b0map = b0.b0(b0_filename = self.b0Path,path_filename=self.pathPath)
+        self.coordinate_transform_btn.clicked.connect(self.change_coords_to_magnet)
         # and print it on the plotter.
-        self.plotter.plotB0(self.b0map)
+        self.plotter.plotB0M(self.b0map)
+
+    def change_coords_to_magnet(self):
+        self.b0map.transfer_coordinates_of_the_path_from_cosi_to_magnet()
+        self.plotter.plotB0M(self.b0map,coordinate_system='magnet')
 
 
 

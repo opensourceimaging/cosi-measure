@@ -2,6 +2,7 @@
 
 import numpy as np
 import os
+import osi2magnet
 
 class pth():
     '''path object. created for cosi.'''
@@ -11,18 +12,24 @@ class pth():
     x = [0,1,2]
     y = [0,1,2] 
     z = [0,1,2]
+    
+    r = np.zeros((10,3))
+    
+    pathCenter = None
 
     pathFile = 0 # a file where cv is stored
 
     def __init__(self,filename=''):
+        
         self.filename = 'dummy'
+        
         if filename != '':
             self.filename = filename
             self.path = []
             self.x = []
             self.y = []
             self.z = []
-
+              
             with open(filename) as file:
                 rawPathData = file.readlines()
                 self.path = np.zeros((len(rawPathData),3))
@@ -44,10 +51,57 @@ class pth():
                     self.x.append(x)
                     self.y.append(y)
                     self.z.append(z)
-                                       
-                    #print('imported pth pt:',headPosition)
 
             
+            self.r = np.zeros((len(self.x),3))
+            self.r[:,0] = self.x
+            self.r[:,1] = self.y
+            self.r[:,2] = self.z           
+            self.get_path_center()
+            
+            self.x = []
+            self.y = []
+            self.z = []
+                                       
+                    #print('imported pth pt:',headPosition)
+ 
+    def get_path_center(self):
+        x_c = np.nanmean(self.r[:,0])
+        y_c = np.nanmean(self.r[:,1])
+        z_c = np.nanmean(self.r[:,2])
+        self.pathCenter = np.array([x_c,y_c,z_c])
+                    
+                    
+    def center(self,origin=None):
+        # centering the path to the origin of the magnet if given, else center on the path center
+        if origin.any():
+            x_c = origin[0]
+            y_c = origin[1]
+            z_c = origin[2]
+        else:
+            self.get_path_center()
+            x_c = self.origin[0]
+            y_c = self.origin[1]
+            z_c = self.origin[2]
+            
+        self.r[:,0] = np.subtract(self.r[:,0],x_c)
+        self.r[:,1] = np.subtract(self.r[:,1],y_c)
+        self.r[:,2] = np.subtract(self.r[:,2],z_c)
+        self.get_path_center()
+        
+        self.pathCenter = np.array([x_c,y_c,z_c])    
+        print('path center set to: ',self.pathCenter)  
+
+
+    def rotate_euler_backwards(self,alpha,beta,gamma):
+        # uses the method defined in osi2magnet. todo: move to utils
+        #orgn = [self.pathCenter[0],self.pathCenter[1],self.pathCenter[2]]
+        
+        for i in range(len(self.r[:,0])):
+            print(self.r[i,:])
+            self.r[i,:] = osi2magnet.rotatePoint_xyz(point = self.r[i,:],origin=self.pathCenter,gamma=-gamma,beta=-beta,alpha=-alpha)
+            print('->',alpha,beta,gamma,'>>',self.r[i,:])
+
     def saveAs(self,filename: str):
         # open file filename and write comma separated values in it
         # experiment parameters

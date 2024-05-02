@@ -28,7 +28,7 @@ Replace 0483:df11 with your hardware's ID from step 4 And execute the following 
      make flash FLASH_DEVICE=0483:df11
      
 '''
-#TODO snake in path
+#TODO b0 object with b0 field and path in one array
 #TODO multithreading
 
 from PyQt5 import QtWidgets, uic
@@ -195,14 +195,16 @@ class Ui(QtWidgets.QMainWindow):
             y = float(magcoords[1])
             z = float(magcoords[2])  
             mageulers = self.euler_edit.text().split(',')
+            
             alpha = float(mageulers[0])
             beta = float(mageulers[1])
             gamma = float(mageulers[2])
             
-
+            # plot initial magnet position in lab frame
             self.magnet.set_origin(x,y,z)
-            self.cosimeasure.head_position = [x,y,z]
-            self.magnet.rotate_euler(alpha,beta,gamma)          
+            self.magnet.rotate_euler(alpha=alpha,beta=beta,gamma=gamma)
+        
+            self.cosimeasure.head_position = [x,y,z]       
             self.pathPlotter.plot_head_on_path(cosimeasure=self.cosimeasure,magnet=self.magnet)
 
 
@@ -228,7 +230,7 @@ class Ui(QtWidgets.QMainWindow):
         
 
         fnm = './data/240415/sphere_test_path.path'
-        sphere_path = pathgen.sphere_path.sphere_path(filename_input=fnm,center_point_input=(xc,yc,zc),phinumber_input=phipts,thetanumber_input=thetapts,radius_input=rad,maxradius_input=rad+5)
+        sphere_path = sphere_path.sphere_path(filename_input=fnm,center_point_input=(xc,yc,zc),phinumber_input=phipts,thetanumber_input=thetapts,radius_input=rad,maxradius_input=rad+5)
         self.load_path(fnm)
 
 
@@ -242,7 +244,7 @@ class Ui(QtWidgets.QMainWindow):
 
         fnm = './data/240418/a00_ball_path_%.0fmm_coarse_5s_FAST.path'%rad
         self.cosimeasure.b0_filename=self.working_directory+'/data/240418/a00_ball_R%.0fmm_bvalues_coarse_5s_FAST.txt'%rad
-        sphere_path = pathgen.ball_path.ball_path(filename_input=fnm,center_point_input=(xc,yc,zc),radius_input=rad,radius_npoints_input=radpts)
+        sphere_path = ball_path.ball_path(filename_input=fnm,center_point_input=(xc,yc,zc),radius_input=rad,radius_npoints_input=radpts)
         self.load_path(fnm)
 
 
@@ -267,7 +269,7 @@ class Ui(QtWidgets.QMainWindow):
                 print('no filename given, do it again.')
             return 0
         if self.cosimeasure.pathfile_path:
-            print('loading path %s with cosimeasure.',self.cosimeasure.pathfile_path)
+            print('loading path %s with cosimeasure.'%self.cosimeasure.pathfile_path)
             self.cosimeasure.load_path()
             self.pathPlotter.plot_head_on_path(cosimeasure=self.cosimeasure,magnet=self.magnet)
 
