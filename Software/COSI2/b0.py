@@ -41,23 +41,20 @@ class b0():
         
         
     def transfer_coordinates_of_the_path_from_cosi_to_magnet(self):
-        # center the path to the origin, as the origin of the path is the origin of the magnet
-        #self.path.center(origin=self.magnet.origin)
-        #self.magnet.set_origin(x=0,y=0,z=0)
-        #self.magnet.rotate_euler(alpha=self.magnet.alpha,beta=self.magnet.beta,gamma=self.magnet.gamma)
         
-        # rotate the coordinate system of the magnet so it coincides with the cosi axes, aka check
-        print('ROTATING THE PATH [not] NOW!')
-        self.path.rotate_euler_backwards(gamma=self.magnet.gamma,beta=self.magnet.beta,alpha=self.magnet.alpha) 
-        print('ROTATING THE MAGNET NOW!')
-        self.magnet.rotate_euler_backwards(gamma=self.magnet.gamma,beta=self.magnet.beta,alpha=self.magnet.alpha) # for the backwards euler rotation rotate by negative values in the reversed order: was zyx, now xyz
 
-        #self.magnet.set_origin(x=0,y=0,z=0)
-        # that is, alpha,beta,gamma -> -gamma,-beta,-alpha 
-    
-        # now rotate the coordinate system of the path
-        
-        
+        print('ROTATING THE PATH [not] NOW!')
+        # center the path to the origin, as the origin of the path is the origin of the magnet
+        print(self.magnet.origin)
+        print('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
+        #self.path.center(origin=self.magnet.origin)
+        # rotate path according to the euler angles of the magnet, but backwards
+        self.path.rotate_euler_backwards(gamma=self.magnet.gamma,beta=self.magnet.beta,alpha=self.magnet.alpha) 
+        self.path.center(origin=self.magnet.origin)
+        print('ROTATING THE MAGNET NOW!')
+        # rotate the magnet
+        self.magnet.rotate_euler_backwards(gamma=self.magnet.gamma,beta=self.magnet.beta,alpha=self.magnet.alpha) # for the backwards euler rotation rotate by negative values in the reversed order: was zyx, now xyz
+        self.magnet.set_origin(0,0,0)        
         
         
 

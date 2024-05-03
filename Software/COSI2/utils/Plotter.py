@@ -225,6 +225,8 @@ class PlotterCanvas(FigureCanvas):
         self.update_plotter()
 
 
+
+    # EMRE electrochemistry
     def plotCvData(self, voltages, currents):
         self.axes.cla()
         self.axes.set_xlabel(self.xlabel)
@@ -247,7 +249,21 @@ class PlotterCanvas(FigureCanvas):
         self.axes.autoscale(True)
         self.axes.grid()
         self.update_plotter()
+        
+    def plotCv(self,cvToPlot:cv):
+        voltages = cvToPlot.voltage
+        currents = cvToPlot.current
+        self.title = cvToPlot.filename
 
+        self.axes.cla()
+        self.axes.set_xlabel(self.xlabel)
+        self.axes.set_ylabel(self.ylabel)
+        self.axes.set_title(self.title)
+        self.axes.plot(voltages, currents, 'k-', linewidth=1)
+        self.axes.autoscale(True)
+        self.update_plotter()
+
+    # EMRE Microwave
     def plotTpData(self,tpToPlot:tp):
         times = tpToPlot.time
         frequencies = tpToPlot.frequency
@@ -273,19 +289,6 @@ class PlotterCanvas(FigureCanvas):
         # self.axes.plot(dipFreqtpToPlot.dipFreq, tpToPlot.dip, 'r-', linewidth=2) # dip without bg
         self.axes.plot(frequencies, tunepicFit, 'g--', linewidth=2)  # fit
 
-        self.axes.autoscale(True)
-        self.update_plotter()
-
-    def plotCv(self,cvToPlot:cv):
-        voltages = cvToPlot.voltage
-        currents = cvToPlot.current
-        self.title = cvToPlot.filename
-
-        self.axes.cla()
-        self.axes.set_xlabel(self.xlabel)
-        self.axes.set_ylabel(self.ylabel)
-        self.axes.set_title(self.title)
-        self.axes.plot(voltages, currents, 'k-', linewidth=1)
         self.axes.autoscale(True)
         self.update_plotter()
 

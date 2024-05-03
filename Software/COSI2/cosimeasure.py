@@ -205,8 +205,8 @@ class cosimeasure(object):
 
 
     def init_path(self):
-        if len(self.path.path):
-            pathpt = self.path.path[0]
+        if len(self.path.r):
+            pathpt = self.path.r[0]
             print('moving head to %s'%str(pathpt))
             
             x = pathpt[0]
@@ -219,8 +219,8 @@ class cosimeasure(object):
 
     def run_path_no_measure(self):
         print('running through pass witout measurement')
-        if len(self.path.path):
-            for pt in self.path.path:
+        if len(self.path.r):
+            for pt in self.path.r:
                 print(pt)
                 self.moveto(pt[0],pt[1],pt[2])
                 print('pt reached, magnetometer?')
@@ -239,7 +239,7 @@ class cosimeasure(object):
         self.gaussmeter.fast(state=True)
         if self.b0_filename: # if filename was given
             with open(self.b0_filename, 'w') as file: # open that file
-                if len(self.path.path): # if path was given
+                if len(self.path.r): # if path was given
                     file.write('COSI2 B0 scan\n')
                     from datetime import datetime
                     # Convert date and time to string
@@ -252,7 +252,7 @@ class cosimeasure(object):
                     self.command('G90') ### SEND G90 before any path movement to make sure we are in absolute mode
                     time.sleep(1)
                     ptidx = 0
-                    for pt in self.path.path: # follow the path
+                    for pt in self.path.r: # follow the path
                         self.moveto(pt[0],pt[1],pt[2])
                         pos = self.get_current_position()
                         print(pt)
@@ -260,7 +260,7 @@ class cosimeasure(object):
                         time.sleep(self.measurement_time_delay)
                         bx,by,bz,babs = self.gaussmeter.read_gaussmeter()
                         #self.enable_motors()
-                        print('pt %d of %d'%(ptidx,len(self.path.path)),pos,'mm reached, B0=[%.1f,%.4f,%.1f] mT'%(bx,by,bz))
+                        print('pt %d of %d'%(ptidx,len(self.path.r)),pos,'mm reached, B0=[%.1f,%.4f,%.1f] mT'%(bx,by,bz))
                         bval_str = '%f %f %f %f\n'%(bx,by,bz,babs)
                         self.bvalues.append(bval_str) # save bvalues to ram
                         file.write(bval_str)
@@ -291,9 +291,9 @@ class cosimeasure(object):
         self.calculatePathCenter()
 
     def calculatePathCenter(self):
-        x_c = np.nanmean(self.path.path[:,0])
-        y_c = np.nanmean(self.path.path[:,1])
-        z_c = np.nanmean(self.path.path[:,2])
+        x_c = np.nanmean(self.path.r[:,0])
+        y_c = np.nanmean(self.path.r[:,1])
+        z_c = np.nanmean(self.path.r[:,2])
         self.pathCenter = np.array([x_c,y_c,z_c])
         print('path center: ',self.pathCenter)
 

@@ -28,7 +28,7 @@ class field_viewer_gui(QtWidgets.QMainWindow):
         self.b0Path = None
 
         # binding methods to buttons:
-        self.save_button.clicked.connect(self.save_b0_slice)  # Remember to code the method in the class.
+        self.save_button.clicked.connect(self.save_rotated_path)  # Remember to code the method in the class.
         self.load_button.clicked.connect(self.load_b0)  # Remember to code the method in the class.
 
         # --- adding the plotter: ---
@@ -50,7 +50,7 @@ class field_viewer_gui(QtWidgets.QMainWindow):
         try:
             self.b0Path, _ = QtWidgets.QFileDialog.getOpenFileName(self, caption="Select B0 data",
                                                                    directory=self.workingFolder,
-                                                                   filter="All Files (*);;txt Files (*.txt)")
+                                                                   filter="txt Files (*.txt)")
             self.workingFolder = os.path.split(os.path.abspath(self.b0Path))[0]
 
         except:
@@ -61,7 +61,7 @@ class field_viewer_gui(QtWidgets.QMainWindow):
         try:
             self.pathPath, _ = QtWidgets.QFileDialog.getOpenFileName(self, caption="Select path data",
                                                                    directory=self.workingFolder,
-                                                                   filter="All Files (*);;path Files (*.path)")
+                                                                   filter="path Files (*.path)")
             self.workingFolder = os.path.split(os.path.abspath(self.pathPath))[0]
 
         except:
@@ -80,5 +80,16 @@ class field_viewer_gui(QtWidgets.QMainWindow):
 
 
 
-    def save_b0_slice(self):
+    def save_rotated_path(self):
         print('save as file dialog etc, think of the format, Be compatible with the future imports')
+        # open file dialog
+        try:
+            new_path_path, _ = QtWidgets.QFileDialog.getSaveFileName(self, caption="Select path data",
+                                                                   directory=self.workingFolder,
+                                                                   filter="path Files (*.path)")
+            self.workingFolder = os.path.split(os.path.abspath(self.pathPath))[0]
+
+        except:
+            print('no filename given, do it again.')
+            return 0
+        self.b0map.path.saveAs(new_path_path)

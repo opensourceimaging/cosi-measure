@@ -3,67 +3,43 @@
 import numpy as np
 import os
 import osi2magnet
+from datetime import datetime
 
 class pth():
     '''path object. created for cosi.'''
-
-    path=[]
-
-    x = [0,1,2]
-    y = [0,1,2] 
-    z = [0,1,2]
-    
     r = np.zeros((10,3))
-    
+    datetime = ''
     pathCenter = None
-
-    pathFile = 0 # a file where cv is stored
+    pathFile = 0 # a file where path data is stored
 
     def __init__(self,filename=''):
         
         self.filename = 'dummy'
+        self.datetime = str(datetime.now())
         
         if filename != '':
             self.filename = filename
-            self.path = []
-            self.x = []
-            self.y = []
-            self.z = []
+            self.r = []
               
             with open(filename) as file:
                 rawPathData = file.readlines()
-                self.path = np.zeros((len(rawPathData),3))
+                self.r = np.zeros((len(rawPathData),3))
                 for idx, point in enumerate(rawPathData):
                     splitPoint = point.rstrip("\n\r").split('z')
                     z = float(splitPoint[1])
-                    self.path[idx, 2] = z
+                    self.r[idx, 2] = z
 
                     splitPoint = splitPoint[0].split('y')
                     y = float(splitPoint[1])
-                    self.path[idx, 1] = y
+                    self.r[idx, 1] = y
 
                     splitPoint = splitPoint[0].split('x')
                     x = float(splitPoint[1])
-                    self.path[idx, 0] = x
+                    self.r[idx, 0] = x
 
-                    headPosition = np.array([x,y,z])
-
-                    self.x.append(x)
-                    self.y.append(y)
-                    self.z.append(z)
-
-            
-            self.r = np.zeros((len(self.x),3))
-            self.r[:,0] = self.x
-            self.r[:,1] = self.y
-            self.r[:,2] = self.z           
+         
             self.get_path_center()
-            
-            self.x = []
-            self.y = []
-            self.z = []
-                                       
-                    #print('imported pth pt:',headPosition)
+                        
  
     def get_path_center(self):
         x_c = np.nanmean(self.r[:,0])
@@ -75,21 +51,21 @@ class pth():
     def center(self,origin=None):
         # centering the path to the origin of the magnet if given, else center on the path center
         if origin.any():
+            self.get_path_center()
             x_c = origin[0]
             y_c = origin[1]
             z_c = origin[2]
         else:
             self.get_path_center()
-            x_c = self.origin[0]
-            y_c = self.origin[1]
-            z_c = self.origin[2]
+            x_c = self.pathCenter[0]
+            y_c = self.pathCenter[1]
+            z_c = self.pathCenter[2]
             
-        self.r[:,0] = np.subtract(self.r[:,0],x_c)
-        self.r[:,1] = np.subtract(self.r[:,1],y_c)
-        self.r[:,2] = np.subtract(self.r[:,2],z_c)
+        self.r[:,0] = self.r[:,0]-x_c
+        self.r[:,1] = self.r[:,1]-y_c
+        self.r[:,2] = self.r[:,2]-z_c
         self.get_path_center()
-        
-        self.pathCenter = np.array([x_c,y_c,z_c])    
+           
         print('path center set to: ',self.pathCenter)  
 
 
@@ -98,28 +74,23 @@ class pth():
         #orgn = [self.pathCenter[0],self.pathCenter[1],self.pathCenter[2]]
         
         for i in range(len(self.r[:,0])):
-            print(self.r[i,:])
             self.r[i,:] = osi2magnet.rotatePoint_xyz(point = self.r[i,:],origin=self.pathCenter,gamma=-gamma,beta=-beta,alpha=-alpha)
-            print('->',alpha,beta,gamma,'>>',self.r[i,:])
 
     def saveAs(self,filename: str):
         # open file filename and write comma separated values in it
         # experiment parameters
         # data
         with open(filename, 'w') as file:
-            file.write('COSI pathfile generator output.')
-            file.write('Date/Time,%s\n\n\n'%self.datetime)
-            for pathpt in self.path:
-                file.write('x%.2f,y%.2f,z%.2f\n'%(pathpt[0],pathpt[1],pathpt[2]))
+            #file.write('COSI pathfile generator output.')
+            #file.write('Date/Time,%s\n\n\n'%self.datetime)
+            for pathpt in self.r:
+                file.write('x%.2f y%.2f z%.2f\n'%(pathpt[0],pathpt[1],pathpt[2]))
         file.close()
 
 
 def generate_spherical_path():
-    empty_pth =  pth()
-    pth.x = []
-    pth.y = []
-    pth.z = []
-
+    pass
+    # todo: refer to utils or copy path gen methods here
 
 
 
