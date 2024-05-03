@@ -8,6 +8,8 @@ from datetime import datetime
 class pth():
     '''path object. created for cosi.'''
     r = np.zeros((10,3))
+    
+    
     datetime = ''
     pathCenter = None
     pathFile = 0 # a file where path data is stored

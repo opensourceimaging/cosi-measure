@@ -148,7 +148,7 @@ class PlotterCanvas(FigureCanvas):
         self.zlabel = 'Z MAGNET'
         self.title = 'dummy B0 map'
         b0Dummy = b0.b0(b0_filename='./dummies/b0_maps/a00_ball_R80mm_bvalues_coarse_5s_FAST.txt',path_filename='./dummies/pathfiles/2021-10-14_PathfileTest_Spherical.path')
-        self.plotB0M(b0map_object=b0Dummy)
+        self.plotPathWithMagnet(b0map_object=b0Dummy)
         
         
     def plot_magnet(self,magnet:osi2magnet):
@@ -194,7 +194,7 @@ class PlotterCanvas(FigureCanvas):
 
 
 
-    def plotB0M(self,b0map_object:b0.b0,coordinate_system=None):
+    def plotPathWithMagnet(self,b0map_object:b0.b0,coordinate_system=None):
         self.axes.cla()
         self.xlabel = 'X COSI /tmp'
         self.ylabel = 'Y COSI /tmp'
@@ -209,7 +209,28 @@ class PlotterCanvas(FigureCanvas):
         self.plotPth(pathInput=pth)
         self.plot_magnet(b0map_object.magnet)
         self.update_plotter()
+        
+    
+    def plotB0Map(self,b0map_object:b0.b0,coordinate_system=None):
+        self.axes.cla()
 
+        self.xlabel = 'X COSI /tmp'
+        self.ylabel = 'Y COSI /tmp'
+        self.zlabel = 'Z COSI /tmp'
+        if coordinate_system == 'magnet':
+            self.xlabel = 'X magnet'
+            self.ylabel = 'Y magnet'
+            self.zlabel = 'Z magnet'
+        
+        b0Data = b0map_object.b0Data
+        # TEMP!
+        Nx = len(b0Data[:,0,0])
+        Ny = len(b0Data[0,:,0])
+        Nz = len(b0Data[0,0,:])
+        
+        X,Y,Z = numpy.meshgrid(numpy.arange(Nx),numpy.arange(Ny),numpy.arange(Nz))
+        slice_nr = 1
+        self.axes.contourf(X[:,:,slice_nr],Y[:,:,slice_nr],numpy.transpose(b0Data[:,:,slice_nr]))   
 
 
     def plotPth(self,pathInput: pth.pth):

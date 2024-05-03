@@ -39,6 +39,10 @@ class field_viewer_gui(QtWidgets.QMainWindow):
         #self.verticalLayout_CV_plotter.addWidget(self.CVplotter.toolbar)
         self.plotter = self.plotterWGT.PlotterCanvas
         self.plotter.preset_B0M()  # just add some labels
+        
+        # connect tick box with plotter. on tick plot only one slice
+        self.XYcheckBox.stateChanged.connect(self.plot_B0M_slice)
+        
 
         # todo code and import b0, see shimming script
 
@@ -72,12 +76,22 @@ class field_viewer_gui(QtWidgets.QMainWindow):
         self.b0map = b0.b0(b0_filename = self.b0Path,path_filename=self.pathPath)
         self.coordinate_transform_btn.clicked.connect(self.change_coords_to_magnet)
         # and print it on the plotter.
-        self.plotter.plotB0M(self.b0map)
+        self.plotter.plotPathWithMagnet(self.b0map)
+
+
+    def plot_B0M_slice(self):
+        # get states of all three slicing check boxes:
+        if self.XYcheckBox.isChecked():
+            XY_slice_number = int(self.XYspinBox.value())
+            print('slice the B0M data by XY plane, get slice number %d'%XY_slice_number)
+
+
 
     def change_coords_to_magnet(self):
         self.b0map.transfer_coordinates_of_the_path_from_cosi_to_magnet()
-        self.plotter.plotB0M(self.b0map,coordinate_system='magnet')
-
+        self.plotter.plotPathWithMagnet(self.b0map,coordinate_system='magnet')
+        self.plotter.plotB0Map(self.b0map,coordinate_system='magnet')
+        
 
 
     def save_rotated_path(self):

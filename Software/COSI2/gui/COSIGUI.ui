@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>887</width>
-    <height>611</height>
+    <width>815</width>
+    <height>679</height>
    </rect>
   </property>
   <property name="cursor">
@@ -319,6 +319,43 @@
          </layout>
         </item>
         <item>
+         <widget class="QLabel" name="label_10">
+          <property name="text">
+           <string>cmd to COSI</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="cmd_to_cosi_edit"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="cmd_send_cosi_btn">
+          <property name="text">
+           <string>send</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="Line" name="line">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="load_path_file_btn">
           <property name="text">
            <string>Load Path</string>
@@ -329,13 +366,25 @@
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>
            <widget class="QLabel" name="label_3">
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="text">
-             <string>Ro,R</string>
+             <string>Xo,Yo,Zo,R</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QLineEdit" name="path_dim_edit">
+            <property name="maximumSize">
+             <size>
+              <width>200</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="text">
              <string>265.17,182.35,163.75,70</string>
             </property>
@@ -347,6 +396,12 @@
          <layout class="QHBoxLayout" name="horizontalLayout_8">
           <item>
            <widget class="QLabel" name="label_4">
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="text">
              <string># pt per R</string>
             </property>
@@ -354,6 +409,12 @@
           </item>
           <item>
            <widget class="QLineEdit" name="path_res_edit">
+            <property name="maximumSize">
+             <size>
+              <width>50</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="text">
              <string>10</string>
             </property>
@@ -363,6 +424,12 @@
         </item>
         <item>
          <widget class="QPushButton" name="path_gen_btn">
+          <property name="maximumSize">
+           <size>
+            <width>500</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="text">
            <string>Generate Path</string>
           </property>
@@ -382,25 +449,14 @@
          </spacer>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <item>
-           <widget class="QLabel" name="label_10">
-            <property name="text">
-             <string>cmd to COSI</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="cmd_to_cosi_edit"/>
-        </item>
-        <item>
-         <widget class="QPushButton" name="cmd_send_cosi_btn">
-          <property name="text">
-           <string>send</string>
+         <widget class="Line" name="line_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
          </widget>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_3"/>
         </item>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -415,6 +471,12 @@
            <layout class="QHBoxLayout" name="horizontalLayout_6">
             <item>
              <widget class="QLabel" name="label_2">
+              <property name="maximumSize">
+               <size>
+                <width>50</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>X,Y,Z</string>
               </property>
@@ -435,6 +497,12 @@
             </item>
             <item>
              <widget class="QLabel" name="label_5">
+              <property name="maximumSize">
+               <size>
+                <width>20</width>
+                <height>16777215</height>
+               </size>
+              </property>
               <property name="text">
                <string>mm</string>
               </property>
@@ -481,6 +549,13 @@
            </widget>
           </item>
          </layout>
+        </item>
+        <item>
+         <widget class="Line" name="line_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
         </item>
         <item>
          <spacer name="verticalSpacer">
@@ -584,7 +659,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>887</width>
+     <width>815</width>
      <height>22</height>
     </rect>
    </property>
