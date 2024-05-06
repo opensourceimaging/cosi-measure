@@ -122,44 +122,54 @@ class b0():
 
         # so there are unique_x x values between x_min and x_max
         # lets make a linspace
-        xPts = np.arange(start=x_min,stop=x_max,step=step_size_x) #linspace(start=x_min,stop=x_max,num=num_steps_x)
-        print("xPts: ", xPts)
-        yPts = np.arange(start=y_min,stop=y_max,step=step_size_y) #linspace(start=y_min,stop=y_max,num=num_steps_y)
-        print("yPts: ", yPts)
-        zPts = np.arange(start=z_min,stop=z_max,step=step_size_z) #linspace(start=z_min,stop=z_max,num=num_steps_z)
-        print("zPts: ", zPts)
+        self.xPts = np.arange(start=x_min,stop=x_max,step=step_size_x) #linspace(start=x_min,stop=x_max,num=num_steps_x)
+        print("xPts: ", self.xPts)
+        self.yPts = np.arange(start=y_min,stop=y_max,step=step_size_y) #linspace(start=y_min,stop=y_max,num=num_steps_y)
+        print("yPts: ", self.yPts)
+        self.zPts = np.arange(start=z_min,stop=z_max,step=step_size_z) #linspace(start=z_min,stop=z_max,num=num_steps_z)
+        print("zPts: ", self.zPts)
+        
                 
         # now we do a trick
         # we will go through the snake. 
         # for each (3-valued) point see snake we take the its 0th value and scan xPts searching which is the closest.
         # that is, less than epsilon
         
-        epsx = (xPts[1]-xPts[0])/3
-        epsy = (yPts[1]-yPts[0])/3
-        epsz = (zPts[1]-zPts[0])/3
+        epsx = (self.xPts[1]-self.xPts[0])/3
+        epsy = (self.yPts[1]-self.yPts[0])/3
+        epsz = (self.zPts[1]-self.zPts[0])/3
 
         # then we get the index of xPts
         # and same for z and y
         # the b0Data will be a 3D array
         # indexing is the same for path and b0_values_1D
         
-        b0Data = np.zeros((len(xPts),len(yPts),len(zPts)))
+        b0Data = np.zeros((len(self.xPts),len(self.yPts),len(self.zPts)))
         
         for idx in range(np.size(self.path.r,0)):
             x_value_along_path = self.path.r[idx,0]
             y_value_along_path = self.path.r[idx,1]
             z_value_along_path = self.path.r[idx,2]
             
-            xArg = min(np.where(abs(xPts - x_value_along_path) < epsx))
-            yArg = min(np.where(abs(yPts - y_value_along_path) < epsy))
-            zArg = min(np.where(abs(zPts - z_value_along_path) < epsz))
+            xArg = min(np.where(abs(self.xPts - x_value_along_path) < epsx))
+            yArg = min(np.where(abs(self.yPts - y_value_along_path) < epsy))
+            zArg = min(np.where(abs(self.zPts - z_value_along_path) < epsz))
         
-            print("pth r=[",self.path.r[idx,:],"] closest grid [",xPts[xArg],yPts[yArg],zPts[zArg],"]")
+            #print("pth r=[",self.path.r[idx,:],"] closest grid [",xPts[xArg],yPts[yArg],zPts[zArg],"]")
             b0Data[xArg,yArg,zArg] = self.fieldDataAlongPath[idx]
             
         b0Data[b0Data==0]=np.NaN    
+        # getting mean field
+        meanField = np.nanmean(b0Data[:,:,:])
+        print('Mean field <B0> = ',meanField, 'mT')
+        # homogeniety
+        maxField = np.nanmax(b0Data[:,:,:])
+        minField = np.nanmin(b0Data[:,:,:])
+        homogeneity = 1e6*(maxField-minField)/meanField
+        print('homogeniety: %i ppm'%homogeneity)
+
+
         self.b0Data = b0Data
-        
 
                 
     def parse_field_of_B0_file(self,field_lines):

@@ -8,7 +8,7 @@ mpl window is imbedded into the parent that has to be passed to the constructor.
     '''
 
 import matplotlib
-import numpy
+import numpy as np
 
 import chg
 import cv
@@ -46,6 +46,7 @@ class PlotterCanvas(FigureCanvas):
         if plotType == 'PTH' or plotType == 'B0M':
             self.axes = fig.add_subplot(111,projection='3d')
             self.axes.set_aspect("equal")
+            self.axes.set_proj_type('persp', focal_length=0.42)  # FOV = 157.4 deg
             fig.subplots_adjust(left=0.1,right=0.9,
                             bottom=0.1,top=0.9,
                             hspace=0.2,wspace=0.2)
@@ -148,6 +149,8 @@ class PlotterCanvas(FigureCanvas):
         self.zlabel = 'Z MAGNET'
         self.title = 'dummy B0 map'
         b0Dummy = b0.b0(b0_filename='./dummies/b0_maps/a00_ball_R80mm_bvalues_coarse_5s_FAST.txt',path_filename='./dummies/pathfiles/2021-10-14_PathfileTest_Spherical.path')
+        b0Dummy.magnet.set_origin(0,0,0)
+        b0Dummy.path.center(origin=b0Dummy.magnet.origin)
         self.plotPathWithMagnet(b0map_object=b0Dummy)
         
         
@@ -211,7 +214,8 @@ class PlotterCanvas(FigureCanvas):
         self.update_plotter()
         
     
-    def plotB0Map(self,b0map_object:b0.b0,coordinate_system=None):
+    def plotB0Map(self,b0map_object:b0.b0,slice_number,coordinate_system=None,slice_axis=None):
+        # plot only one slice of data. Slice at the middle of the scan
         self.axes.cla()
 
         self.xlabel = 'X COSI /tmp'
@@ -222,16 +226,53 @@ class PlotterCanvas(FigureCanvas):
             self.ylabel = 'Y magnet'
             self.zlabel = 'Z magnet'
         
-        b0Data = b0map_object.b0Data
-        # TEMP!
-        Nx = len(b0Data[:,0,0])
-        Ny = len(b0Data[0,:,0])
-        Nz = len(b0Data[0,0,:])
         
-        X,Y,Z = numpy.meshgrid(numpy.arange(Nx),numpy.arange(Ny),numpy.arange(Nz))
-        slice_nr = 1
-        self.axes.contourf(X[:,:,slice_nr],Y[:,:,slice_nr],numpy.transpose(b0Data[:,:,slice_nr]))   
+        b0Data = b0map_object.b0Data
+        
+        # plot the coordinate mesh for beginning
+        
 
+        if slice_axis=='Z':
+
+            x, y = np.meshgrid(b0map_object.xPts, b0map_object.yPts)
+        
+            z = np.transpose(np.ones((len(b0map_object.xPts), len(b0map_object.yPts)))*b0map_object.zPts[slice_number])
+        
+            vals = np.transpose(b0map_object.b0Data[:,:,slice_number])
+        
+            
+            self.axes.plot_surface(x,y,z+vals,alpha=0.5,cmap='coolwarm',edgecolor='black')
+            self.axes.set_zlim(min(b0map_object.zPts), max(b0map_object.zPts))
+            self.update_plotter()
+
+        if slice_axis=='Y':
+
+            z, x = np.meshgrid(b0map_object.zPts, b0map_object.xPts)
+        
+            y = np.transpose(np.ones((len(b0map_object.xPts), len(b0map_object.zPts)))*b0map_object.yPts[slice_number])
+        
+            vals = np.transpose(b0map_object.b0Data[:,slice_number,:])
+        
+            
+            self.axes.plot_surface(x,y+vals,z,alpha=0.5,cmap='coolwarm',edgecolor='black')
+            self.axes.set_ylim(min(b0map_object.yPts), max(b0map_object.yPts))
+            self.update_plotter()
+            
+        
+        if slice_axis=='X':
+
+            y,z = np.meshgrid(b0map_object.yPts, b0map_object.zPts)
+        
+            x = np.transpose(np.ones((len(b0map_object.yPts), len(b0map_object.zPts)))*b0map_object.xPts[slice_number])
+        
+            vals = np.transpose(b0map_object.b0Data[slice_number,:,:])
+        
+            
+            self.axes.plot_surface(x+vals,y,z,alpha=0.5,cmap='coolwarm',edgecolor='black')
+            self.axes.set_xlim(min(b0map_object.xPts), max(b0map_object.xPts))
+            self.update_plotter()
+        
+        
 
     def plotPth(self,pathInput: pth.pth):
         r = pathInput.r
@@ -320,6 +361,11 @@ class PlotterCanvas(FigureCanvas):
             self.fig.subplots_adjust(left=0.0,right=1.0,
                             bottom=0.0,top=1.0,
                             hspace=0.0,wspace=0.0)
+            
+        self.axes.set_xlabel(self.xlabel)
+        self.axes.set_ylabel(self.ylabel)
+        self.axes.set_zlabel(self.zlabel) 
+        self.axes.set_title(self.title)
         self.figure.canvas.draw()
         #self.figure.canvas.flush_events()
 

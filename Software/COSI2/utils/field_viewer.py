@@ -9,6 +9,7 @@ from utils import Plotter  # an EMRE module for plotting
 import b0  # class of b0, makes an object of a b0. Can import from file. Attributes: see shimming_david repo
 
 from PyQt5 import QtWidgets
+import numpy as np
 
 
 class field_viewer_gui(QtWidgets.QMainWindow):
@@ -41,7 +42,9 @@ class field_viewer_gui(QtWidgets.QMainWindow):
         self.plotter.preset_B0M()  # just add some labels
         
         # connect tick box with plotter. on tick plot only one slice
-        self.XYcheckBox.stateChanged.connect(self.plot_B0M_slice)
+        self.XYcheckBox.stateChanged.connect(self.plot_B0M_slice_Z)
+        self.ZXcheckBox.stateChanged.connect(self.plot_B0M_slice_Y)
+        self.YZcheckBox.stateChanged.connect(self.plot_B0M_slice_X)
         
 
         # todo code and import b0, see shimming script
@@ -77,20 +80,60 @@ class field_viewer_gui(QtWidgets.QMainWindow):
         self.coordinate_transform_btn.clicked.connect(self.change_coords_to_magnet)
         # and print it on the plotter.
         self.plotter.plotPathWithMagnet(self.b0map)
+        
 
 
-    def plot_B0M_slice(self):
-        # get states of all three slicing check boxes:
+    def plot_B0M_slice_Z(self):
+        # get states of Z slicing check boxes:
         if self.XYcheckBox.isChecked():
             XY_slice_number = int(self.XYspinBox.value())
-            print('slice the B0M data by XY plane, get slice number %d'%XY_slice_number)
+            #print('slice the B0M data by XY plane, get slice number %d'%XY_slice_number)
+            self.plotter.plotB0Map(b0map_object=self.b0map, slice_number=XY_slice_number, coordinate_system='magnet',slice_axis='Z')
+
+    def plot_B0M_slice_Y(self):
+        # get states of Z slicing check boxes:
+        if self.ZXcheckBox.isChecked():
+            ZX_slice_number = int(self.ZXspinBox.value())
+            #print('slice the B0M data by XY plane, get slice number %d'%XY_slice_number)
+            self.plotter.plotB0Map(b0map_object=self.b0map, slice_number=ZX_slice_number, coordinate_system='magnet',slice_axis='Y')
+
+    def plot_B0M_slice_X(self):
+        # get states of Z slicing check boxes:
+        if self.YZcheckBox.isChecked():
+            YZ_slice_number = int(self.YZspinBox.value())
+            #print('slice the B0M data by XY plane, get slice number %d'%XY_slice_number)
+            self.plotter.plotB0Map(b0map_object=self.b0map, slice_number=YZ_slice_number, coordinate_system='magnet',slice_axis='X')
+
 
 
 
     def change_coords_to_magnet(self):
         self.b0map.transfer_coordinates_of_the_path_from_cosi_to_magnet()
         self.plotter.plotPathWithMagnet(self.b0map,coordinate_system='magnet')
-        self.plotter.plotB0Map(self.b0map,coordinate_system='magnet')
+        
+        
+        # foolproof checkboxes        
+        print(len(self.b0map.zPts))
+        
+        self.XYspinBox.setMaximum(len(self.b0map.zPts)-1)     
+        self.XYspinBox.setValue(round((len(self.b0map.zPts)-1)/2))        
+        self.XYspinBox.valueChanged.connect(self.plot_B0M_slice_Z)
+        
+        print(len(self.b0map.yPts))
+        
+        self.ZXspinBox.setMaximum(len(self.b0map.yPts)-1)     
+        self.ZXspinBox.setValue(round((len(self.b0map.yPts)-1)/2))        
+        self.ZXspinBox.valueChanged.connect(self.plot_B0M_slice_Y)
+
+        print(len(self.b0map.yPts))
+        
+        self.YZspinBox.setMaximum(len(self.b0map.xPts)-1)     
+        self.YZspinBox.setValue(round((len(self.b0map.xPts)-1)/2))        
+        self.YZspinBox.valueChanged.connect(self.plot_B0M_slice_X)
+
+        
+        
+        #self.plotter.plotB0Map(self.b0map,slice_number=0,coordinate_system='magnet')
         
 
 

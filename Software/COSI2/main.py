@@ -206,8 +206,8 @@ class Ui(QtWidgets.QMainWindow):
         
             self.cosimeasure.head_position = [x,y,z]       
             self.pathPlotter.plot_head_on_path(cosimeasure=self.cosimeasure,magnet=self.magnet)
-
-
+            
+            
     def open_dev_man(self):
         '''open device manager window'''
         print('List known devices. See if connected.')
