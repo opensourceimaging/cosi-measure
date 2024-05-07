@@ -13,6 +13,7 @@ class pth():
     datetime = ''
     pathCenter = None
     pathFile = 0 # a file where path data is stored
+    radius = 0
 
     def __init__(self,filename=''):
         
@@ -41,7 +42,15 @@ class pth():
 
          
             self.get_path_center()
+            self.get_path_radius()
                         
+ 
+    def get_path_radius(self):
+        self.radius = (np.nanmax(
+            (abs(self.r[:,0]-self.pathCenter[0]))**2+
+            (abs(self.r[:,1]-self.pathCenter[1]))**2+
+            (abs(self.r[:,2]-self.pathCenter[2]))**2))**(1/2)
+ 
  
     def get_path_center(self):
         x_c = np.nanmean(self.r[:,0])
@@ -52,8 +61,7 @@ class pth():
                     
     def center(self,origin=None):
         # centering the path to the origin of the magnet if given, else center on the path center
-        if origin.any():
-            self.get_path_center()
+        if origin is not None:
             x_c = origin[0]
             y_c = origin[1]
             z_c = origin[2]

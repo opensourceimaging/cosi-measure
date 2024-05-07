@@ -29,7 +29,7 @@ class field_viewer_gui(QtWidgets.QMainWindow):
         self.b0Path = None
 
         # binding methods to buttons:
-        self.save_button.clicked.connect(self.save_rotated_path)  # Remember to code the method in the class.
+        self.save_button.clicked.connect(self.save_rotated_path_in_a_csv_file)  # Remember to code the method in the class.
         self.load_button.clicked.connect(self.load_b0)  # Remember to code the method in the class.
 
         # --- adding the plotter: ---
@@ -42,9 +42,10 @@ class field_viewer_gui(QtWidgets.QMainWindow):
         self.plotter.preset_B0M()  # just add some labels
         
         # connect tick box with plotter. on tick plot only one slice
-        self.XYcheckBox.stateChanged.connect(self.plot_B0M_slice_Z)
-        self.ZXcheckBox.stateChanged.connect(self.plot_B0M_slice_Y)
-        self.YZcheckBox.stateChanged.connect(self.plot_B0M_slice_X)
+        self.XYcheckBox.stateChanged.connect(self.plot_B0M_slice)
+        self.ZXcheckBox.stateChanged.connect(self.plot_B0M_slice)
+        self.YZcheckBox.stateChanged.connect(self.plot_B0M_slice)
+        self.ShowSphereCheckBox.stateChanged.connect(self.plot_B0M_slice)
         
 
         # todo code and import b0, see shimming script
@@ -82,28 +83,23 @@ class field_viewer_gui(QtWidgets.QMainWindow):
         self.plotter.plotPathWithMagnet(self.b0map)
         
 
-
-    def plot_B0M_slice_Z(self):
-        # get states of Z slicing check boxes:
-        if self.XYcheckBox.isChecked():
-            XY_slice_number = int(self.XYspinBox.value())
-            #print('slice the B0M data by XY plane, get slice number %d'%XY_slice_number)
-            self.plotter.plotB0Map(b0map_object=self.b0map, slice_number=XY_slice_number, coordinate_system='magnet',slice_axis='Z')
-
-    def plot_B0M_slice_Y(self):
-        # get states of Z slicing check boxes:
-        if self.ZXcheckBox.isChecked():
-            ZX_slice_number = int(self.ZXspinBox.value())
-            #print('slice the B0M data by XY plane, get slice number %d'%XY_slice_number)
-            self.plotter.plotB0Map(b0map_object=self.b0map, slice_number=ZX_slice_number, coordinate_system='magnet',slice_axis='Y')
-
-    def plot_B0M_slice_X(self):
-        # get states of Z slicing check boxes:
-        if self.YZcheckBox.isChecked():
-            YZ_slice_number = int(self.YZspinBox.value())
-            #print('slice the B0M data by XY plane, get slice number %d'%XY_slice_number)
-            self.plotter.plotB0Map(b0map_object=self.b0map, slice_number=YZ_slice_number, coordinate_system='magnet',slice_axis='X')
-
+    def plot_B0M_slice(self):
+        # get the ticks
+        plot_XY_sliceFlag = self.XYcheckBox.isChecked()
+        plot_ZX_sliceFlag = self.ZXcheckBox.isChecked()
+        plot_YZ_sliceFlag = self.YZcheckBox.isChecked()
+        plot_sphere_flag = self.ShowSphereCheckBox.isChecked()
+        
+        XY_slice_number = int(self.XYspinBox.value()) if plot_XY_sliceFlag else -1
+        ZX_slice_number = int(self.ZXspinBox.value()) if plot_ZX_sliceFlag else -1
+        YZ_slice_number = int(self.YZspinBox.value()) if plot_YZ_sliceFlag else -1
+        showSphRad = self.b0map.path.radius if plot_sphere_flag else None
+        
+        # plot the slices according to the checked boxes
+        self.plotter.plotB0Map(b0map_object=self.b0map, 
+                               slice_number_xy=XY_slice_number,slice_number_zx=ZX_slice_number,slice_number_yz=YZ_slice_number, 
+                               show_sphere_radius=showSphRad, coordinate_system='magnet')
+        
 
 
 
@@ -117,19 +113,19 @@ class field_viewer_gui(QtWidgets.QMainWindow):
         
         self.XYspinBox.setMaximum(len(self.b0map.zPts)-1)     
         self.XYspinBox.setValue(round((len(self.b0map.zPts)-1)/2))        
-        self.XYspinBox.valueChanged.connect(self.plot_B0M_slice_Z)
+        self.XYspinBox.valueChanged.connect(self.plot_B0M_slice)
         
         print(len(self.b0map.yPts))
         
         self.ZXspinBox.setMaximum(len(self.b0map.yPts)-1)     
         self.ZXspinBox.setValue(round((len(self.b0map.yPts)-1)/2))        
-        self.ZXspinBox.valueChanged.connect(self.plot_B0M_slice_Y)
+        self.ZXspinBox.valueChanged.connect(self.plot_B0M_slice)
 
         print(len(self.b0map.yPts))
         
         self.YZspinBox.setMaximum(len(self.b0map.xPts)-1)     
         self.YZspinBox.setValue(round((len(self.b0map.xPts)-1)/2))        
-        self.YZspinBox.valueChanged.connect(self.plot_B0M_slice_X)
+        self.YZspinBox.valueChanged.connect(self.plot_B0M_slice)
 
         
         
@@ -137,16 +133,18 @@ class field_viewer_gui(QtWidgets.QMainWindow):
         
 
 
-    def save_rotated_path(self):
+    def save_rotated_path_in_a_csv_file(self):
         print('save as file dialog etc, think of the format, Be compatible with the future imports')
         # open file dialog
         try:
-            new_path_path, _ = QtWidgets.QFileDialog.getSaveFileName(self, caption="Select path data",
+            new_csv_path, _ = QtWidgets.QFileDialog.getSaveFileName(self, caption="file name for csv export",
                                                                    directory=self.workingFolder,
-                                                                   filter="path Files (*.path)")
+                                                                   filter="comma separated Files (*.csv)")
             self.workingFolder = os.path.split(os.path.abspath(self.pathPath))[0]
 
         except:
             print('no filename given, do it again.')
             return 0
-        self.b0map.path.saveAs(new_path_path)
+        
+        self.b0map.saveAsCsv_for_comsol(new_csv_path)
+        #self.b0map.path.saveAs(new_csv_path)

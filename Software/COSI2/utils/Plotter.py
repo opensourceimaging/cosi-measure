@@ -22,6 +22,8 @@ import osi2magnet
 
 matplotlib.use("Qt5Agg")
 import matplotlib.pyplot as plt
+from matplotlib.colors import Normalize
+from matplotlib.cm import ScalarMappable
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
@@ -47,6 +49,10 @@ class PlotterCanvas(FigureCanvas):
             self.axes = fig.add_subplot(111,projection='3d')
             self.axes.set_aspect("equal")
             self.axes.set_proj_type('persp', focal_length=0.42)  # FOV = 157.4 deg
+            self.axes.xaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+            self.axes.yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+            self.axes.zaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+
             fig.subplots_adjust(left=0.1,right=0.9,
                             bottom=0.1,top=0.9,
                             hspace=0.2,wspace=0.2)
@@ -214,10 +220,10 @@ class PlotterCanvas(FigureCanvas):
         self.update_plotter()
         
     
-    def plotB0Map(self,b0map_object:b0.b0,slice_number,coordinate_system=None,slice_axis=None):
+    def plotB0Map(self,b0map_object:b0.b0,slice_number_xy=-1,slice_number_zx=-1,slice_number_yz=-1, show_sphere_radius = None, coordinate_system=None):
         # plot only one slice of data. Slice at the middle of the scan
         self.axes.cla()
-
+        
         self.xlabel = 'X COSI /tmp'
         self.ylabel = 'Y COSI /tmp'
         self.zlabel = 'Z COSI /tmp'
@@ -226,51 +232,86 @@ class PlotterCanvas(FigureCanvas):
             self.ylabel = 'Y magnet'
             self.zlabel = 'Z magnet'
         
-        
-        b0Data = b0map_object.b0Data
+        if show_sphere_radius is not None:
+            u = np.linspace(0, 2 * np.pi, 100)
+            v = np.linspace(0, np.pi, 100)
+            x = show_sphere_radius * np.outer(np.cos(u), np.sin(v))
+            y = show_sphere_radius * np.outer(np.sin(u), np.sin(v))
+            z = show_sphere_radius * np.outer(np.ones(np.size(u)), np.cos(v))
+            self.axes.plot_wireframe(x, y, z,alpha=0.1)
+
         
         # plot the coordinate mesh for beginning
         
+        minval_of_b0 = np.nanmin(b0map_object.b0Data[:,:,:,1])
+        maxval_of_b0 = np.nanmax(b0map_object.b0Data[:,:,:,1])
+        
+        print(minval_of_b0,maxval_of_b0,' = minvals')
+        nlevels = 128
 
-        if slice_axis=='Z':
+        if slice_number_xy >= 0:
+            # if slice number xy given, plot Z slice
 
             x, y = np.meshgrid(b0map_object.xPts, b0map_object.yPts)
+            z = b0map_object.zPts[slice_number_xy]#np.transpose(np.ones((len(b0map_object.xPts), len(b0map_object.yPts)))*b0map_object.zPts[slice_number_xy])
         
-            z = np.transpose(np.ones((len(b0map_object.xPts), len(b0map_object.yPts)))*b0map_object.zPts[slice_number])
-        
-            vals = np.transpose(b0map_object.b0Data[:,:,slice_number])
-        
-            
-            self.axes.plot_surface(x,y,z+vals,alpha=0.5,cmap='coolwarm',edgecolor='black')
-            self.axes.set_zlim(min(b0map_object.zPts), max(b0map_object.zPts))
-            self.update_plotter()
-
-        if slice_axis=='Y':
-
-            z, x = np.meshgrid(b0map_object.zPts, b0map_object.xPts)
-        
-            y = np.transpose(np.ones((len(b0map_object.xPts), len(b0map_object.zPts)))*b0map_object.yPts[slice_number])
-        
-            vals = np.transpose(b0map_object.b0Data[:,slice_number,:])
+            vals = np.transpose(b0map_object.b0Data[:,:,slice_number_xy,1])
         
             
-            self.axes.plot_surface(x,y+vals,z,alpha=0.5,cmap='coolwarm',edgecolor='black')
-            self.axes.set_ylim(min(b0map_object.yPts), max(b0map_object.yPts))
-            self.update_plotter()
+            self.axes.contourf(x,y,vals, offset = z, zdir = 'z', alpha=0.5,cmap='coolwarm',edgecolor='black',vmin = minval_of_b0, vmax = maxval_of_b0,levels=nlevels)
+ 
+            #self.axes.set_zlim(min(b0map_object.zPts), max(b0map_object.zPts))
+
+
+        if slice_number_zx >= 0:
+            # if slice number zx given, plot Y slice
+
+            z,x = np.meshgrid(b0map_object.xPts, b0map_object.zPts)      
+            y = b0map_object.yPts[slice_number_zx]#np.transpose(np.ones((len(b0map_object.xPts), len(b0map_object.zPts)))*b0map_object.yPts[slice_number_zx])
+        
+            vals = b0map_object.b0Data[:,slice_number_zx,:,1]
             
         
-        if slice_axis=='X':
-
+            
+            self.axes.contourf(x,vals,z,zdir = 'y', offset = y, alpha=0.5,cmap='coolwarm',edgecolor='black',vmin = minval_of_b0, vmax = maxval_of_b0,levels=nlevels)
+            #self.axes.set_ylim(min(b0map_object.yPts), max(b0map_object.yPts))
+            
+        
+        if slice_number_yz >= 0:
+            # if slice number yz given, plot X slice
+            
             y,z = np.meshgrid(b0map_object.yPts, b0map_object.zPts)
         
-            x = np.transpose(np.ones((len(b0map_object.yPts), len(b0map_object.zPts)))*b0map_object.xPts[slice_number])
+            x = b0map_object.xPts[slice_number_yz]#np.transpose(np.ones((len(b0map_object.yPts), len(b0map_object.zPts)))*b0map_object.xPts[slice_number_yz])
         
-            vals = np.transpose(b0map_object.b0Data[slice_number,:,:])
+            vals = np.transpose(b0map_object.b0Data[slice_number_yz,:,:,1])
         
+            #self.axes.plot_surface(x+vals,y,z,alpha=0.5,cmap='viridis',edgecolor='black',vmin = minval_of_b0+x, vmax = maxval_of_b0+x)
+            self.axes.contourf(vals,y,z,zdir = 'x', offset = x, alpha=0.5,cmap='coolwarm',edgecolor='black',vmin = minval_of_b0, vmax = maxval_of_b0,levels=nlevels)
             
-            self.axes.plot_surface(x+vals,y,z,alpha=0.5,cmap='coolwarm',edgecolor='black')
-            self.axes.set_xlim(min(b0map_object.xPts), max(b0map_object.xPts))
-            self.update_plotter()
+        #self.figure.show()
+        #self.figure.canvas.draw()
+        
+        
+        self.axes.set_xlim(min(b0map_object.xPts), max(b0map_object.xPts))
+        self.axes.set_ylim(min(b0map_object.yPts), max(b0map_object.yPts))
+        self.axes.set_zlim(min(b0map_object.zPts), max(b0map_object.zPts))
+        
+        # todo scale colormaps to one value
+        
+        
+        # if len(self.axes) > 1:
+        #     cax = self.axes[-1]    
+        #  # remove the previous colorbar, if present
+        # if cax is not None:
+        #     cax.clear()
+
+        #     norm = Normalize(vmin = minval_of_b0, vmax = maxval_of_b0)
+        
+        #     mappable = ScalarMappable(cmap='viridis', norm=norm)
+        #     self.fig.colorbar(mappable, orientation="vertical", label="B0 [mT]", cax=cax)
+                
+        self.update_plotter()
         
         
 

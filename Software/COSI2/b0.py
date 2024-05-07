@@ -64,7 +64,7 @@ class b0():
         print('len(path.r)=',len(self.path.r))
         print('len(b0Data)=',len(self.fieldDataAlongPath))
 
-        if len(self.path.r) == len(self.fieldDataAlongPath):
+        if len(self.path.r) == len(self.fieldDataAlongPath[:,0]):
             self.reorder_field_to_cubic_grid() # make a cubic grid with xPts, yPts, zPts and define B0 on that
     
         
@@ -144,7 +144,8 @@ class b0():
         # the b0Data will be a 3D array
         # indexing is the same for path and b0_values_1D
         
-        b0Data = np.zeros((len(self.xPts),len(self.yPts),len(self.zPts)))
+        b0Data = np.zeros((len(self.xPts),len(self.yPts),len(self.zPts),3))
+        
         
         for idx in range(np.size(self.path.r,0)):
             x_value_along_path = self.path.r[idx,0]
@@ -156,15 +157,15 @@ class b0():
             zArg = min(np.where(abs(self.zPts - z_value_along_path) < epsz))
         
             #print("pth r=[",self.path.r[idx,:],"] closest grid [",xPts[xArg],yPts[yArg],zPts[zArg],"]")
-            b0Data[xArg,yArg,zArg] = self.fieldDataAlongPath[idx]
+            b0Data[xArg,yArg,zArg,:] = abs(self.fieldDataAlongPath[idx,:])
             
         b0Data[b0Data==0]=np.NaN    
         # getting mean field
-        meanField = np.nanmean(b0Data[:,:,:])
+        meanField = np.nanmean(b0Data[:,:,:,1])
         print('Mean field <B0> = ',meanField, 'mT')
         # homogeniety
-        maxField = np.nanmax(b0Data[:,:,:])
-        minField = np.nanmin(b0Data[:,:,:])
+        maxField = np.nanmax(b0Data[:,:,:,1])
+        minField = np.nanmin(b0Data[:,:,:,1])
         homogeneity = 1e6*(maxField-minField)/meanField
         print('homogeniety: %i ppm'%homogeneity)
 
@@ -174,11 +175,15 @@ class b0():
                 
     def parse_field_of_B0_file(self,field_lines):
         #-2.842000 48.057000 -2.319000 48.197000
-        self.fieldDataAlongPath = np.zeros((len(field_lines)))
+        self.fieldDataAlongPath = np.zeros((len(field_lines),3))
         for idx, line in enumerate(field_lines):
-            self.fieldDataAlongPath[idx] = float(line.split(' ')[1])
+            self.fieldDataAlongPath[idx,:] = [float(line.split(' ')[0]),float(line.split(' ')[1]),float(line.split(' ')[2])]
         
-        
+        if self.fieldDataAlongPath[0,1] == 0:
+            self.fieldDataAlongPath[0,0] = np.nanmean(self.fieldDataAlongPath[1:,0])
+            self.fieldDataAlongPath[0,1] = np.nanmean(self.fieldDataAlongPath[1:,1])
+            self.fieldDataAlongPath[0,2] = np.nanmean(self.fieldDataAlongPath[1:,2])
+            
     def parse_header_of_B0_file(self,header_lines):
         self.datetime = header_lines[1]
         # ['COSI2 B0 scan\n', 
@@ -201,6 +206,16 @@ class b0():
 
 
     
+
+    def saveAsCsv_for_comsol(self, filename: str):
+        # for comsol
+        with open(filename, 'w') as file:
+            file.write('X[m],Y[m],Z[m],Bx[T],By[T|,Bz[T]\n')
+            for i in range(len(self.path.r[:,0])):
+                ri = self.path.r[i,:]            
+                file.write('%.6f,%.6f,%.6f,%.6f,%.6f,%.6f\n'%(ri[0]/1e3,ri[1]/1e3,ri[2]/1e3,self.fieldDataAlongPath[i,0]/1e3,self.fieldDataAlongPath[i,1]/1e3,self.fieldDataAlongPath[i,2]/1e3))
+        
+
 
 
             
