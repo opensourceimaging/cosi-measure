@@ -213,7 +213,8 @@ class b0():
             file.write('X[m],Y[m],Z[m],Bx[T],By[T|,Bz[T]\n')
             for i in range(len(self.path.r[:,0])):
                 ri = self.path.r[i,:]            
-                file.write('%.6f,%.6f,%.6f,%.6f,%.6f,%.6f\n'%(ri[0]/1e3,ri[1]/1e3,ri[2]/1e3,self.fieldDataAlongPath[i,0]/1e3,self.fieldDataAlongPath[i,1]/1e3,self.fieldDataAlongPath[i,2]/1e3))
+                # orthodox> file.write('%.6f,%.6f,%.6f,%.6f,%.6f,%.6f\n'%(ri[0]/1e3,ri[1]/1e3,ri[2]/1e3,self.fieldDataAlongPath[i,0]/1e3,self.fieldDataAlongPath[i,1]/1e3,self.fieldDataAlongPath[i,2]/1e3))
+                file.write('%.6f,%.6f,%.6f,%.6f,%.6f,%.6f\n'%(ri[0]/1e3,ri[1]/1e3,ri[2]/1e3,0,0,max(abs(self.fieldDataAlongPath[i,0]/1e3),abs(self.fieldDataAlongPath[i,1]/1e3),abs(self.fieldDataAlongPath[i,2]/1e3))))
         
 
 
