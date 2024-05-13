@@ -21,7 +21,7 @@ import osi2magnet
 
 
 matplotlib.use("Qt5Agg")
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
 from matplotlib.colors import Normalize
 from matplotlib.cm import ScalarMappable
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -39,6 +39,7 @@ class PlotterCanvas(FigureCanvas):
     parent = None # parent widget, [have to] pass it on construction for live updates
     plotType = 'GEN' # available: 'GEN,CV,CHG,EPR,TP'
     fig = Figure
+    colorbar_object = None
 
     def __init__(self, plotType:str):
         self.plotType = plotType # assign and dont worry anymore!
@@ -46,16 +47,20 @@ class PlotterCanvas(FigureCanvas):
         fig = self.fig
 
         if plotType == 'PTH' or plotType == 'B0M':
-            self.axes = fig.add_subplot(111,projection='3d')
+            self.axes = fig.add_subplot(1,1,1,projection='3d')
             self.axes.set_aspect("equal")
+            self.colorbar_object = None
             self.axes.set_proj_type('persp', focal_length=0.42)  # FOV = 157.4 deg
             self.axes.xaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
             self.axes.yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
             self.axes.zaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
+            
+            self.fig.subplots_adjust(left=0.0,right=1.0,
+                            bottom=0.0,top=1.0,
+                            hspace=0.0,wspace=0.0)
+            
 
-            fig.subplots_adjust(left=0.1,right=0.9,
-                            bottom=0.1,top=0.9,
-                            hspace=0.2,wspace=0.2)
+            
         else:
             self.axes = fig.add_subplot(111)
 #        fig.subplots_adjust(left = 0.18, right=0.99, top=0.94, bottom=0.1)
@@ -147,6 +152,12 @@ class PlotterCanvas(FigureCanvas):
         pthDummy = pth.pth('./dummies/pathfiles/2021-10-14_PathfileTest_Spherical.path')
         self.plotPth(pthDummy)
         
+    def preset_B0slice(self):
+        self.clear()
+        self.xlabel = 'careful MAGNET'
+        self.ylabel = 'careful MAGNET'
+        self.title = 'plane ?? slice ?'       
+        
         
     def preset_B0M(self):
         self.clear()
@@ -197,7 +208,7 @@ class PlotterCanvas(FigureCanvas):
         self.plot_magnet(magnet)
         self.axes.plot(r[:,0],r[:,1],r[:,2],'ko--')
         self.axes.plot(xheadpos,yheadpos,zheadpos,'gx',linewidth=5)
-        self.axes.autoscale(True)
+        #self.axes.autoscale(True)
         self.update_plotter()
 
 
@@ -219,10 +230,62 @@ class PlotterCanvas(FigureCanvas):
         self.plot_magnet(b0map_object.magnet)
         self.update_plotter()
         
+    def plotB0slice(self,b0map_object:b0.b0,slice_number_xy=-1,slice_number_zx=-1,slice_number_yz=-1):
+        self.axes.cla()
+        slice_color_map='coolwarm'
+        minval_of_b0 = np.nanmin(b0map_object.b0Data[:,:,:,1])
+        maxval_of_b0 = np.nanmax(b0map_object.b0Data[:,:,:,1])
+        
+        if slice_number_xy >= 0:
+            #x, y = np.meshgrid(b0map_object.xPts, b0map_object.yPts)
+            z = b0map_object.zPts[slice_number_xy]#np.transpose(np.ones((len(b0map_object.xPts), len(b0map_object.yPts)))*b0map_object.zPts[slice_number_xy])
+        
+            #vals = np.transpose(b0map_object.b0Data[:,:,slice_number_xy,1])
+            imgdata = b0map_object.b0Data[:,:,slice_number_xy,1]#self.axes.imshow(x,y,vals,cmap=slice_color_map)
+            img = self.axes.imshow(imgdata,cmap=slice_color_map,vmin = minval_of_b0, vmax= maxval_of_b0,
+                                   origin = 'lower', 
+                                   extent=[min(b0map_object.xPts),max(b0map_object.xPts),min(b0map_object.yPts),max(b0map_object.yPts)])
+            
+            self.title = 'XY slice #%d z=%.2f mm'%(slice_number_xy,z)
+            self.xlabel = 'X [mm]'
+            self.ylabel = 'Y [mm]'
+            self.update_plotter()
+            
+        if slice_number_zx >= 0:
+            #x, y = np.meshgrid(b0map_object.xPts, b0map_object.yPts)
+            y = b0map_object.yPts[slice_number_zx]#np.transpose(np.ones((len(b0map_object.xPts), len(b0map_object.yPts)))*b0map_object.zPts[slice_number_xy])
+        
+            #vals = np.transpose(b0map_object.b0Data[:,:,slice_number_xy,1])
+            imgdata = b0map_object.b0Data[:,slice_number_zx,:,1]#self.axes.imshow(x,y,vals,cmap=slice_color_map)
+            img = self.axes.imshow(imgdata,cmap=slice_color_map,vmin = minval_of_b0, vmax= maxval_of_b0,
+                                   origin = 'lower',
+                                   extent=[min(b0map_object.xPts),max(b0map_object.xPts),min(b0map_object.zPts),max(b0map_object.zPts)])
+            
+            self.title = 'ZX slice #%d y=%.2f mm'%(slice_number_zx,y)
+            self.xlabel = 'X [mm]'
+            self.ylabel = 'Z [mm]'
+            self.update_plotter()
+            
+        if slice_number_yz >= 0:
+            x = b0map_object.yPts[slice_number_yz]#np.transpose(np.ones((len(b0map_object.xPts), len(b0map_object.yPts)))*b0map_object.zPts[slice_number_xy])
+        
+            #vals = np.transpose(b0map_object.b0Data[:,:,slice_number_xy,1])
+            imgdata = b0map_object.b0Data[slice_number_yz,:,:,1]
+            img = self.axes.imshow(imgdata,cmap=slice_color_map,vmin = minval_of_b0, vmax= maxval_of_b0,
+                                   origin = 'lower',
+                                   extent=[min(b0map_object.yPts),max(b0map_object.yPts),min(b0map_object.zPts),max(b0map_object.zPts)])
+            
+            self.title = 'YZ slice #%d x=%.2f mm'%(slice_number_yz,x)
+            self.xlabel = 'Y [mm]'
+            self.ylabel = 'Z [mm]'
+            self.update_plotter()
     
-    def plotB0Map(self,b0map_object:b0.b0,slice_number_xy=-1,slice_number_zx=-1,slice_number_yz=-1, show_sphere_radius = None, coordinate_system=None):
+    def plotB0Map(self,b0map_object:b0.b0,slice_number_xy=-1,slice_number_zx=-1,slice_number_yz=-1, show_sphere_radius = None, show_magnet = None, coordinate_system=None):
         # plot only one slice of data. Slice at the middle of the scan
         self.axes.cla()
+       
+        
+        self.title = b0map_object.filename
         
         self.xlabel = 'X COSI /tmp'
         self.ylabel = 'Y COSI /tmp'
@@ -231,34 +294,57 @@ class PlotterCanvas(FigureCanvas):
             self.xlabel = 'X magnet'
             self.ylabel = 'Y magnet'
             self.zlabel = 'Z magnet'
+            #self.axes.view_init(elev=None, azim=None, roll=90, vertical_axis='y', share=False)
         
         if show_sphere_radius is not None:
-            u = np.linspace(0, 2 * np.pi, 100)
-            v = np.linspace(0, np.pi, 100)
+            u = np.linspace(0, 2 * np.pi, 64)
+            v = np.linspace(0, np.pi, 64)
             x = show_sphere_radius * np.outer(np.cos(u), np.sin(v))
             y = show_sphere_radius * np.outer(np.sin(u), np.sin(v))
             z = show_sphere_radius * np.outer(np.ones(np.size(u)), np.cos(v))
-            self.axes.plot_wireframe(x, y, z,alpha=0.1)
+            self.axes.plot_wireframe(x, y, z,alpha=0.1,color='black')
+            
+        if show_magnet is not None:
+            # plot a bloody cylinder 
+            def data_for_cylinder_along_z(radius,height):
+                x = np.linspace(-height/2, height/2, 50)
+                theta = np.linspace(0, 2*np.pi, 50)
+                theta_grid, x_grid=np.meshgrid(theta, x)
+                z_grid = radius*np.cos(theta_grid)
+                y_grid = radius*np.sin(theta_grid)
+                return x_grid,y_grid,z_grid
+
+            bore_depth = b0map_object.magnet.bore_depth
+            bore_radius = b0map_object.magnet.bore_radius
+            
+            Xc,Yc,Zc = data_for_cylinder_along_z(radius=bore_radius,
+                                                 height=bore_depth)
+
+            self.axes.plot_wireframe(Xc, Yc, Zc, alpha=0.1,color='blue')
+            self.axes.text(-bore_depth/2, 0, 0, "FRONT", color='black',zdir='z' )
+            self.axes.text(bore_depth/2, 0, 0, "BACK", color='black',zdir='z')
+            
 
         
-        # plot the coordinate mesh for beginning
-        
+        # plot the contour plots with a color map
         minval_of_b0 = np.nanmin(b0map_object.b0Data[:,:,:,1])
         maxval_of_b0 = np.nanmax(b0map_object.b0Data[:,:,:,1])
+
+        slice_color_map='coolwarm'
         
-        print(minval_of_b0,maxval_of_b0,' = minvals')
-        nlevels = 128
+        nlevels = 64
+        ctrf = None
 
         if slice_number_xy >= 0:
             # if slice number xy given, plot Z slice
 
-            x, y = np.meshgrid(b0map_object.xPts, b0map_object.yPts)
+            x,y = np.meshgrid(b0map_object.xPts, b0map_object.yPts)
             z = b0map_object.zPts[slice_number_xy]#np.transpose(np.ones((len(b0map_object.xPts), len(b0map_object.yPts)))*b0map_object.zPts[slice_number_xy])
         
-            vals = np.transpose(b0map_object.b0Data[:,:,slice_number_xy,1])
+            vals =np.transpose(b0map_object.b0Data[:,:,slice_number_xy,1])#np.transpose(b0map_object.b0Data[:,:,slice_number_xy,1])
         
             
-            self.axes.contourf(x,y,vals, offset = z, zdir = 'z', alpha=0.5,cmap='coolwarm',edgecolor='black',vmin = minval_of_b0, vmax = maxval_of_b0,levels=nlevels)
+            ctrf = self.axes.contourf(x,y,vals, offset = z, zdir = 'z', alpha=0.5,cmap=slice_color_map,edgecolor='black',vmin = minval_of_b0, vmax = maxval_of_b0,levels=nlevels)
  
             #self.axes.set_zlim(min(b0map_object.zPts), max(b0map_object.zPts))
 
@@ -266,14 +352,14 @@ class PlotterCanvas(FigureCanvas):
         if slice_number_zx >= 0:
             # if slice number zx given, plot Y slice
 
-            z,x = np.meshgrid(b0map_object.xPts, b0map_object.zPts)      
+            x,z = np.meshgrid(b0map_object.xPts, b0map_object.zPts)      
             y = b0map_object.yPts[slice_number_zx]#np.transpose(np.ones((len(b0map_object.xPts), len(b0map_object.zPts)))*b0map_object.yPts[slice_number_zx])
         
-            vals = b0map_object.b0Data[:,slice_number_zx,:,1]
+            vals = np.transpose(b0map_object.b0Data[:,slice_number_zx,:,1])
             
         
             
-            self.axes.contourf(x,vals,z,zdir = 'y', offset = y, alpha=0.5,cmap='coolwarm',edgecolor='black',vmin = minval_of_b0, vmax = maxval_of_b0,levels=nlevels)
+            ctrf = self.axes.contourf(x,vals,z,zdir = 'y', offset = y, alpha=0.5,cmap=slice_color_map,edgecolor='black',vmin = minval_of_b0, vmax = maxval_of_b0,levels=nlevels)
             #self.axes.set_ylim(min(b0map_object.yPts), max(b0map_object.yPts))
             
         
@@ -287,7 +373,10 @@ class PlotterCanvas(FigureCanvas):
             vals = np.transpose(b0map_object.b0Data[slice_number_yz,:,:,1])
         
             #self.axes.plot_surface(x+vals,y,z,alpha=0.5,cmap='viridis',edgecolor='black',vmin = minval_of_b0+x, vmax = maxval_of_b0+x)
-            self.axes.contourf(vals,y,z,zdir = 'x', offset = x, alpha=0.5,cmap='coolwarm',edgecolor='black',vmin = minval_of_b0, vmax = maxval_of_b0,levels=nlevels)
+            ctrf = self.axes.contourf(vals,y,z,zdir = 'x', offset = x, alpha=0.5,cmap=slice_color_map,edgecolor='black',vmin = minval_of_b0, vmax = maxval_of_b0,levels=nlevels)
+    
+            
+            
             
         #self.figure.show()
         #self.figure.canvas.draw()
@@ -297,6 +386,21 @@ class PlotterCanvas(FigureCanvas):
         self.axes.set_ylim(min(b0map_object.yPts), max(b0map_object.yPts))
         self.axes.set_zlim(min(b0map_object.zPts), max(b0map_object.zPts))
         
+        
+        
+        norm = matplotlib.colors.Normalize(vmin=minval_of_b0, vmax=maxval_of_b0)
+        
+        if self.colorbar_object is None:
+            self.colorbar_object = plt.colorbar(matplotlib.cm.ScalarMappable(norm = norm,cmap = slice_color_map) ,ax=self.axes, orientation='vertical',label = '[mT]')
+            ctrf.set_clim(minval_of_b0,maxval_of_b0)
+            self.fig.tight_layout()
+        else:
+            self.fig.tight_layout()
+            #self.colorbar_object.ax.set_xlabel('[mT]')
+            
+        
+        
+                
         # todo scale colormaps to one value
         
         
@@ -310,7 +414,7 @@ class PlotterCanvas(FigureCanvas):
         
         #     mappable = ScalarMappable(cmap='viridis', norm=norm)
         #     self.fig.colorbar(mappable, orientation="vertical", label="B0 [mT]", cax=cax)
-                
+        self.axes.autoscale(False)
         self.update_plotter()
         
         
@@ -398,14 +502,12 @@ class PlotterCanvas(FigureCanvas):
 
 
     def update_plotter(self): # very useful and important method for live plotting.
-        if self.plotType == 'PTH' or self.plotType == 'B0M' :
-            self.fig.subplots_adjust(left=0.0,right=1.0,
-                            bottom=0.0,top=1.0,
-                            hspace=0.0,wspace=0.0)
+
             
         self.axes.set_xlabel(self.xlabel)
         self.axes.set_ylabel(self.ylabel)
-        self.axes.set_zlabel(self.zlabel) 
+        if self.plotType == 'PTH' or self.plotType == 'B0M':
+            self.axes.set_zlabel(self.zlabel) 
         self.axes.set_title(self.title)
         self.figure.canvas.draw()
         #self.figure.canvas.flush_events()

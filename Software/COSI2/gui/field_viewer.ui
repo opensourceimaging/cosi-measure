@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>745</width>
+    <width>1335</width>
     <height>633</height>
    </rect>
   </property>
@@ -123,13 +123,27 @@
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="ShowSphereCheckBox_2">
+           <widget class="QCheckBox" name="ShowMagnetCheckBox">
             <property name="text">
              <string>show magnet</string>
             </property>
            </widget>
           </item>
          </layout>
+        </item>
+        <item>
+         <widget class="Line" name="line">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="show_2d_slice_btn">
+          <property name="text">
+           <string>show 2d slice</string>
+          </property>
+         </widget>
         </item>
         <item>
          <spacer name="verticalSpacer">
@@ -199,6 +213,13 @@
       </item>
      </layout>
     </item>
+    <item row="0" column="1">
+     <layout class="QVBoxLayout" name="verticalLayout_2d_plotter">
+      <item>
+       <widget class="QWidget" name="plotter_widget_2d" native="true"/>
+      </item>
+     </layout>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -206,7 +227,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>745</width>
+     <width>1335</width>
      <height>22</height>
     </rect>
    </property>

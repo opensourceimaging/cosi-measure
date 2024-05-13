@@ -12,6 +12,7 @@ class b0():
     magnet = None
     datetime = 'timeless'
     fieldDataAlongPath = None
+    filename = 'Dummy B0 map'
     
     b0Data = None # tasty, berry, what we need. 3D array. ordered. sliceable. fittable. and so on. 
     
@@ -54,11 +55,12 @@ class b0():
         # rotate path according to the euler angles of the magnet, but backwards
         self.path.rotate_euler_backwards(gamma=self.magnet.gamma,beta=self.magnet.beta,alpha=self.magnet.alpha) 
         # center the path to the origin, as the origin of the path is the origin of the magnet
-        self.path.center(origin=self.magnet.origin)
+        temp_origin_offset = [-50,-100,-200]
+        self.path.center(origin=self.magnet.origin+temp_origin_offset)
         print('ROTATING THE MAGNET NOW!')
         # rotate the magnet
         self.magnet.rotate_euler_backwards(gamma=self.magnet.gamma,beta=self.magnet.beta,alpha=self.magnet.alpha) # for the backwards euler rotation rotate by negative values in the reversed order: was zyx, now xyz
-        self.magnet.set_origin(0,0,0)    
+        self.magnet.set_origin(temp_origin_offset[0],temp_origin_offset[1],temp_origin_offset[2])    
         
          # now that we have the path and the b0 lets compare number of points in both.
         print('len(path.r)=',len(self.path.r))
@@ -158,6 +160,7 @@ class b0():
         
             #print("pth r=[",self.path.r[idx,:],"] closest grid [",xPts[xArg],yPts[yArg],zPts[zArg],"]")
             b0Data[xArg,yArg,zArg,:] = abs(self.fieldDataAlongPath[idx,:])
+            
             
         b0Data[b0Data==0]=np.NaN    
         # getting mean field
