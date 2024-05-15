@@ -14,35 +14,43 @@ class b0():
     fieldDataAlongPath = None
     filename = 'Dummy B0 map'
     
-    b0Data = None # tasty, berry, what we need. 3D array. ordered. sliceable. fittable. and so on. 
+    b0Data = None # tasty, berry, what we need. 3D array. ordered. sliceable. fittable.
     
 
-    def __init__(self,path_filename='', b0_filename='', magnet_object = ''):
+    def __init__(self,path_filename='', path:pth.pth = None, b0_filename='', magnet_object = ''):
         
         if path_filename!='':
             self.path = pth.pth(filename=path_filename)
-            print('b0 object created on path %s'%self.path.filename)
+            print('b0 object created with path %s'%self.path.filename)
             
-        if b0_filename != '':
-            self.filename = b0_filename
-   
+        if path is not None:
+            self.path = path
+               
         if magnet_object!='':
             self.magnet = magnet_object
 
-        with open(b0_filename) as file:
-            raw_B0_data = file.readlines()     
-            
-        header_lines = raw_B0_data[0:5]    
-        self.parse_header_of_B0_file(header_lines)  
-        field_lines = raw_B0_data[5:]
-        self.parse_field_of_B0_file(field_lines)   
+        # if filename was given on init, read the b0 from that file.
+        if b0_filename != '':
+            self.filename = b0_filename
+
+            with open(b0_filename) as file:
+                raw_B0_data = file.readlines()     
+                
+            header_lines = raw_B0_data[0:5]    
+            self.parse_header_of_B0_file(header_lines)  
+            field_lines = raw_B0_data[5:]
+            self.parse_field_of_B0_file(field_lines)   
+            # self.transfer_coordinates_of_the_path_from_cosi_to_magnet()  
+            print('read b0 data')
+            print(header_lines)
         
-        
-        # self.transfer_coordinates_of_the_path_from_cosi_to_magnet()  
-        
-        print('read b0 data')
-        print(header_lines)
-        
+        else:
+            # if no filename was given
+            # create an instance of a b0 object, populate some fields. be ready to fill in b0 values
+            if self.path is None:
+                print('failed to initialize an instance of b0. No path object given on construction.')
+                return
+            self.fieldDataAlongPath = np.zeros((len(self.path.r),4)) # bx,by,bz,babs
         
         
         

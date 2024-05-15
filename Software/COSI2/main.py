@@ -28,10 +28,12 @@ Replace 0483:df11 with your hardware's ID from step 4 And execute the following 
      make flash FLASH_DEVICE=0483:df11
      
 '''
-#TODO b0 object with b0 field and path in one array
 #TODO multithreading
+#TODO fix flipping coordinates in 2d slice plotter at imshow/contourf. deal with np.transpose on meshgrid.
 
 from PyQt5 import QtWidgets, uic
+from PyQt5.QtCore import * # needed for multithreading
+
 import sys # for finding the script path and importing scripts
 #import communication
 
@@ -52,6 +54,7 @@ from pathgen import ball_path, sphere_path
 # utility windows:
 #import deviceManagerUtility
 from utils import field_viewer
+import b0
 
 
 # logging for debug info and cmdline arg parsing
@@ -66,6 +69,82 @@ parser.add_argument('-q','--quiet', dest='quiet',help='run without gui')
 my_args = parser.parse_args()
 DEBUG=my_args.debug
 QUIET=my_args.quiet # todo suppress gui and messages when called with -q
+
+
+# multithreading - doing it like in EMRE
+# one process measures, other process plots
+
+# these two processes are required for multithreading
+
+
+class data_generating_thread(QThread): # oт это у нас кусрэд, но наш, русскaй, родной, ТТТ.
+    def __init__(self, _cosimeasure:cosimeasure.cosimeasure):  # and here is its constructor
+        super(data_generating_thread, self).__init__() # from a parent to be born
+        self.quit_flag = False # and no flag was given to ever quit anything
+        self.cosimeasure = _cosimeasure
+        
+    def run(self): # it waits, like a cat in a bush, when you call it. Run! - you shout.
+
+        print('cosimeasure''s data generating QThread running')
+
+        self.cosimeasure.run_measurement()
+
+        self.quit()
+        #self.wait()
+        
+        
+class data_visualisation_thread(QThread): # this is the data vis thread. Reads data from q and plots to Plotter
+    def __init__(self,_plotter:Plotter.PlotterCanvas, _cosimeasure:cosimeasure.cosimeasure):
+        super(data_visualisation_thread, self).__init__()
+        self.cosimeasure = _cosimeasure
+        self.plotter = _plotter
+    def run(self):
+        self.q = self.cosimeasure.q
+        slp = float(0.5*self.cosimeasure.measurement_time_delay) # sleep between points how long, in seconds
+        sleep(2*slp)
+        
+        while 1:
+            empty = self.q.empty()
+            print('B0m plotter: queue empty?', empty)
+            if not empty:
+                break
+            
+        if self.cosimeasure.isfake:
+            sleep(3*slp)
+        print('B0m plotter: queue empty?', self.q.empty())
+        
+        while True:
+            print('>>>>>>>>>>>>> VIS THREAD >>>>>>>>>>>>')
+            if not self.q.empty():
+                while not self.q.empty():
+                    self.cosimeasure.b0 = self.q.get()
+                self.plotter.plot_head_on_path(cosimeasure=self.cosimeasure,magnet=self.cosimeasure.magnet)
+                print('vis thread sleeping for %.2f s'%slp)
+                sleep(slp)
+            else:
+                sleep(2*slp)
+                if self.q.empty():
+                    break
+        self.quit()
+        #self.wait()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class Ui(QtWidgets.QMainWindow):
     """the main User Interface window."""
@@ -129,7 +208,6 @@ class Ui(QtWidgets.QMainWindow):
 
 
 
-        # todo: add head position tracking
 
         ''' PATH GENERATOR '''
         self.load_path_file_btn.clicked.connect(self.load_path)
@@ -157,14 +235,14 @@ class Ui(QtWidgets.QMainWindow):
 
         print('connecting to COSI.')
 
-        self.cosimeasure = cosimeasure.cosimeasure(isfake=self.isfake,gaussmeter=self.gaussmeter,magnet=self.magnet) # testing mode
+        self.cosimeasure = cosimeasure.cosimeasure(isfake=self.isfake,gaussmeter=self.gaussmeter,magnet=self.magnet,queue=self.qGlob) 
+        #isfake for testing mode, queue is where it puts the b0 object.
 
         self.init_btn.setEnabled(True)
         self.run_btn.setEnabled(True)
         self.abort_btn.setEnabled(True)
 
         self.mag_pos_btn.clicked.connect(self.recenter_magnet) # get xyz of the magnet center and plot it 
-
 
         self.home_x_plus_btn.clicked.connect(self.cosimeasure.home_x_plus)  # home X+
         self.home_x_minus_btn.clicked.connect(self.cosimeasure.home_x_minus)  # home X-
@@ -185,9 +263,31 @@ class Ui(QtWidgets.QMainWindow):
         self.z_right_btn.clicked.connect(self.cosimeasure.z_step_up)
         self.z_left_btn.clicked.connect(self.cosimeasure.z_step_down)
         
-        self.init_btn.clicked.connect(self.cosimeasure.init_path)  
-        self.run_btn.clicked.connect(self.cosimeasure.run_measurement)
+        self.init_btn.clicked.connect(self.init_path)  
+        self.run_btn.clicked.connect(self.run_measurement)
         self.abort_btn.clicked.connect(self.cosimeasure.abort)
+        
+    def init_path(self):
+        self.cosimeasure.init_path()
+        self.pathPlotter.plot_head_on_path(cosimeasure=self.cosimeasure,magnet=self.magnet)
+    
+    def run_measurement(self):
+        self.b0_scan_glob = b0.b0(path=self.cosimeasure.path) # an empty instance of the b0 object to be shared between the cosimeasure and the plotter
+        self.cosimeasure.b0 = self.b0_scan_glob
+        
+        while not self.cosimeasure.q.empty():
+            self.cosimeasure.q.get()
+
+        self.gen_trd = data_generating_thread(_cosimeasure=self.cosimeasure)
+        self.vis_trd = data_visualisation_thread(_plotter = self.pathPlotter,_cosimeasure=self.cosimeasure)
+
+        self.vis_trd.start()
+        print(' VIS thread started')
+        self.gen_trd.start()
+        print('GEN thread started')
+
+        
+        
             
     def recenter_magnet(self):
             magcoords = self.mag_pos_edit.text().split(',')
@@ -220,19 +320,6 @@ class Ui(QtWidgets.QMainWindow):
 
 
     ''' PATHS '''
-    def gen_sphere_path(self):
-        xc = float(self.path_dim_edit.text().split(",")[0])
-        yc = float(self.path_dim_edit.text().split(",")[1])
-        zc = float(self.path_dim_edit.text().split(",")[2])
-        rad = float(self.path_dim_edit.text().split(",")[3]) # mm
-        phipts = int(self.path_res_edit.text().split(",")[0])
-        thetapts = int(self.path_res_edit.text().split(",")[1])
-        
-
-        fnm = './data/240415/sphere_test_path.path'
-        sphere_path = sphere_path.sphere_path(filename_input=fnm,center_point_input=(xc,yc,zc),phinumber_input=phipts,thetanumber_input=thetapts,radius_input=rad,maxradius_input=rad+5)
-        self.load_path(fnm)
-
 
     def gen_ball_path(self):
         xc = float(self.path_dim_edit.text().split(",")[0])
@@ -241,38 +328,47 @@ class Ui(QtWidgets.QMainWindow):
         rad = float(self.path_dim_edit.text().split(",")[3]) # mm
         radpts = int(self.path_res_edit.text())
         
+        try:
+            self.cosimeasure.pathfile_path, _ = QtWidgets.QFileDialog.getSaveFileName(self, caption="path filename",
+                                                            directory=self.cosimeasure.working_directory,
+                                                            filter="path Files (*.path);;CSV Files (*.csv)")
+            self.cosimeasure.working_directory = os.path.split(os.path.abspath(self.cosimeasure.pathfile_path))[0]
 
-        fnm = './data/240429/a01_ball_path_%.0fmm.path'%rad
-        self.cosimeasure.b0_filename=self.working_directory+'/data/240429/a01_ball_R%.0fmm_bvalues_fine.txt'%rad
-        sphere_path = ball_path.ball_path(filename_input=fnm,center_point_input=(xc,yc,zc),radius_input=rad,radius_npoints_input=radpts)
-        self.load_path(fnm)
-
+        except:
+            print('no filename given, do it again.')
+            return 0
+        
+        base_filename = os.path.splitext(self.cosimeasure.pathfile_path)[0]
+        
+        self.cosimeasure.b0_filename=base_filename+'_bvals.txt'
+        # todo: do the path generator inside the pth class
+        sphere_path = ball_path.ball_path(filename_input=self.cosimeasure.pathfile_path,center_point_input=(xc,yc,zc),radius_input=rad,radius_npoints_input=radpts)
+        self.cosimeasure.load_path() # change to automatic loading of path when the path filename is given
+        self.pathPlotter.plot_head_on_path(cosimeasure=self.cosimeasure,magnet=self.magnet)
 
 
     def load_path(self,pathfilename=None):
-
-
         print('load the path file.')
-
-        if pathfilename:
+        
+        if pathfilename is not None:
             print("given filename: ",pathfilename)
             self.cosimeasure.pathfile_path = pathfilename#+'.path'
         # if no filename given, open file dialog
         else:
             try:
-                self.cosimeasure.pathfile_path, _ = QtWidgets.QFileDialog.getOpenFileName(self, caption="Select path data",
+                self.cosimeasure.pathfile_path, _ = QtWidgets.QFileDialog.getSaveFileName(self, caption="Select path data",
                                                                        directory=self.cosimeasure.working_directory,
                                                                        filter="path Files (*.path);;CSV Files (*.csv)")
                 self.cosimeasure.working_directory = os.path.split(os.path.abspath(self.cosimeasure.pathfile_path))[0]
 
             except:
                 print('no filename given, do it again.')
-            return 0
+            return 
+        
         if self.cosimeasure.pathfile_path:
             print('loading path %s with cosimeasure.'%self.cosimeasure.pathfile_path)
-            self.cosimeasure.load_path()
+            self.cosimeasure.load_path(path_filename=self.cosimeasure.pathfile_path)
             self.pathPlotter.plot_head_on_path(cosimeasure=self.cosimeasure,magnet=self.magnet)
-
 
 
 
@@ -295,3 +391,7 @@ if __name__ == "__main__":
     # p_generator.start()
     #
     # p_generator.join()
+    
+    
+    
+    

@@ -8,11 +8,14 @@ import time
 from datetime import datetime
 import os
 import subprocess
+from multiprocessing import Queue
 
 import pth # path object
 
 import gaussmeter # for mapping the field
 import osi2magnet
+
+import b0 # b0 object - here we write the path and the values along the path
 
 # endpoints - adjust them
 minx = 0
@@ -27,8 +30,8 @@ manstep = 5 # mm manual step
 
 class cosimeasure(object):
     
-    head_position = [0,0,0];
-    path = [];
+    head_position = [0,0,0]
+    path = []
     pathfile = None
     magnetometer = None
     working_directory = r'./dummies/pathfiles/'
@@ -37,9 +40,14 @@ class cosimeasure(object):
     magnet = osi2magnet.osi2magnet
 
 
-    def __init__(self,isfake:bool,gaussmeter:gaussmeter.gaussmeter,b0_filename=None,magnet=None): # if isfake then dont do serial and sudo
+    def __init__(self,isfake:bool,gaussmeter:gaussmeter.gaussmeter,b0_filename=None,magnet=None,queue=None): # if isfake then dont do serial and sudo
         print('initiating an instance of the cosimeasure object')
+        # multithreading things
+        if queue is not None:
+            self.q = queue
+        # ---------------------
         self.path = pth.pth(filename='') # default path = dummy path
+        self.b0 = b0.b0() # the empty b0 object - to be populated as the measurement is performed
         self.head_position = [0,0,0]
         self.isfake = isfake   
         self.ser = None # serial connection is a field of cosimeasure 
@@ -53,7 +61,9 @@ class cosimeasure(object):
         
         self.magnet = magnet
 
+        self.measurement_time_delay = 2
         if isfake:
+            self.measurement_time_delay = 0.25 # for quick testing
             return
 
         os.system('sudo service klipper stop')
@@ -178,12 +188,22 @@ class cosimeasure(object):
     def moveto(self,x:float,y:float,z:float):
         print('moving head to %.2f, %.2f, %.2f'%(x,y,z))
         self.command("G0 X%.2f Y%.2f Z%.2f"%(x,y,z))
-        self.head_position = self.get_current_position()
+        self.head_position = self.get_current_position(fakePosition=[x,y,z])
 
 
-    def get_current_position(self): # return position of the head
+    def get_current_position(self,fakePosition=None): # return position of the head
         if self.isfake:
-            return 0,0,0
+            if fakePosition is not None:
+                xpos = fakePosition[0]
+                ypos = fakePosition[1]
+                zpos = fakePosition[2]
+                self.head_position=[xpos,ypos,zpos] # update the head_position field of the object every time head_position is queried
+                print('fake COSI, returning fake head position')
+                return xpos,ypos,zpos
+
+            else:
+                return 0,0,0
+            
         vals = self.command("M114").decode().split(' ') # b'X:386.620 Y:286.000 Z:558.280 E:0.000\n'
         xpos = float(vals[0].split(':')[1])
         ypos = float(vals[1].split(':')[1])
@@ -213,6 +233,9 @@ class cosimeasure(object):
             y = pathpt[1]
             z = pathpt[2]
             self.moveto(x,y,z)
+            self.get_current_position(fakePosition=self.path.r[0])
+            
+            # replot the head, always replot the head
 
         else:
             print('load path first!')
@@ -230,13 +253,21 @@ class cosimeasure(object):
     ''' MEASUREMENTS '''
 
     def run_measurement(self):
-        print('following the path, measuring the field!')
+        print('following the path, measuring the field.')
         #self.run_path_no_measure()
         self.run_path_measure_field(self.magnet)
 
     def run_path_measure_field(self,magnet:osi2magnet.osi2magnet):
-        print('running along path, no display on GM')
+        # todo: write to a b0 object, 
+        # write both path points and b0 values along the path. 
+        # after each point write the b0 object to self.q 
+        # write simultaneously to file and to self.b0 - failsafe
+        # todo: add head position tracking
+        self.path = self.b0.path
+        
+        print('cosimeasure uses path of the passed b0 object')
         self.gaussmeter.fast(state=True)
+        print('running along path, no display on GM')
         if self.b0_filename: # if filename was given
             with open(self.b0_filename, 'w') as file: # open that file
                 if len(self.path.r): # if path was given
@@ -248,23 +279,37 @@ class cosimeasure(object):
                     file.write('MAGNET CENTER IN LAB: x %.3f mm, y %.3f mm, z %.3f mm\n'%(magnet.origin[0],magnet.origin[1],magnet.origin[2]))
                     file.write('MAGNET AXES WRT LAB: alpha %.2f deg, beta %.2f deg, gamma %.2f deg\n'%(magnet.alpha,magnet.beta,magnet.gamma))   
                     file.write('path: '+self.path.filename+'\n')   
+                    
+                    self.b0.datetime = dateTimeStr
+                    self.b0.magnet = magnet
                                      
                     self.command('G90') ### SEND G90 before any path movement to make sure we are in absolute mode
                     time.sleep(1)
-                    ptidx = 0
+                    ptidx = 0 # index of the point along the path
                     for pt in self.path.r: # follow the path
-                        self.moveto(pt[0],pt[1],pt[2])
-                        pos = self.get_current_position()
-                        print(pt)
-                        #self.disable_motors()
-                        time.sleep(self.measurement_time_delay)
-                        bx,by,bz,babs = self.gaussmeter.read_gaussmeter()
-                        #self.enable_motors()
+                        self.moveto(pt[0],pt[1],pt[2]) # move the head physically to the position
+                        pos = self.get_current_position(fakePosition=pt) # update head position of the cosimeasure object, used for live plotting
+                        print(pt) # if gui lags, the terminal still shows points
+                        #self.disable_motors() # no needed as the arm is long, uncomment for sensitive measurements
+                        time.sleep(self.measurement_time_delay) # adjust according to the #averages of the gaussmeter
+                        bx,by,bz,babs = self.gaussmeter.read_gaussmeter(fakeField=[0,100,0,0]) # after waiting get the averaged field vals
+                        #self.enable_motors() # no need as the arm is long, uncomment for sensitive measurements
                         print('pt %d of %d'%(ptidx,len(self.path.r)),pos,'mm reached, B0=[%.1f,%.4f,%.1f] mT'%(bx,by,bz))
+                        
+                        # first write to file: failsafe
                         bval_str = '%f %f %f %f\n'%(bx,by,bz,babs)
                         self.bvalues.append(bval_str) # save bvalues to ram
                         file.write(bval_str)
+                        
+                        # then write to object
+                        self.b0.fieldDataAlongPath[ptidx,:] = [bx,by,bz,babs] # populate the b0 values of the b0 object at current index 
+
                         ptidx +=1    
+                        
+                        self.q.put(self.b0) # would this trick work?
+                        
+                        
+                        
                     print('path scanning done. saving file')
                     #write shim orientations to file
 
@@ -279,16 +324,21 @@ class cosimeasure(object):
         print('STOP MOVING AND SWITCH MOTORS OFF!')
 
     '''PATH FILE LOADING'''
-    def load_path(self):
+    def load_path(self,path_filename=None):
         print('cosi loads path from file.')
-        if not self.pathfile_path:
-            print('no path file for cosimeasure')
-            return
-        self.path = pth.pth(filename=self.pathfile_path)
+        if path_filename is None:
+            print('no path file for cosimeasure given. using self.path_filename for import')
+            path_filename = self.pathfile_path
+            
+        self.path = pth.pth(filename=path_filename)
+        # assign the path to the b0 object
+        self.b0.path =self.path
+        self.pathfile_path = path_filename
         print('path successfully imported')
-        self.head_position = self.get_current_position()
+        self.head_position = self.get_current_position(fakePosition=self.path.r[0])
 
         self.calculatePathCenter()
+        
 
     def calculatePathCenter(self):
         x_c = np.nanmean(self.path.r[:,0])

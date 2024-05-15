@@ -206,8 +206,8 @@ class PlotterCanvas(FigureCanvas):
         self.axes.set_zlabel(self.zlabel)        
         self.axes.set_title(self.title)
         self.plot_magnet(magnet)
-        self.axes.plot(r[:,0],r[:,1],r[:,2],'ko--')
-        self.axes.plot(xheadpos,yheadpos,zheadpos,'gx',linewidth=5)
+        self.axes.plot(r[:,0],r[:,1],r[:,2],alpha=0.3,marker = 'o',linestyle=':',color='black') # alpha = 0.3 is the 4th argum
+        self.axes.plot(xheadpos,yheadpos,zheadpos,'rx',linewidth=10)
         #self.axes.autoscale(True)
         self.update_plotter()
 

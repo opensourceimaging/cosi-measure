@@ -45,9 +45,13 @@ class gaussmeter(object):
         return value
 
 
-    def read_gaussmeter(self):
+    def read_gaussmeter(self,fakeField=None):
         if self.isfake:
-            return 0,0,0,0
+            if fakeField is not None:
+                return fakeField[0],fakeField[1],fakeField[2],fakeField[3]
+            else:
+                return 0,0,0,0
+        
         self.ser.write('ALLF?'.encode())
         value = ''
         sleep(0.1)
