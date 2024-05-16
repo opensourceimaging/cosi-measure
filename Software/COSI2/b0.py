@@ -63,7 +63,7 @@ class b0():
         # rotate path according to the euler angles of the magnet, but backwards
         self.path.rotate_euler_backwards(gamma=self.magnet.gamma,beta=self.magnet.beta,alpha=self.magnet.alpha) 
         # center the path to the origin, as the origin of the path is the origin of the magnet
-        temp_origin_offset = [-50,-100,-200]
+        temp_origin_offset = [0,0,0]
         self.path.center(origin=self.magnet.origin+temp_origin_offset)
         print('ROTATING THE MAGNET NOW!')
         # rotate the magnet
@@ -78,8 +78,17 @@ class b0():
             self.reorder_field_to_cubic_grid() # make a cubic grid with xPts, yPts, zPts and define B0 on that
     
         
+    def make_artificial_field_along_path(self,coordinates_of_singularity,radius_of_singularity:float):
+        path = self.path
+        x0 = coordinates_of_singularity[0]
+        y0 = coordinates_of_singularity[1]
+        z0 = coordinates_of_singularity[2]
         
-            
+        self.fieldDataAlongPath = np.zeros((len(self.path.r),4)) # bx,by,bz,babs
+        for idx in range(len(path.r)):
+            self.fieldDataAlongPath[idx,:] = [0,0,0,0]
+            if np.sqrt((path.r[idx,0]-x0)**2+(path.r[idx,1]-y0)**2+(path.r[idx,2]-z0)**2)<radius_of_singularity:
+                self.fieldDataAlongPath[idx,:] = [0,50,0,0]
 
         
     def reorder_field_to_cubic_grid(self):
@@ -216,8 +225,6 @@ class b0():
         self.magnet = osi2magnet.osi2magnet(origin=[mag_center_x,mag_center_y,mag_center_z],euler_angles_zyx=[mag_alpha,mag_beta,mag_gamma])
 
 
-    
-
     def saveAsCsv_for_comsol(self, filename: str):
         # for comsol
         with open(filename, 'w') as file:
@@ -227,9 +234,11 @@ class b0():
                 # orthodox> file.write('%.6f,%.6f,%.6f,%.6f,%.6f,%.6f\n'%(ri[0]/1e3,ri[1]/1e3,ri[2]/1e3,self.fieldDataAlongPath[i,0]/1e3,self.fieldDataAlongPath[i,1]/1e3,self.fieldDataAlongPath[i,2]/1e3))
                 file.write('%.6f,%.6f,%.6f,%.6f,%.6f,%.6f\n'%(ri[0]/1e3,ri[1]/1e3,ri[2]/1e3,0,0,max(abs(self.fieldDataAlongPath[i,0]/1e3),abs(self.fieldDataAlongPath[i,1]/1e3),abs(self.fieldDataAlongPath[i,2]/1e3))))
         
-
-
-
+        
+    def import_from_csv(self,filename: str):
+        #todo: think about the csv file format. Comments on magnet coordinates, datetime, path data, b0 data. 
+        print('please code the csv import method in the b0 class.')
+        
             
     def saveAs(self,filename: str):
         # open file filename and write comma separated values in it

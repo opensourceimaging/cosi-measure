@@ -172,6 +172,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="load_csv_button">
+          <property name="text">
+           <string>Load CSV</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="coordinate_transform_btn">
           <property name="text">
            <string>To Magnet Coordinates</string>
@@ -187,7 +194,7 @@
            </size>
           </property>
           <property name="text">
-           <string>export in *csv</string>
+           <string>export in CSV</string>
           </property>
          </widget>
         </item>

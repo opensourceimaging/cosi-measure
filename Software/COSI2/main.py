@@ -28,7 +28,7 @@ Replace 0483:df11 with your hardware's ID from step 4 And execute the following 
      make flash FLASH_DEVICE=0483:df11
      
 '''
-#TODO multithreading
+#TODO: make csv import/export the standard procedure.
 #TODO fix flipping coordinates in 2d slice plotter at imshow/contourf. deal with np.transpose on meshgrid.
 
 from PyQt5 import QtWidgets, uic
@@ -105,23 +105,18 @@ class data_visualisation_thread(QThread): # this is the data vis thread. Reads d
         
         while 1:
             empty = self.q.empty()
-            print('B0m plotter: queue empty?', empty)
+            print('vis thread waiting for data. queue empty? ', empty)
             if not empty:
                 break
-            
-        if self.cosimeasure.isfake:
-            sleep(3*slp)
-        print('B0m plotter: queue empty?', self.q.empty())
         
         while True:
-            print('>>>>>>>>>>>>> VIS THREAD >>>>>>>>>>>>')
             if not self.q.empty():
                 while not self.q.empty():
                     self.cosimeasure.b0 = self.q.get()
                 self.plotter.plot_head_on_path(cosimeasure=self.cosimeasure,magnet=self.cosimeasure.magnet)
                 print('vis thread sleeping for %.2f s'%slp)
                 sleep(slp)
-            else:
+            else: # if no data in queue, wait longer
                 sleep(2*slp)
                 if self.q.empty():
                     break

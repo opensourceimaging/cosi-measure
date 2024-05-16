@@ -31,6 +31,7 @@ class field_viewer_gui(QtWidgets.QMainWindow):
         # binding methods to buttons:
         self.save_button.clicked.connect(self.save_rotated_path_in_a_csv_file)  # Remember to code the method in the class.
         self.load_button.clicked.connect(self.load_b0)  # Remember to code the method in the class.
+        self.load_csv_button.clicked.connect(self.load_csv)  # Remember to code the method in the class.
         self.show_2d_slice_btn.clicked.connect(self.plot_B0M_slice_2d)
 
         # --- adding the plotter: ---
@@ -62,8 +63,24 @@ class field_viewer_gui(QtWidgets.QMainWindow):
         
         
 
-        # todo code and import b0, see shimming script
+    def load_csv(self):
+        # todo code and import b0 map in the csv format. Parse into path and b0 values. 
+        # create an empty instance of b0map
+        self.b0map = b0.b0()
+        # get the file name from the open file dialog
+                # open file dialog
+        try:
+            filename_to_import_csv_data_from, _ = QtWidgets.QFileDialog.getOpenFileName(self, caption="Select B0 data in csv format",
+                                                                   directory=self.workingFolder,
+                                                                   filter="csv Files (*.csv)")
+            self.workingFolder = os.path.split(os.path.abspath(filename_to_import_csv_data_from))[0]
 
+        except:
+            print('no filename given, do it again.')
+            return 0
+        
+        self.b0map.import_from_csv(filename_to_import_csv_data_from)
+        pass
 
 
     def load_b0(self):
@@ -147,7 +164,6 @@ class field_viewer_gui(QtWidgets.QMainWindow):
         
 
 
-
     def change_coords_to_magnet(self):
         self.b0map.transfer_coordinates_of_the_path_from_cosi_to_magnet()
         self.plotter.plotPathWithMagnet(self.b0map,coordinate_system='magnet')
@@ -190,6 +206,8 @@ class field_viewer_gui(QtWidgets.QMainWindow):
         except:
             print('no filename given, do it again.')
             return 0
+        # TEMP!
+        self.b0map.make_artificial_field_along_path(coordinates_of_singularity = [10,20,30],radius_of_singularity=10)
         
         self.b0map.saveAsCsv_for_comsol(new_csv_path)
         #self.b0map.path.saveAs(new_csv_path)
