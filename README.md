@@ -1,5 +1,7 @@
 # COSI Measure
 
+![COSI Measure](setup-overview.jpg)
+
 <!-- TOC -->
 
 - [COSI Measure](#cosi-measure)
@@ -13,12 +15,23 @@
     - [Acknowledgments](#acknowledgments)
     - [License and Liability](#license-and-liability)
 
-<!-- /TOC -->ce: 896N (91kg)
+<!-- /TOC -->
+## Description
+
+COSI Measure is an open source multipurpose 3-axis robot operating in a large volume, that can be equipped with e.g. field mapping probes for static or dynamic field measurements (electromagnetic, temperature etc.). Submillimeter fidelity and reproducibility/backlash performance were evaluated experimentally. It can be potentially upgraded to be used as a CNC, for 3D printing or other applications, that require reproducible submillimeter movements.
+
+## System specifications 
+
+- Dimension: (80x90x105)cm³
+- Working volume: (53x53x64)cm³
+- Precision: positioning error <1mm
+- Max load: ~20kg
+- Applied force: 896N (91kg)
 - Standalone system
 - Inductive limit switches
 - Emergency Stop
 - Open Source Software GUI (Python)
-- Estimated material costs: ~3000€
+- Estimated material costs: ~2000€
 
 More photos and videos can be found on opensourceimaging.org: https://www.opensourceimaging.org/project/cosi-measure/ 
 
