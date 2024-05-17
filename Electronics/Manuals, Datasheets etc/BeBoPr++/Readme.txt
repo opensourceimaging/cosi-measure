@@ -1,1 +1,0 @@
-If you have difficulties purchasing the BeBoPr++, please contact lukas.winter@ptb.de.

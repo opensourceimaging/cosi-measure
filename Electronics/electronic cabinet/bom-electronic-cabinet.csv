@@ -1,0 +1,43 @@
+Position,Description,Designator,Qty,Manufacturer,Manufacturer PartNo,Distributor,Comment,Link
+1,Enclosure,-,1,Schneider Electric,NSYS3D5420P,reichelt,,https://www.reichelt.de/stahlgehaeuse-s3d-mit-montageplatte-500-x-400-x-200-ip66-nsys3d5420p-p310665.html
+2,DIN Rails,-,2,,3575ZG-1M,reichelt,,https://www.reichelt.de/at/de/hutschiene-35-x-7-5-mm-gelocht-1-m-hs-35x7-5-1m-p295662.html
+3,Cage Clamp bl,X1,5,WAGO,280-904,reichelt,,https://www.reichelt.de/at/de/durchgangsklemme-2-leiter-1-pol-0-08-2-5-mm-wago-280-904-p32237.html
+4,Cage Clamp gn-yl,X1,5,WAGO,280-907,reichelt,,https://www.reichelt.de/at/de/hutschiene-35-x-7-5-mm-gelocht-1-m-hs-35x7-5-1m-p295662.html
+5,Cage Clamp gy,X1,53,WAGO,280-901,reichelt,,https://www.reichelt.de/at/de/durchgangsklemme-2-leiter-1-pol-0-08-2-5-mm-wago-280-901-p32236.html
+6,Terminal Block Endcap,X1,1,WAGO,280-308,reichelt,,https://www.reichelt.de/at/de/abschluss-und-zwischenplatte-wago-280-308-p248633.html
+7,Terminal Block Bridges,X1,20,WAGO,280-402,farnell,,https://de.farnell.com/wago/280-402/querbr-cker-isoliert-grau/dp/1283454?MER=sy-me-pd-mi-acce
+8,Cable Duct 60x25,-,1,arnocanali,V6K6025,reichelt,,https://www.reichelt.de/verdrahtungskanal-60x25-mm-1000-mm-v6k6025-p338230.html
+9,Cable Duct 60x40,-,1,arnocanali,V6K6040,reichelt,,https://www.reichelt.de/verdrahtungskanal-60x40-mm-1000-mm-v6k6040-p275692.html
+10,Mounting Plate for Rumba and Pi,-,,,,,,
+11,Cable Tube,-,1,Rittal,2595.000,Conrad,,https://www.conrad.de/de/p/rittal-sz-2595-000-kabelschlauch-polyethylen-o-x-l-16-mm-x-25-m-1-st-1048519.html
+12,Cable Tube Holder,-,1,Rittal,2593.000,Conrad,,https://www.conrad.de/de/p/rittal-sz-2593-000-kabelschlauchhalter-polyamid-20-st-1048517.html
+13,Stepper Motor Driver,,3,ACT,DM542,reichelt,,https://www.reichelt.de/schrittmotortreiber-fuer-nema-23-18-50-v-act-dm542-p237924.html
+14,Main Switch,S0,1,,,reichelt,,https://www.reichelt.de/hauptschalter-3-pol-25-a-eaton-041097-p158862.html
+15,Mains In,X0,1,Deltron,RID1042H,rs ,,https://de.rs-online.com/web/p/iec-filter/7615775
+16,Power Socket,X2,1,Schneider Electric,PKS52B,Conrad,,https://www.conrad.de/de/p/schneider-electric-pks52b-einbau-steckdose-ip54-ik08-blau-2359161.html
+17,USB Through-Connector,"X8, X9, X10",3,CLIFF,CP30210NMB,reichelt,,https://www.reichelt.de/sg/de/usb-adapter-ft-1-x-usb-3-0-a-buchse-1-x-usb-3-0-b-buchse-cliff-cp30210nmb-p227661.html
+18,HDMI Through-Connector,X11,1,Delock,86963,reichelt,,https://www.reichelt.de/sg/de/hdmi-a-einbaubuchse-mit-verschlusskappe-ip67-delock-86963-p322711.html
+19,RJ45 Through Connector,X12,1,TRU Components,4016139055312,Conrad,,https://www.conrad.de/de/p/tru-components-rj45-01-rj45-einbaubuchse-1408770-buchse-einbau-stecker-gerade-polzahl-8p8c-silber-1-st-1408770.html
+20,3 pin ext. Emergency Stop Connector,X8,1,binder,99-0608-00-03,Conrad,,https://www.conrad.de/de/p/binder-99-0608-00-03-rundstecker-flanschstecker-gesamtpolzahl-3-serie-rundsteckverbinder-678-1-st-738745.html
+21,8 pin Hardware Limit Switches,X3,1,binder,99-0648-00-08,Conrad,see Issues!,https://www.conrad.de/de/p/binder-99-0648-00-08-rundstecker-flanschstecker-gesamtpolzahl-8-serie-rundsteckverbinder-678-1-st-738809.html
+22,8 pin connector Endstops,X4,1,binder,99-0648-00-08,Conrad,see Issues!,https://www.conrad.de/de/p/binder-99-0648-00-08-rundstecker-flanschstecker-gesamtpolzahl-8-serie-rundsteckverbinder-678-1-st-738809.html
+23,6 pin Motor X-Axis Connector,X5,1,binder,99-000-06,Conrad,see Issues!,https://www.conrad.de/de/p/binder-99-000-06-rundstecker-flanschstecker-gesamtpolzahl-6-serie-rundsteckverbinder-678-1-st-738783.html
+24,6 pin Motor Y-Axis Connector,X6,1,binder,99-000-06,Conrad,see Issues!,https://www.conrad.de/de/p/binder-99-000-06-rundstecker-flanschstecker-gesamtpolzahl-6-serie-rundsteckverbinder-678-1-st-738783.html
+25,6 pin Motor Z-Axis Connector,X7,1,binder,99-000-06,Conrad,see Issues!,https://www.conrad.de/de/p/binder-99-000-06-rundstecker-flanschstecker-gesamtpolzahl-6-serie-rundsteckverbinder-678-1-st-738783.html
+26,24 V Power Supply,T1,1,MEANWELL,NDR-480-24,reichelt,,https://www.reichelt.de/at/de/schaltnetzteil-hutschiene-480-w-24-v-20-a-mw-ndr-480-24-p264962.html
+27,5 V PowerSupply,T2,1,Siemens,6EP3310-6SB00-0AY0,reichelt,too expensive,https://www.reichelt.de/at/de/hutschienen-netzteil-5-v-3-a-logo-power-5v3-p348706.html
+28,"Circuitbreaker, RCD",F1,1,Schneider Electric,R9D01613,reichelt,often not necessary,https://www.reichelt.de/at/de/fi-ls-schalter-resi9-1p-n-13a-b-char-30ma-typ-a-6ka-r9d01613-p292098.html
+29,Contactor DC3,Q1,1,Schneider Electric,LC1D12BD,reichelt,https://ckm-content.se.com/ckmContent/sfc/servlet.shepherd/document/download/0691H000008h5vrQAA,https://www.reichelt.de/at/de/leistungsschuetz-tesys-d-1-nc-3-1-no-5-5-kw-12-a-lc1d12bd-p211755.html
+30,Safety Relais,K1,1,Schneider Electric,XPS-AC,obsolete,"obsolet, replacement needed. See Issue",https://www.se.com/de/de/product/XPSAC5121/sicherheitsbaustein-nothalt-3-relais+1-transistor-24-vac-dc-fest/
+31,RaspberryPi,K2,1,Raspberry Pi,RP-4B-8GB,Conrad,,https://www.conrad.de/de/p/raspberry-pi-4-b-8-gb-4-x-1-5-ghz-raspberry-pi-2250399.html
+32,Rumba32,K3,1,,,,modification needed see [here](Rumba32/README.md),
+33,Endstop BreakoutBoard,-,1,,,,Rumba32/Driver_Breakoutboard/README.md,
+34,Driver BreakoutBoard,-,3,,,,Rumba32/Endstop_Levelshifter/README.md,
+35,On-Off Switch,S4,1,Eaton,M22-DDL-GR,Conrad,,https://www.conrad.de/de/p/eaton-216509-m22-ddl-gr-x1-x0-k11-230-w-doppeldrucktaster-1-x-aus-ein-tastend-ip66-1-st-2306911.html
+36,Light for S4 (24V),H1,1,Eaton,216557,Conrad,,https://www.conrad.de/de/p/eaton-m22-led-w-led-element-weiss-30-v-dc-ac-1-st-700321.html
+37,Emergency Stop,S2,1,Eaton,110938,Conrad,,https://www.conrad.de/de/p/eaton-m22-pv-k01-bvp-not-aus-schalter-1-oeffner-ip66-1-st-2132759.html
+38,USB-C Cable,-,1,hama,201594,Conrad,,https://www.conrad.de/de/p/hama-usb-ladekabel-usb-2-0-usb-a-stecker-usb-c-stecker-1-00-m-schwarz-00201594-2886437.html
+39,USB A-B Cable,-,3,Delock,82580,Conrad,,https://www.conrad.de/de/p/delock-usb-kabel-usb-3-2-gen1-usb-3-0-usb-3-1-gen1-usb-a-stecker-usb-b-stecker-1-00-m-blau-vergoldete-steckkontakte-1880889.html
+40,HDMI Cable,-,1,Digitus,AK-330115-010-S,Conrad,,https://www.conrad.de/de/p/digitus-hdmi-anschlusskabel-hdmi-a-stecker-hdmi-micro-d-stecker-1-00-m-schwarz-ak-330115-010-s-vergoldete-steckkontakte-678202.html
+41,Micro USB-Cable,-,1,renkforce,RF-4316220,Conrad,,https://www.conrad.de/de/p/renkforce-usb-kabel-usb-2-0-usb-a-stecker-usb-micro-b-stecker-1-00-m-schwarz-vergoldete-steckkontakte-rf-4316220-1438740.html
+42,Jumper Cables,-,1,Joy-IT,RB-CB-025,reichelt,,https://www.reichelt.com/entwicklerboards-steckbrueckenkabel-25cm-20-kabel-debo-kabelset-p161046.html

@@ -1,8 +1,0 @@
-NET pushBtnPin109 LOC=P5;
-NET pushBtnPin104 LOC=P43;
-NET ledPin100 LOC=P39;
-NET ledPin200 LOC=P38;
-NET relayDCPin115 LOC=P16;
-NET relayACPin215 LOC=P19;
-#NET pushBtnPin216 LOC=P18;
-NET clkPin106 LOC=P1;

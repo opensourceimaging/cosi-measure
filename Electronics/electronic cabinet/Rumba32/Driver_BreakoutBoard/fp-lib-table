@@ -1,0 +1,5 @@
+(fp_lib_table
+  (lib (name "74LVC32APW")(type "KiCad")(uri "/Users/jan/Documents/KiCad/6.0/footprints/PSU.pretty")(options "")(descr ""))
+  (lib (name "footprints")(type "KiCad")(uri "${KIPRJMOD}/footprints.pretty")(options "")(descr ""))
+  (lib (name "Connector")(type "KiCad")(uri "${KIPRJMOD}/Connector.pretty")(options "")(descr ""))
+)
