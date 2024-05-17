@@ -23,13 +23,14 @@ More photos and videos can be found on opensourceimaging.org: https://www.openso
 
 ## Versions and Branches
 
-- release/1.0
+- 1.0
     - Electronics based on Beagle Bone Black and BeBoPr++
-- rc/2.0
+    - outdated
+- 2.0
     - Electronics changed to Rasperry Pi and Rumba32
     - Other simplifications e.g. in the power management board
     - Up to 6x stepper motor drivers
-    - Improved safety concept with soft and hard limit switches
+    - Improved safety concept with hardware safe-torque-off and soft and hard limit switches
     - New software
 
 ## Contacts
@@ -39,7 +40,9 @@ Name | Email | Institution | COSI Measure Applications
 -----|-----|-----|-----|
 Lukas Winter | lukas.winter@ptb.de | Physikalisch-Technische Bundesanstalt (PTB), Berlin, Germany | Magnetic field mapping of MR magnets, implant safety measurements, RF field mapping of RF coils using time-domain H- and E-field sensors, Measurements within an MR scanner, 3D printing
 
-(Known) builds
+![COSI Measure Builds](/Publications/cosi_measure_builds.jpg)
+
+### (Known) builds
 Name | Email | Institution | COSI Measure Applications
 -----|-----|-----|-----|
 Haopeng Han | haopeng.han@mdc-berlin.de | Max-Delbrück Center for Molecular Medicine, Berlin, Germany | Temperature and RF field mapping of RF coils
@@ -50,7 +53,7 @@ Wolfgang Kilian | Wolfgang.Kilian@ptb.de | Physikalisch-Technische Bundesanstalt
 
 
 ## Contributors (alphabetical order)
-Nils Allek, Mark Bason, Jan Frintz, Haopeng Han, Amjad Kasabashy, Wolfgang Kilian, Ilia Kulikov, Benjamin Menküc, Tobias Mohr, Reiner Montag, Tom O'Reilly, David Shiers, Berk Silemek, Karl Stupic, Lukas Winter
+Nils Allek, Mark Bason, Jan Gregor Frintz, Haopeng Han, Amjad Kasabashy, Wolfgang Kilian, Ilia Kulikov, Benjamin Menküc, Tobias Mohr, Reiner Montag, Tom O'Reilly, David Shiers, Berk Silemek, Karl Stupic, Lukas Winter
 
 ## Publications
 If you find this useful in your work, please cite:
