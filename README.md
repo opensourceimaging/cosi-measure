@@ -1,18 +1,19 @@
 # COSI Measure
 
-![COSI Measure](setup-overview.jpg)
+<!-- TOC -->
 
-## Description
+- [COSI Measure](#cosi-measure)
+    - [Description](#description)
+    - [System specifications](#system-specifications)
+    - [Versions and Branches](#versions-and-branches)
+    - [Contacts](#contacts)
+        - [Known builds](#known-builds)
+    - [Contributors alphabetical order](#contributors-alphabetical-order)
+    - [Publications](#publications)
+    - [Acknowledgments](#acknowledgments)
+    - [License and Liability](#license-and-liability)
 
-COSI Measure is an open source multipurpose 3-axis robot operating in a large volume, that can be equipped with e.g. field mapping probes for static or dynamic field measurements (electromagnetic, temperature etc.). Submillimeter fidelity and reproducibility/backlash performance were evaluated experimentally. It can be potentially upgraded to be used as a CNC, for 3D printing or other applications, that require reproducible submillimeter movements.
-
-## System specifications 
-
-- Dimension: (80x90x105)cm³
-- Working volume: (53x53x64)cm³
-- Precision: positioning error <1mm
-- Max load: ~20kg
-- Applied force: 896N (91kg)
+<!-- /TOC -->ce: 896N (91kg)
 - Standalone system
 - Inductive limit switches
 - Emergency Stop
@@ -66,4 +67,4 @@ This work is supported by the Open Source Imaging Initiative (OSI²), https://ww
 The project (21NRM05) has received funding from the European Partnership on Metrology, co-financed by the European Union's Horizon Europe Research and Innovation Programme and by the Participating States.
 
 ## License and Liability
-Please check the DISCLAIMER.pdf
+The content in this repository is licensed under the CERN Open Hardware Licence Version 2 - Weakly Reciprocal, please see [LICENSE](LICENSE) for details and also check the [DISCLAIMER](DISCLAIMER.pdf)
