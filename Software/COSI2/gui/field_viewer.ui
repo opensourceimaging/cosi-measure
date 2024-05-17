@@ -118,14 +118,21 @@
           <item>
            <widget class="QCheckBox" name="ShowSphereCheckBox">
             <property name="text">
-             <string>show sphere</string>
+             <string>sphere</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="ShowMagnetCheckBox">
             <property name="text">
-             <string>show magnet</string>
+             <string> magnet</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="ShowPathCheckBox">
+            <property name="text">
+             <string>path</string>
             </property>
            </widget>
           </item>
@@ -194,7 +201,7 @@
            </size>
           </property>
           <property name="text">
-           <string>export in CSV</string>
+           <string>generate synthetic CSV</string>
           </property>
          </widget>
         </item>

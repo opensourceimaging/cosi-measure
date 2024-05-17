@@ -64,7 +64,6 @@ class field_viewer_gui(QtWidgets.QMainWindow):
         
 
     def load_csv(self):
-        # todo code and import b0 map in the csv format. Parse into path and b0 values. 
         # create an empty instance of b0map
         self.b0map = b0.b0()
         # get the file name from the open file dialog
@@ -79,7 +78,11 @@ class field_viewer_gui(QtWidgets.QMainWindow):
             print('no filename given, do it again.')
             return 0
         
+        # import b0map as an object
         self.b0map.import_from_csv(filename_to_import_csv_data_from)
+        self.coordinate_transform_btn.clicked.connect(self.change_coords_to_magnet)
+        # and print it on the plotter.
+        self.plotter.plotPathWithMagnet(self.b0map)
         pass
 
 
@@ -201,13 +204,14 @@ class field_viewer_gui(QtWidgets.QMainWindow):
             new_csv_path, _ = QtWidgets.QFileDialog.getSaveFileName(self, caption="file name for csv export",
                                                                    directory=self.workingFolder,
                                                                    filter="comma separated Files (*.csv)")
-            self.workingFolder = os.path.split(os.path.abspath(self.pathPath))[0]
+            self.workingFolder = os.path.split(os.path.abspath(new_csv_path))[0]
 
         except:
             print('no filename given, do it again.')
             return 0
+        
+        
         # TEMP!
         self.b0map.make_artificial_field_along_path(coordinates_of_singularity = [10,20,30],radius_of_singularity=10)
-        
         self.b0map.saveAsCsv_for_comsol(new_csv_path)
         #self.b0map.path.saveAs(new_csv_path)

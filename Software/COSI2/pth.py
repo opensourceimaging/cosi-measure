@@ -14,11 +14,18 @@ class pth():
     pathCenter = None
     pathFile = 0 # a file where path data is stored
     radius = 0
+    
+    current_index = 0 # when scanned along path, its current index iterates. Used for live path plotting
 
-    def __init__(self,filename=''):
+    def __init__(self,filename='',csv_filename=None):
         
         self.filename = 'dummy'
         self.datetime = str(datetime.now())
+        
+        if csv_filename is not None:
+            self.import_from_csv(csv_filename)
+            self.get_path_center()
+            self.get_path_radius()
         
         if filename != '':
             self.filename = filename
@@ -44,6 +51,33 @@ class pth():
             self.get_path_center()
             self.get_path_radius()
                         
+                        
+    # ----- importer from csv -----
+    # csv contains path data and b0 data. 
+    # header lines start with #
+    # read all lines first
+    def import_from_csv(self,filename):
+        print('importing path from a csv file')
+        self.filename = filename
+        
+        with open(filename) as file:
+            rawPathData = file.readlines()
+            headerLength = 0
+            for line in rawPathData:
+                if line[0]=='#':
+                    if 'time' in line:
+                        self.datetime = line.split('time')[1]
+                    headerLength += 1
+                    
+            PathDataNoHeader = rawPathData[headerLength:]
+            
+            self.r = np.zeros((len(PathDataNoHeader),3))
+            
+            for idx, txtPoint in enumerate(PathDataNoHeader):
+                self.r[idx,0] = txtPoint.split(',')[0]
+                self.r[idx,1] = txtPoint.split(',')[1]
+                self.r[idx,2] = txtPoint.split(',')[2]
+
  
     def get_path_radius(self):
         self.radius = (np.nanmax(

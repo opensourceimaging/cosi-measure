@@ -1,5 +1,6 @@
 '''rst@PTB 240429 rst030@protonmail.com'''
 
+from datetime import datetime
 import numpy as np
 import pth # path class to create a path object
 import osi2magnet # osi2magnet class to create an osi2magnet object 
@@ -32,6 +33,7 @@ class b0():
         # if filename was given on init, read the b0 from that file.
         if b0_filename != '':
             self.filename = b0_filename
+            print("WARNING. do csv reading of path and b0 all together, instead of txt reading.")
 
             with open(b0_filename) as file:
                 raw_B0_data = file.readlines()     
@@ -48,7 +50,7 @@ class b0():
             # if no filename was given
             # create an instance of a b0 object, populate some fields. be ready to fill in b0 values
             if self.path is None:
-                print('failed to initialize an instance of b0. No path object given on construction.')
+                print('No path object given on construction of b0 object.\n b0 instance initialized without path.')
                 return
             self.fieldDataAlongPath = np.zeros((len(self.path.r),4)) # bx,by,bz,babs
         
@@ -78,6 +80,7 @@ class b0():
             self.reorder_field_to_cubic_grid() # make a cubic grid with xPts, yPts, zPts and define B0 on that
     
         
+    # ----------------- artificial data generation ----------------- 
     def make_artificial_field_along_path(self,coordinates_of_singularity,radius_of_singularity:float):
         path = self.path
         x0 = coordinates_of_singularity[0]
@@ -86,9 +89,11 @@ class b0():
         
         self.fieldDataAlongPath = np.zeros((len(self.path.r),4)) # bx,by,bz,babs
         for idx in range(len(path.r)):
-            self.fieldDataAlongPath[idx,:] = [0,0,0,0]
+            self.fieldDataAlongPath[idx,:] = [0,1,0,0]
             if np.sqrt((path.r[idx,0]-x0)**2+(path.r[idx,1]-y0)**2+(path.r[idx,2]-z0)**2)<radius_of_singularity:
-                self.fieldDataAlongPath[idx,:] = [0,50,0,0]
+                self.fieldDataAlongPath[idx,:] = [414,414,414,414]
+                
+        self.reorder_field_to_cubic_grid()
 
         
     def reorder_field_to_cubic_grid(self):
@@ -163,7 +168,7 @@ class b0():
         # the b0Data will be a 3D array
         # indexing is the same for path and b0_values_1D
         
-        b0Data = np.zeros((len(self.xPts),len(self.yPts),len(self.zPts),3))
+        b0Data = np.zeros((len(self.xPts),len(self.yPts),len(self.zPts),4))
         
         
         for idx in range(np.size(self.path.r,0)):
@@ -191,19 +196,62 @@ class b0():
 
 
         self.b0Data = b0Data
+        print('B0.B0DATA GENERATED ON A RECT GRID')
 
+    # ------------------- data parsers -------------------
                 
     def parse_field_of_B0_file(self,field_lines):
         #-2.842000 48.057000 -2.319000 48.197000
-        self.fieldDataAlongPath = np.zeros((len(field_lines),3))
+        self.fieldDataAlongPath = np.zeros((len(field_lines),4))
         for idx, line in enumerate(field_lines):
-            self.fieldDataAlongPath[idx,:] = [float(line.split(' ')[0]),float(line.split(' ')[1]),float(line.split(' ')[2])]
+            b0x = float(line.split(' ')[0])
+            b0y = float(line.split(' ')[1])
+            b0z = float(line.split(' ')[2])
+            b0abs = float(line.split(' ')[3])
+            self.fieldDataAlongPath[idx,:] = [b0x,b0y,b0z,b0abs]
         
         if self.fieldDataAlongPath[0,1] == 0:
             self.fieldDataAlongPath[0,0] = np.nanmean(self.fieldDataAlongPath[1:,0])
             self.fieldDataAlongPath[0,1] = np.nanmean(self.fieldDataAlongPath[1:,1])
             self.fieldDataAlongPath[0,2] = np.nanmean(self.fieldDataAlongPath[1:,2])
+            self.fieldDataAlongPath[0,3] = np.nanmean(self.fieldDataAlongPath[1:,3])
+                        
+    def parse_field_of_CSV_file(self,field_lines):
+        # 315.17	152.35	113.75	0	100	0	0
+        self.fieldDataAlongPath = np.zeros((len(field_lines),4))
+        for idx, line in enumerate(field_lines):
+            b0x = float(line.split(',')[3])
+            b0y = float(line.split(',')[4])
+            b0z = float(line.split(',')[5])
+            b0abs = float(line.split(',')[6])
             
+            self.fieldDataAlongPath[idx,:] = [b0x,b0y,b0z,b0abs]
+
+            
+    def parse_header_of_CSV_file(self,header_lines):
+        # COSI2 B0 scan						
+        # time 2024-05-17 13:21:45.456312						
+        # MAGNET CENTER IN LAB: x 265.170 mm	 y 182.350 mm	 z 163.750 mm				
+        # MAGNET AXES WRT LAB: alpha 0.00 deg	 beta 0.00 deg	 gamma 0.00 deg				
+        # path: C:/cosi-measure/Software/COSI2/dummies/b0_maps/testcsv.path						
+        # X[mm]	Y[mm]	Z[mm]	B0_x[mT]	B0_y[mT|	B0_z[mT]	B0_abs[mT]
+        self.datetime = header_lines[1].split(' ')[2:3]
+        mg_cor_str = header_lines[2].split(':')[1]
+        mag_center_x = float(mg_cor_str.split(',')[0].split(' ')[2])
+        mag_center_y = float(mg_cor_str.split(',')[1].split(' ')[2])
+        mag_center_z= float(mg_cor_str.split(',')[2].split(' ')[2])
+        
+        mg_euler_str = header_lines[3].split(':')[1]
+        mag_alpha = float(mg_euler_str.split(',')[0].split(' ')[2])
+        mag_beta = float(mg_euler_str.split(',')[1].split(' ')[2])
+        mag_gamma= float(mg_euler_str.split(',')[2].split(' ')[2])
+
+        self.magnet = osi2magnet.osi2magnet(origin=[mag_center_x,mag_center_y,mag_center_z],euler_angles_zyx=[mag_alpha,mag_beta,mag_gamma])
+
+        path_filename_str = str(header_lines[4].split('path:')[1])
+        print('warning. path file %s not used. path data taken from csv!'%path_filename_str)
+    
+    
     def parse_header_of_B0_file(self,header_lines):
         self.datetime = header_lines[1]
         # ['COSI2 B0 scan\n', 
@@ -227,127 +275,53 @@ class b0():
 
     def saveAsCsv_for_comsol(self, filename: str):
         # for comsol
+        magnet = self.magnet
         with open(filename, 'w') as file:
-            file.write('X[m],Y[m],Z[m],Bx[T],By[T|,Bz[T]\n')
+            
+            file.write('# COSI2 B0 scan\n')                    
+            # Convert date and time to string
+            dateTimeStr = str(datetime.now())
+            file.write('# time '+dateTimeStr+'\n')
+            file.write('# MAGNET CENTER IN LAB: x %.3f mm, y %.3f mm, z %.3f mm\n'%(magnet.origin[0],magnet.origin[1],magnet.origin[2]))
+            file.write('# MAGNET AXES WRT LAB: alpha %.2f deg, beta %.2f deg, gamma %.2f deg\n'%(magnet.alpha,magnet.beta,magnet.gamma))   
+            file.write('# path: '+self.path.filename+'\n')
+            file.write('# X[mm],Y[mm],Z[mm],B0_x[mT],B0_y[mT|,B0_z[mT],B0_abs[mT]\n')   
+
             for i in range(len(self.path.r[:,0])):
                 ri = self.path.r[i,:]            
-                # orthodox> file.write('%.6f,%.6f,%.6f,%.6f,%.6f,%.6f\n'%(ri[0]/1e3,ri[1]/1e3,ri[2]/1e3,self.fieldDataAlongPath[i,0]/1e3,self.fieldDataAlongPath[i,1]/1e3,self.fieldDataAlongPath[i,2]/1e3))
-                file.write('%.6f,%.6f,%.6f,%.6f,%.6f,%.6f\n'%(ri[0]/1e3,ri[1]/1e3,ri[2]/1e3,0,0,max(abs(self.fieldDataAlongPath[i,0]/1e3),abs(self.fieldDataAlongPath[i,1]/1e3),abs(self.fieldDataAlongPath[i,2]/1e3))))
+                bi = self.fieldDataAlongPath[i,:]
+                file.write('%.3f,%.3f,%.3f,%.4f,%.4f,%.4f,%.4f\n'%(ri[0],ri[1],ri[2],bi[0],bi[1],bi[2],bi[3]))
         
-        
-    def import_from_csv(self,filename: str):
-        #todo: think about the csv file format. Comments on magnet coordinates, datetime, path data, b0 data. 
-        print('please code the csv import method in the b0 class.')
+    def import_from_csv(self,b0_filename: str):
+        print('importing b0 object from csv file%s'%b0_filename)
+
+        # make an empty instance of b0 and get the b0 values from the csv file.
+        self.__init__()        
+        with open(b0_filename) as file:
+                raw_B0_data = file.readlines()     
+                headerlength = 0
+                for line in raw_B0_data:
+                    if line[0] == '#':
+                        headerlength += 1
+                        
+                header_lines = raw_B0_data[0:headerlength]    
+                field_lines = raw_B0_data[headerlength:]
+                self.parse_header_of_CSV_file(header_lines)
+                self.parse_field_of_CSV_file(field_lines) 
+         
+        # import the path from the path file
+        self.path = pth.pth(csv_filename = b0_filename)
+
+                
         
             
-    def saveAs(self,filename: str):
-        # open file filename and write comma separated values in it
-        # experiment parameters
-        # data
-        with open(filename, 'w') as file:
-            file.write('COSI pathfile generator output.')
-            file.write('Date/Time,%s\n\n\n'%self.datetime)
-            for pathpt in self.path:
-                file.write('x%.2f,y%.2f,z%.2f\n'%(pathpt[0],pathpt[1],pathpt[2]))
-        file.close()
-
-
-
-
-
-
-
-
-
-    '''rudimentary'''
-    # def loadPath(self, pathFileName: str):
-    #     self.pathFile = pathFileName
-    #     with open(pathFileName) as file:
-    #         rawPathData = file.readlines()
-    #         self.path = np.zeros((len(rawPathData),3))
-            
-    #         for idx, point in enumerate(rawPathData):
-    #             splitPoint = point.rstrip("\n\r").split('Z')
-    #             z = splitPoint[1]
-    #             self.path[idx, 2] = z
-
-    #             splitPoint = splitPoint[0].split('Y')
-    #             y=splitPoint[1]
-    #             self.path[idx, 1] = y
-
-    #             splitPoint = splitPoint[0].split('X')
-    #             x = splitPoint[1]
-    #             self.path[idx, 0] = x
-
-    #             self.headPosition = np.array([x,y,z])
-
-    #             #print(self.headPosition)
-
-
-    #         self.calculatePathCenter()
-
-
-    # def calculatePathCenter(self):
-    #     x_c = np.nanmean(self.path[:,0])
-    #     y_c = np.nanmean(self.path[:,1])
-    #     z_c = np.nanmean(self.path[:,2])
-    #     self.pathCenter = np.array([x_c,y_c,z_c])
-    #     print('path center: ',self.pathCenter)
-
-
-    # def centerPath(self):
-    #     self.calculatePathCenter()
-    #    # shifts the path to 0,0,0, point by point  
-             
-    #     newPath = np.zeros((np.shape(self.path)))
-
-    #     for idx in range(len(self.path)):
-    #         newPath[idx,:] = self.path[idx,:] - self.pathCenter
-
-    #         #print(self.path[idx,:],' -> ',newPath[idx,:])
-        
-    #     self.path = newPath
-    #     print('path centered')
-    #     self.calculatePathCenter()
-
-
-    # def rotatePoint_zyx(self, point:np.array, origin:np.array, alpha, beta, gamma):
-    #     # all rotations are extrinsic rotations in the laboratory frame of reference      
-    #     # https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.transform.Rotation.from_euler.html
-
-    #     init_point = np.array([point[0], point[1], point[2]])
-    #     origin_point = np.array([origin[0], origin[1], origin[2]])
-        
-    #     r = R.from_euler('zyx', [alpha, beta, gamma], degrees=True)
-        
-    #     rotation_matrix = r.as_matrix()
-    #     #print(rotation_matrix)
-
-    #     turned_point = np.add(rotation_matrix@np.add(init_point,-origin_point),origin_point) 
-
-    #     return turned_point
-
-
-    # def rotatePath_zyx(self, origin:np.array, alpha, beta, gamma):
-    #     # rotates the path by euler angles around zyx at the origin, extrinsically, point by point        
-    #     newPath = np.zeros((len(self.path),3))
-
-    #     for idx in range(len(self.path)):
-    #         tmp_point = np.array([self.path[idx,0], self.path[idx,1], self.path[idx,2]])
-    #         turnedPoint = self.rotatePoint_zyx(point=tmp_point,origin=origin,alpha=alpha,beta=beta,gamma=gamma)
-    #         newPath[idx,:] = turnedPoint 
-
-    #         #print(self.path[idx,:],' -> ',newPath[idx,:])
-        
-    #     self.path = newPath
-    #     self.calculatePathCenter()
-
-
-    # def savePathInFile(self,filename: str):
-    #     with open(filename,'w') as file:
-    #         for point in self.path:
-    #             file.write('X%dY%dZ%d\n'%(int(point[0]),int(point[1]),int(point[2])))
-    #         print('rotated coords written to %s'%filename)
-
-
-
+    # def saveAs(self,filename: str):
+    #     # open file filename and write comma separated values in it
+    #     # experiment parameters
+    #     # data
+    #     with open(filename, 'w') as file:
+    #         file.write('COSI pathfile generator output.')
+    #         file.write('Date/Time,%s\n\n\n'%self.datetime)
+    #         for pathpt in self.path:
+    #             file.write('x%.2f,y%.2f,z%.2f\n'%(pathpt[0],pathpt[1],pathpt[2]))
+    #     file.close()

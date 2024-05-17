@@ -335,7 +335,7 @@ class Ui(QtWidgets.QMainWindow):
         
         base_filename = os.path.splitext(self.cosimeasure.pathfile_path)[0]
         
-        self.cosimeasure.b0_filename=base_filename+'_bvals.txt'
+        self.cosimeasure.b0_filename=base_filename+'_bvals.csv'
         # todo: do the path generator inside the pth class
         sphere_path = ball_path.ball_path(filename_input=self.cosimeasure.pathfile_path,center_point_input=(xc,yc,zc),radius_input=rad,radius_npoints_input=radpts)
         self.cosimeasure.load_path() # change to automatic loading of path when the path filename is given

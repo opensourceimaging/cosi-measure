@@ -262,7 +262,7 @@ class cosimeasure(object):
         # write both path points and b0 values along the path. 
         # after each point write the b0 object to self.q 
         # write simultaneously to file and to self.b0 - failsafe
-        # todo: add head position tracking
+        # todo: save in csv file
         self.path = self.b0.path
         
         print('cosimeasure uses path of the passed b0 object')
@@ -271,14 +271,14 @@ class cosimeasure(object):
         if self.b0_filename: # if filename was given
             with open(self.b0_filename, 'w') as file: # open that file
                 if len(self.path.r): # if path was given
-                    file.write('COSI2 B0 scan\n')
-                    from datetime import datetime
+                    file.write('# COSI2 B0 scan\n')                    
                     # Convert date and time to string
                     dateTimeStr = str(datetime.now())
-                    file.write(dateTimeStr+'\n')
-                    file.write('MAGNET CENTER IN LAB: x %.3f mm, y %.3f mm, z %.3f mm\n'%(magnet.origin[0],magnet.origin[1],magnet.origin[2]))
-                    file.write('MAGNET AXES WRT LAB: alpha %.2f deg, beta %.2f deg, gamma %.2f deg\n'%(magnet.alpha,magnet.beta,magnet.gamma))   
-                    file.write('path: '+self.path.filename+'\n')   
+                    file.write('# time '+dateTimeStr+'\n')
+                    file.write('# MAGNET CENTER IN LAB: x %.3f mm, y %.3f mm, z %.3f mm\n'%(magnet.origin[0],magnet.origin[1],magnet.origin[2]))
+                    file.write('# MAGNET AXES WRT LAB: alpha %.2f deg, beta %.2f deg, gamma %.2f deg\n'%(magnet.alpha,magnet.beta,magnet.gamma))   
+                    file.write('# path: '+self.path.filename+'\n')
+                    file.write('# X[mm],Y[mm],Z[mm],B0_x[mT],B0_y[mT|,B0_z[mT],B0_abs[mT]\n')   
                     
                     self.b0.datetime = dateTimeStr
                     self.b0.magnet = magnet
@@ -290,24 +290,26 @@ class cosimeasure(object):
                         self.moveto(pt[0],pt[1],pt[2]) # move the head physically to the position
                         pos = self.get_current_position(fakePosition=pt) # update head position of the cosimeasure object, used for live plotting
                         print(pt) # if gui lags, the terminal still shows points
-                        #self.disable_motors() # no needed as the arm is long, uncomment for sensitive measurements
                         time.sleep(self.measurement_time_delay) # adjust according to the #averages of the gaussmeter
                         bx,by,bz,babs = self.gaussmeter.read_gaussmeter(fakeField=[0,100,0,0]) # after waiting get the averaged field vals
-                        #self.enable_motors() # no need as the arm is long, uncomment for sensitive measurements
                         print('pt %d of %d'%(ptidx,len(self.path.r)),pos,'mm reached, B0=[%.1f,%.4f,%.1f] mT'%(bx,by,bz))
+                        self.b0.path.current_index  = ptidx
                         
                         # first write to file: failsafe
                         bval_str = '%f %f %f %f\n'%(bx,by,bz,babs)
                         self.bvalues.append(bval_str) # save bvalues to ram
-                        file.write(bval_str)
+                        
+                        file.write('%.3f,%.3f,%.3f,%.4f,%.4f,%.4f,%.4f\n'%(pt[0],pt[1],pt[2],bx,by,bz,babs))
+
                         
                         # then write to object
                         self.b0.fieldDataAlongPath[ptidx,:] = [bx,by,bz,babs] # populate the b0 values of the b0 object at current index 
-
+                    
+                        self.q.put(self.b0) # spit b0 object to the queue every time a new point is measured
+                        
                         ptidx +=1    
                         
-                        self.q.put(self.b0) # would this trick work?
-                        
+
                         
                         
                     print('path scanning done. saving file')

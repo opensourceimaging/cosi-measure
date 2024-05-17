@@ -194,6 +194,8 @@ class PlotterCanvas(FigureCanvas):
         xheadpos = cosimeasure.head_position[0]
         yheadpos = cosimeasure.head_position[1]
         zheadpos = cosimeasure.head_position[2]
+        
+        num_path_current_index = cosimeasure.b0.path.current_index
 
         
         pathInput = cosimeasure.path
@@ -206,7 +208,9 @@ class PlotterCanvas(FigureCanvas):
         self.axes.set_zlabel(self.zlabel)        
         self.axes.set_title(self.title)
         self.plot_magnet(magnet)
-        self.axes.plot(r[:,0],r[:,1],r[:,2],alpha=0.3,marker = 'o',linestyle=':',color='black') # alpha = 0.3 is the 4th argum
+        self.axes.plot(r[:,0],r[:,1],r[:,2],alpha=0.1,marker = 'o',linestyle=':',color='black') # alpha = 0.3 is the 4th argum
+        self.axes.plot(r[0:num_path_current_index,0],r[0:num_path_current_index,1],r[0:num_path_current_index,2],alpha=1,marker = 'x',linestyle=':',color='green') # alpha = 0.3 is the 4th argum
+
         self.axes.plot(xheadpos,yheadpos,zheadpos,'rx',linewidth=10)
         #self.axes.autoscale(True)
         self.update_plotter()
@@ -241,7 +245,7 @@ class PlotterCanvas(FigureCanvas):
             z = b0map_object.zPts[slice_number_xy]#np.transpose(np.ones((len(b0map_object.xPts), len(b0map_object.yPts)))*b0map_object.zPts[slice_number_xy])
         
             #vals = np.transpose(b0map_object.b0Data[:,:,slice_number_xy,1])
-            imgdata = b0map_object.b0Data[:,:,slice_number_xy,1]#self.axes.imshow(x,y,vals,cmap=slice_color_map)
+            imgdata = np.transpose(b0map_object.b0Data[:,:,slice_number_xy,1])#self.axes.imshow(x,y,vals,cmap=slice_color_map)
             img = self.axes.imshow(imgdata,cmap=slice_color_map,vmin = minval_of_b0, vmax= maxval_of_b0,
                                    origin = 'lower', 
                                    extent=[min(b0map_object.xPts),max(b0map_object.xPts),min(b0map_object.yPts),max(b0map_object.yPts)])
@@ -256,7 +260,7 @@ class PlotterCanvas(FigureCanvas):
             y = b0map_object.yPts[slice_number_zx]#np.transpose(np.ones((len(b0map_object.xPts), len(b0map_object.yPts)))*b0map_object.zPts[slice_number_xy])
         
             #vals = np.transpose(b0map_object.b0Data[:,:,slice_number_xy,1])
-            imgdata = b0map_object.b0Data[:,slice_number_zx,:,1]#self.axes.imshow(x,y,vals,cmap=slice_color_map)
+            imgdata = np.transpose(b0map_object.b0Data[:,slice_number_zx,:,1])#self.axes.imshow(x,y,vals,cmap=slice_color_map)
             img = self.axes.imshow(imgdata,cmap=slice_color_map,vmin = minval_of_b0, vmax= maxval_of_b0,
                                    origin = 'lower',
                                    extent=[min(b0map_object.xPts),max(b0map_object.xPts),min(b0map_object.zPts),max(b0map_object.zPts)])
@@ -270,7 +274,7 @@ class PlotterCanvas(FigureCanvas):
             x = b0map_object.yPts[slice_number_yz]#np.transpose(np.ones((len(b0map_object.xPts), len(b0map_object.yPts)))*b0map_object.zPts[slice_number_xy])
         
             #vals = np.transpose(b0map_object.b0Data[:,:,slice_number_xy,1])
-            imgdata = b0map_object.b0Data[slice_number_yz,:,:,1]
+            imgdata = np.transpose(b0map_object.b0Data[slice_number_yz,:,:,1])
             img = self.axes.imshow(imgdata,cmap=slice_color_map,vmin = minval_of_b0, vmax= maxval_of_b0,
                                    origin = 'lower',
                                    extent=[min(b0map_object.yPts),max(b0map_object.yPts),min(b0map_object.zPts),max(b0map_object.zPts)])
@@ -328,8 +332,10 @@ class PlotterCanvas(FigureCanvas):
         
         # plot the contour plots with a color map
         minval_of_b0 = np.nanmin(b0map_object.b0Data[:,:,:,1])
+        print('min value ', minval_of_b0)
         maxval_of_b0 = np.nanmax(b0map_object.b0Data[:,:,:,1])
-
+        print('max value ', maxval_of_b0)
+        
         slice_color_map='coolwarm'
         
         nlevels = 64
@@ -399,21 +405,6 @@ class PlotterCanvas(FigureCanvas):
             #self.colorbar_object.ax.set_xlabel('[mT]')
             
         
-        
-                
-        # todo scale colormaps to one value
-        
-        
-        # if len(self.axes) > 1:
-        #     cax = self.axes[-1]    
-        #  # remove the previous colorbar, if present
-        # if cax is not None:
-        #     cax.clear()
-
-        #     norm = Normalize(vmin = minval_of_b0, vmax = maxval_of_b0)
-        
-        #     mappable = ScalarMappable(cmap='viridis', norm=norm)
-        #     self.fig.colorbar(mappable, orientation="vertical", label="B0 [mT]", cax=cax)
         self.axes.autoscale(False)
         self.update_plotter()
         
