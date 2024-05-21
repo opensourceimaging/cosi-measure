@@ -52,7 +52,6 @@ class field_viewer_gui(QtWidgets.QMainWindow):
         self.plotter2d = self.plotterWGT2d.PlotterCanvas
         self.plotter.preset_B0slice()  # just add some labels
      
-
         
         # connect tick box with plotter. on tick plot only one slice
         self.XYcheckBox.stateChanged.connect(self.plot_B0M_slice)
@@ -60,9 +59,9 @@ class field_viewer_gui(QtWidgets.QMainWindow):
         self.YZcheckBox.stateChanged.connect(self.plot_B0M_slice)
         self.ShowSphereCheckBox.stateChanged.connect(self.plot_B0M_slice)
         self.ShowMagnetCheckBox.stateChanged.connect(self.plot_B0M_slice)
-        
-        
+        self.ShowRingsCheckBox.stateChanged.connect(self.plot_B0M_slice)
 
+        
     def load_csv(self):
         # create an empty instance of b0map
         self.b0map = b0.b0()
@@ -153,17 +152,20 @@ class field_viewer_gui(QtWidgets.QMainWindow):
         plot_YZ_sliceFlag = self.YZcheckBox.isChecked()
         plot_sphere_flag = self.ShowSphereCheckBox.isChecked()
         plot_magnet_flag = self.ShowMagnetCheckBox.isChecked()
+        plot_rings_flag = self.ShowRingsCheckBox.isChecked()
+        
         
         XY_slice_number = int(self.XYspinBox.value()) if plot_XY_sliceFlag else -1
         ZX_slice_number = int(self.ZXspinBox.value()) if plot_ZX_sliceFlag else -1
         YZ_slice_number = int(self.YZspinBox.value()) if plot_YZ_sliceFlag else -1
         showSphRad = self.b0map.path.radius if plot_sphere_flag else None
         showMagnet = True if plot_magnet_flag else None 
+        showRings = True if plot_rings_flag else None
         
         # plot the slices according to the checked boxes
         self.plotter.plotB0Map(b0map_object=self.b0map, 
                                slice_number_xy=XY_slice_number,slice_number_zx=ZX_slice_number,slice_number_yz=YZ_slice_number, 
-                               show_sphere_radius=showSphRad,show_magnet = showMagnet, coordinate_system='magnet')
+                               show_sphere_radius=showSphRad,show_magnet = showMagnet,show_rings = showRings, coordinate_system='magnet')
         
 
 

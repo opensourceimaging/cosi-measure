@@ -284,7 +284,7 @@ class PlotterCanvas(FigureCanvas):
             self.ylabel = 'Z [mm]'
             self.update_plotter()
     
-    def plotB0Map(self,b0map_object:b0.b0,slice_number_xy=-1,slice_number_zx=-1,slice_number_yz=-1, show_sphere_radius = None, show_magnet = None, coordinate_system=None):
+    def plotB0Map(self,b0map_object:b0.b0,slice_number_xy=-1,slice_number_zx=-1,slice_number_yz=-1, show_sphere_radius = None, show_magnet = None,show_rings = None, coordinate_system=None):
         # plot only one slice of data. Slice at the middle of the scan
         self.axes.cla()
        
@@ -328,6 +328,41 @@ class PlotterCanvas(FigureCanvas):
             self.axes.text(-bore_depth/2, 0, 0, "FRONT", color='black',zdir='z' )
             self.axes.text(bore_depth/2, 0, 0, "BACK", color='black',zdir='z')
             
+        if show_rings is not None:
+            # plot points where shimming magnets are
+            # start with one shim insert. 7 magnets, 7 points.
+            def data_for_rings(radius,x_pos,tray_nr):
+                angular_distance_between_trays = 2*np.pi/12
+                # the magiet is flipped
+                
+                angular_width_of_shim_tray = np.pi/180*19.25 # from Tom-David
+                
+                theta = np.linspace(-angular_width_of_shim_tray/2+\
+                    (tray_nr-1)*angular_distance_between_trays,angular_width_of_shim_tray/2+\
+                        (tray_nr-1)*angular_distance_between_trays, 7)
+        
+                z = radius*np.sin(theta)
+                y = radius*np.cos(theta)
+                x = np.zeros((len(theta),1))+x_pos
+                
+                return x,y,z
+            
+            shim_radius = b0map_object.magnet.shim_ring_radius
+            
+            ring_position_x = 0
+        
+            for _tray_nr in range(1,13,1):
+                Xs,Ys,Zs = data_for_rings(radius=shim_radius,x_pos=ring_position_x,tray_nr=_tray_nr)            
+                r = _tray_nr/12
+                g=0
+                b = 1-_tray_nr/12
+                if _tray_nr%2 == 1:
+                    g = 1
+                    r = 1-_tray_nr/12
+                    b = _tray_nr/12
+                
+                self.axes.scatter(Xs, Ys, Zs, color=[r,g,b])        
+                self.axes.text(ring_position_x, np.mean(Ys), np.mean(Zs) , "%d"%_tray_nr, color='black',zdir='y',fontsize=14)
 
         
         # plot the contour plots with a color map

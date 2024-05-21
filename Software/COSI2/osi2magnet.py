@@ -16,6 +16,9 @@ class osi2magnet():
     vec_length = 32 # vectors are 32 mm long
     bore_radius = 150 # mm - adjust!
     bore_depth = 500
+    
+    # shim rings
+    shim_ring_radius = 276 # mm
 
     xvector = 0
     yvector = 0

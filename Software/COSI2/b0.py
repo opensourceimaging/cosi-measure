@@ -191,8 +191,11 @@ class b0():
         # homogeniety
         maxField = np.nanmax(b0Data[:,:,:,1])
         minField = np.nanmin(b0Data[:,:,:,1])
-        homogeneity = 1e6*(maxField-minField)/meanField
-        print('homogeniety: %i ppm'%homogeneity)
+        try:
+            homogeneity = float(1e6*(maxField-minField)/meanField)
+        except:
+            homogeneity = 0
+        print('homogeniety: %.0f ppm'%homogeneity)
 
 
         self.b0Data = b0Data
