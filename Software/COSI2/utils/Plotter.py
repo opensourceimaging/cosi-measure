@@ -60,7 +60,6 @@ class PlotterCanvas(FigureCanvas):
                             hspace=0.0,wspace=0.0)
             
 
-            
         else:
             self.axes = fig.add_subplot(111)
 #        fig.subplots_adjust(left = 0.18, right=0.99, top=0.94, bottom=0.1)
