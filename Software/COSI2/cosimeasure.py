@@ -257,6 +257,12 @@ class cosimeasure(object):
         #self.run_path_no_measure()
         self.run_path_measure_field(self.magnet)
 
+    def measure_gradients(self,magnet:osi2magnet.osi2magnet):
+        print('measuring b0 along x, center of bore')
+        print('measuring b0 along y, center of bore')
+        print('measuring b0 along z, center of bore')
+
+
     def run_path_measure_field(self,magnet:osi2magnet.osi2magnet):
         # todo: write to a b0 object, 
         # write both path points and b0 values along the path. 
@@ -285,9 +291,18 @@ class cosimeasure(object):
                                      
                     self.command('G90') ### SEND G90 before any path movement to make sure we are in absolute mode
                     time.sleep(1)
+                    self.moveto(self.path.r[0,0],self.path.r[0,1],self.path.r[0,2]) # move the head physically to the position
+                    pt_prev = self.path.r[0]
+                    time.sleep(5)
                     ptidx = 0 # index of the point along the path
                     for pt in self.path.r: # follow the path
+                        
+                        distance_to_prev_point = np.sqrt(np.dot(pt-pt_prev,pt-pt_prev))  
+                                           
                         self.moveto(pt[0],pt[1],pt[2]) # move the head physically to the position
+                        if distance_to_prev_point > 20: 
+                            time.sleep(5)
+                            
                         pos = self.get_current_position(fakePosition=pt) # update head position of the cosimeasure object, used for live plotting
                         print(pt) # if gui lags, the terminal still shows points
                         time.sleep(self.measurement_time_delay) # adjust according to the #averages of the gaussmeter
@@ -307,6 +322,7 @@ class cosimeasure(object):
                     
                         self.q.put(self.b0) # spit b0 object to the queue every time a new point is measured
                         
+                        pt_prev = pt
                         ptidx +=1    
                         
 

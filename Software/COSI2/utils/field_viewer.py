@@ -11,6 +11,8 @@ import b0  # class of b0, makes an object of a b0. Can import from file. Attribu
 from PyQt5 import QtWidgets
 import numpy as np
 
+from utils import shimming_magnet
+
 
 class field_viewer_gui(QtWidgets.QMainWindow):
     '''the field viewer window.'''
@@ -78,6 +80,7 @@ class field_viewer_gui(QtWidgets.QMainWindow):
             return 0
         
         # import b0map as an object
+        self.b0map = b0.b0()
         self.b0map.import_from_csv(filename_to_import_csv_data_from)
         self.coordinate_transform_btn.clicked.connect(self.change_coords_to_magnet)
         # and print it on the plotter.

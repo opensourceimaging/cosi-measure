@@ -366,9 +366,9 @@ class PlotterCanvas(FigureCanvas):
         
         # plot the contour plots with a color map
         minval_of_b0 = np.nanmin(b0map_object.b0Data[:,:,:,1])
-        print('min value ', minval_of_b0)
         maxval_of_b0 = np.nanmax(b0map_object.b0Data[:,:,:,1])
-        print('max value ', maxval_of_b0)
+        
+        print('--- plotter is called --- ', minval_of_b0)
         
         slice_color_map='coolwarm'
         

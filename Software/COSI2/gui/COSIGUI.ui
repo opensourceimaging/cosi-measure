@@ -434,7 +434,7 @@
            </size>
           </property>
           <property name="text">
-           <string>Generate Path</string>
+           <string>Generate Ball</string>
           </property>
          </widget>
         </item>
@@ -450,6 +450,13 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="grad_path_gen_btn">
+          <property name="text">
+           <string>Generate Cross</string>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="Line" name="line_2">
