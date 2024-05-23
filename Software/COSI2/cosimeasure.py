@@ -61,7 +61,7 @@ class cosimeasure(object):
         
         self.magnet = magnet
 
-        self.measurement_time_delay = 2
+        self.measurement_time_delay = 4
         if isfake:
             self.measurement_time_delay = 0.25 # for quick testing
             return
