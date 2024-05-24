@@ -1,0 +1,13 @@
+b0 mapping in the shielded room
+magnet facing COSI
+3 averages, 5% window, lcd off, 4 s delay between points
+magnet ref points
+pr X:15.000 Y:383.000 Z:263.500
+pl X: Y: Z:
+pt X: Y: Z:
+
+magnet center in lab [245.07603192 126.95688422 270.28704997]
+
+
+path
+245.1, 127.0, 270.3 ,100
