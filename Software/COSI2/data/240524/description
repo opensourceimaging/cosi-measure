@@ -11,3 +11,43 @@ magnet center in lab [245.07603192 126.95688422 270.28704997]
 
 path
 245.1, 127.0, 270.3 ,100
+
+midpoint xz 244.5 383. 268.5
+
+scanned linear paths line_x_200mm_zgradient is a b0 scan along
+200 mm of x axis of cosi (z axis of magnet)
+through the center of the magnet, with z gradient on, and so on
+
+COSI is losing steps on x when moved x and z at the same time
+
+inputs:
+
+245.1, 127.0, 270.3 ,100
+245.1, 127.0, 270.3
+-90,-90,0
+    
+# quick 100 mm sphere with artifact on the first point of the path:
+    
+quick_ball_point_artifact_bvals.csv
+delay between points: 5s
+
+# magnet on the inner wall of the bore
+quick_ball_magnet_inner_wall_1_bvals.csv
+delay between points 1.5s 
+
+COSI is missing steps!
+
+set
+max_velocity: 10
+in printer.cfg
+
+# magnet on the inner wall of the bore
+less acceleration and speed in printer.cfg
+quick_ball_magnet_inner_wall_2_bvals.csv
+
+# no magnet, same path
+quick_ball_no_magnet_bvals.csv
+
+
+# large scan
+slow_ball_90mm_bvals.csv

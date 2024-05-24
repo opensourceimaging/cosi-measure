@@ -61,7 +61,7 @@ class cosimeasure(object):
         
         self.magnet = magnet
 
-        self.measurement_time_delay = 4
+        self.measurement_time_delay = 1.5
         if isfake:
             self.measurement_time_delay = 0.25 # for quick testing
             return
@@ -284,7 +284,7 @@ class cosimeasure(object):
                     file.write('# MAGNET CENTER IN LAB: x %.3f mm, y %.3f mm, z %.3f mm\n'%(magnet.origin[0],magnet.origin[1],magnet.origin[2]))
                     file.write('# MAGNET AXES WRT LAB: alpha %.2f deg, beta %.2f deg, gamma %.2f deg\n'%(magnet.alpha,magnet.beta,magnet.gamma))   
                     file.write('# path: '+self.path.filename+'\n')
-                    file.write('# X[mm],Y[mm],Z[mm],B0_x[mT],B0_y[mT|,B0_z[mT],B0_abs[mT]\n')   
+                    file.write('# X[mm],Y[mm],Z[mm],B0_x[mT],B0_y[mT],B0_z[mT],B0_abs[mT]\n')   
                     
                     self.b0.datetime = dateTimeStr
                     self.b0.magnet = magnet
@@ -293,6 +293,8 @@ class cosimeasure(object):
                     time.sleep(1)
                     self.moveto(self.path.r[0,0],self.path.r[0,1],self.path.r[0,2]) # move the head physically to the position
                     pt_prev = self.path.r[0]
+                    dummy_data_likely_zero = self.gaussmeter.read_gaussmeter(fakeField=[0,100,0,0]) # after waiting get the averaged field vals
+                    
                     time.sleep(5)
                     ptidx = 0 # index of the point along the path
                     for pt in self.path.r: # follow the path
@@ -300,7 +302,7 @@ class cosimeasure(object):
                         distance_to_prev_point = np.sqrt(np.dot(pt-pt_prev,pt-pt_prev))  
                                            
                         self.moveto(pt[0],pt[1],pt[2]) # move the head physically to the position
-                        if distance_to_prev_point > 20: 
+                        if distance_to_prev_point > 100: 
                             time.sleep(5)
                             
                         pos = self.get_current_position(fakePosition=pt) # update head position of the cosimeasure object, used for live plotting
