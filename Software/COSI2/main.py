@@ -323,6 +323,8 @@ class Ui(QtWidgets.QMainWindow):
         yc = float(self.path_dim_edit.text().split(",")[1])
         zc = float(self.path_dim_edit.text().split(",")[2])
         rad = float(self.path_dim_edit.text().split(",")[3]) # mm
+        axis = str(self.path_dim_edit.text().split(",")[4]) # x,y or z
+
         radpts = int(self.path_res_edit.text())
         try:
             self.cosimeasure.pathfile_path, _ = QtWidgets.QFileDialog.getSaveFileName(self, caption="path filename",
@@ -338,7 +340,9 @@ class Ui(QtWidgets.QMainWindow):
         
         self.cosimeasure.b0_filename=base_filename+'_bvals.csv'
         # todo: do the path generator inside the pth class
-        cross_path = ball_path.gradient_path(filename_input=self.cosimeasure.pathfile_path,center_point_input=(xc,yc,zc),radius_input=rad,radius_npoints_input=radpts)
+        #cross_path = ball_path.gradient_path(filename_input=self.cosimeasure.pathfile_path,center_point_input=(xc,yc,zc),radius_input=rad,radius_npoints_input=radpts)
+        cross_path = ball_path.gradient_path(filename_input=self.cosimeasure.pathfile_path,center_point_input=(xc,yc,zc),radius_input=rad,radius_npoints_input=radpts,axis=axis) 
+        
         self.cosimeasure.load_path() # change to automatic loading of path when the path filename is given
         self.pathPlotter.plot_head_on_path(cosimeasure=self.cosimeasure,magnet=self.magnet)
 
