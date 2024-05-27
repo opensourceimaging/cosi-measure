@@ -51,3 +51,11 @@ quick_ball_no_magnet_bvals.csv
 
 # large scan
 slow_ball_90mm_bvals.csv
+
+after the weekend
+3s delay between points
+magnet attached inside bore x-y+z-
+ball_small_magnet_x-y+z-_delay_3s
+
+
+magnet attached inside bore x+y-z+
