@@ -59,3 +59,7 @@ ball_small_magnet_x-y+z-_delay_3s
 
 
 magnet attached inside bore x+y-z+
+ball_small_magnet_x+y-z+
+
+no magnet 
+ball_no_magnet
