@@ -1,0 +1,3 @@
+The electronic cabinet was designed to keep backwards compatibility to the connectors of V1.0 in our lab. But it is recommended to change the wiring to standard M12 sensor actuator boxes because this will eventually safe a lot of time in assembly and is general a better solution with less parts.
+
+For cable selection keep in mind, that most cables must be for moving cable chain applications. Use shielded cables for the motors.

@@ -1,3 +1,0 @@
-(sym_lib_table
-  (lib (name cosi_pwr)(type Legacy)(uri ${KIPRJMOD}/cosi_pwr.lib)(options "")(descr ""))
-)

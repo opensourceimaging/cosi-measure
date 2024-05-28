@@ -1,1 +1,0 @@
-In order to remove some stress on the limit switch holders, some alternative configurations have been implemented that are a bit more robust (see photos attached). Both versions v1 and v2 have been tested and work fine.  

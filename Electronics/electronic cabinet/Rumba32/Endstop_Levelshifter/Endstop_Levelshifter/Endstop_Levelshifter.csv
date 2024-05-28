@@ -1,0 +1,7 @@
+"Id";"Designator";"Package";"Quantity";"Designation";"Supplier and ref";
+1;"J1";"691210910008";1;"Conn_01x08";;;
+2;"C1";"C_0805_2012Metric_Pad1.18x1.45mm_HandSolder";1;"10n";;;
+3;"J4";"PinHeader_1x02_P2.54mm_Horizontal";1;"Conn_01x02";;;
+4;"J3";"PinSocket_1x03_P2.54mm_Vertical";1;"Conn_01x03";;;
+5;"J2";"PinSocket_1x05_P2.54mm_Vertical";1;"Conn_01x05";;;
+6;"IC1";"TSSOP-16_4.4x5mm_P0.65mm";1;"74HC4050PW,118";;;
