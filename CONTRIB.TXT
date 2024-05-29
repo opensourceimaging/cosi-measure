@@ -3,6 +3,6 @@
 ********************************************************************************
 Contact point of any Licensor who wishes to receive modified Documentation:
 
-lukas.winter@mdc-berlin.de
+lukas.winter@ptb.de
 
 ********************************************************************************
