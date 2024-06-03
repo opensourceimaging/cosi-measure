@@ -37,15 +37,14 @@ More photos and videos can be found on opensourceimaging.org: https://www.openso
 
 ## Versions and Branches
 
-- 1.0
-    - Electronics based on Beagle Bone Black and BeBoPr++
-    - outdated
-- 2.0
-    - Electronics changed to Rasperry Pi and Rumba32
-    - Other simplifications e.g. in the power management board
-    - Up to 6x stepper motor drivers
-    - Improved safety concept with hardware safe-torque-off and soft and hard limit switches
-    - New software
+You're currently viewing the `main` branch, showing ongoing development on `v2.0.*` of the COSI Measure system.\
+New versions are developed in dedicated feature branches and then merged here.
+
+The latest stable release is [v2.0](https://github.com/opensourceimaging/cosi-measure/releases/tag/v2.0).
+
+For older, please check out the [releases overview](https://github.com/opensourceimaging/cosi-measure/releases/).
+
+The changes between versions are summarzized in the respective release notes and documented in the [CHANGELOG](CHANGELOG.md) document.
 
 ## Contacts
 
@@ -81,3 +80,4 @@ The project (21NRM05) has received funding from the European Partnership on Metr
 
 ## License and Liability
 The content in this repository is licensed under the CERN Open Hardware Licence Version 2 - Weakly Reciprocal, please see [LICENSE](LICENSE) for details and also check the [DISCLAIMER](DISCLAIMER.pdf)
+
