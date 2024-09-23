@@ -4,7 +4,9 @@ def csv_import(filename, position_bz=5):
     '''
     # Args
 
-    - filename:string. Name of a field file. Format: X[m],Y[m],Z[m],Bx[T],By[T],Bz[T]
+    - filename:string. Name of a field file. Format: X[mm],Y[mm],Z[mm],Bx[mT],By[mT],Bz[mT]
+
+    - position_bz:int Position of the main component of the field inside the csv file.
 
     # Returns
 
