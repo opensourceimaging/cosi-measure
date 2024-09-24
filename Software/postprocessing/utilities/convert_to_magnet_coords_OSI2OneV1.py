@@ -4,6 +4,8 @@ import numpy as np
 def convert_to_magnet_coordinate_frame(rawdat_filename):
     '''
     in the same directory of rawdat_filename should be a file with the cosi-coordinates of the centerposition, which is named 'centerpoint.csv'.
+
+    the rawdatfile can either be a pathfile (ending with .txt) or it can be a bfieldfiele (ending with.csv)
     '''
     if rawdat_filename.endswith(".txt"):
         print("Interpreting as pathfile")

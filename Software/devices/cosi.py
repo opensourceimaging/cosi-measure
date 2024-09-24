@@ -26,7 +26,7 @@ class CosiMeasure():
 
     - move_to()
 
-    - measure_async_along_path()
+    - measure_along_path()
 
     - enable_motors()
 
@@ -309,11 +309,9 @@ class CosiMeasure():
                 return False
             
 
-    def measure_async_along_path(self, pathfile, rawdatfile, probe, header='X[mm],Y[mm],Z[mm],Bx[mT],By[mT],Bz[mT]\n'):
+    def measure_along_path(self, pathfile, rawdatfile, probe, header='X[mm],Y[mm],Z[mm],Bx[mT],By[mT],Bz[mT]\n'):
         '''
         measrues along the points of a given pathfile and stores the data in a rawdatfile.
-
-        The probe is expected to have an asynchronous read out. see gaussmeter.py for an example/ details.
 
         This method will write raw data, meaning there are no coordinate transformations etc. 
         It is recommended to do this in postprocessing only.
@@ -348,13 +346,8 @@ class CosiMeasure():
 
                 b0x,b0y,b0z,b0abs = probe.read()
 
-                if not i==0:
-                    line = '%.2f, %.2f, %.2f, %3f, %3f, %3f\n'%(coordinates[i-1][0],coordinates[i-1][1],coordinates[i-1][2], b0x,b0y,b0z)
-                    print(line)
-                    _rawdatfile.write(line)
-
-            b0x,b0y,b0z,b0abs = probe.read()
-            line = '%.2f, %.2f, %.2f, %3f, %3f, %3f\n'%(coordinates[len(coordinates)-1][0],coordinates[len(coordinates)-1][1],coordinates[len(coordinates)-1][2], b0x,b0y,b0z)
-            _rawdatfile.write(line)
+                line = '%.2f, %.2f, %.2f, %3f, %3f, %3f\n'%(coordinates[i][0],coordinates[i][1],coordinates[i][2], b0x,b0y,b0z)
+                print(line)
+                _rawdatfile.write(line)
 
         print('finished measurement')
