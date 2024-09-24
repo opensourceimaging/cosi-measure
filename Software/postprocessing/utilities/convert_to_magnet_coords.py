@@ -1,11 +1,19 @@
 import os
 import numpy as np
 
-def convert_to_magnet_coordinate_frame(rawdat_filename):
+def convert_to_magnet_coordinate_frame(rawdat_filename, probe='lakeshore', magnet_type='V1.0'):
     '''
     in the same directory of rawdat_filename should be a file with the cosi-coordinates of the centerposition, which is named 'centerpoint.csv'.
 
     the rawdatfile can either be a pathfile (ending with .txt) or it can be a bfieldfiele (ending with.csv)
+
+    # Args
+
+    - rawdat_filename:str
+
+    - probe:str. Default: 'lakeshore'. Name of the probe. For now only 'lakeshore' is implemented. other probes will have other coordinate systems
+
+    - magnet_type:str Default: 'V1.0'. Version of the magnet. Different magnets have different coordinate systems :-/
     '''
     if rawdat_filename.endswith(".txt"):
         print("Interpreting as pathfile")
@@ -24,6 +32,11 @@ def convert_to_magnet_coordinate_frame(rawdat_filename):
     filename_centerpoint = os.path.join(rawdat_directory, 'centerpoint.csv')
 
     center_point = np.loadtxt(filename_centerpoint)
+
+    
+
+    if magnet_type =='V2.1':
+        magnet_bore_half_length = 212
 
     with open(rawdat_filename, 'r') as rawfile:
         data_lines = []
@@ -44,18 +57,25 @@ def convert_to_magnet_coordinate_frame(rawdat_filename):
             y_cosy = float(parts[1])
             z_cosy = float(parts[2])
 
+            if magnet_type =='V1.0':
+                x_magnet = y_cosy - center_point[1]
+                y_magnet = z_cosy - center_point[2]
+                z_magnet = -x_cosy + center_point[0]
+            if magnet_type =='V1.2':
+                raise ValueError('Magnet V2.1 is not yet implemented')
+
             if not is_pathfile:
                 bx_probe = float(parts[3])
                 by_probe = float(parts[4])
                 bz_probe = float(parts[5])
 
-            x_magnet = y_cosy - center_point[1]
-            y_magnet = z_cosy - center_point[2]
-            z_magnet = -x_cosy + center_point[0]
-            if not is_pathfile:
-                bx_magnet = -bz_probe
-                by_magnet = -by_probe
-                bz_magnet = -bx_probe
+                if probe=='lakeshore' and magnet_type=='V1.0':
+                    bx_magnet = -bz_probe
+                    by_magnet = -by_probe
+                    bz_magnet = -bx_probe
+                
+                if probe=='lakeshore' and magnet_type=='V2.1':
+                    raise ValueError('Magnet V2.1 is not yet implemented')
 
             if is_pathfile:
                 outfile.write(format(x_magnet, 'f') + ',' + format(y_magnet, 'f') + ',' + format(z_magnet, 'f') + '\n')

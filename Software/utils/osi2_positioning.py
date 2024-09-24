@@ -1,6 +1,6 @@
 import numpy as np
 
-def get_magnet_center_abs(pos_right_screw:np.array, pos_left_screw:np.array, pos_top_screw:np.array, probe_distance_from_tip = 2.05):
+def get_magnet_center_abs(pos_right_screw:np.array, pos_left_screw:np.array, pos_top_screw:np.array, probe_distance_from_tip = 2.05, magnet_type = 'V1.0'):
     '''
     calculates the center position of osi2-one magnet from 3 ref points aka ref screws. Everything in COSI coordinates
 
@@ -21,8 +21,12 @@ def get_magnet_center_abs(pos_right_screw:np.array, pos_left_screw:np.array, pos
 
     '''
     probe_distance_from_tip = 2.05 # in -y of Cosi
-    magnet_bore_half_length = 240+9 # +9 is offset from stuff in front, e.g. screws. 
-
+    # select length of the magnet bore by magnet type
+    if magnet_type =='V1.0':
+        magnet_bore_half_length = 240+9 # +9 is offset from stuff in front, e.g. screws. 
+    if magnet_type =='V2.1':
+        magnet_bore_half_length = 212
+    
     center_in_xz_plane_magnet_front = (pos_right_screw+pos_left_screw)/2
 
     vector_frontplaneCenter_2_top = pos_top_screw - center_in_xz_plane_magnet_front
