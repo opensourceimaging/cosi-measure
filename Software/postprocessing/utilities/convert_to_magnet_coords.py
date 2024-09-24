@@ -62,7 +62,9 @@ def convert_to_magnet_coordinate_frame(rawdat_filename, probe='lakeshore', magne
                 y_magnet = z_cosy - center_point[2]
                 z_magnet = -x_cosy + center_point[0]
             if magnet_type =='V1.2':
-                raise ValueError('Magnet V2.1 is not yet implemented')
+                x_magnet = y_cosy + center_point[1]
+                y_magnet = -x_cosy + center_point[0]
+                z_magnet = -z_cosy + center_point[2]
 
             if not is_pathfile:
                 bx_probe = float(parts[3])
@@ -75,6 +77,7 @@ def convert_to_magnet_coordinate_frame(rawdat_filename, probe='lakeshore', magne
                     bz_magnet = -bx_probe
                 
                 if probe=='lakeshore' and magnet_type=='V2.1':
+                    # the orientation of the probe needs to be defined. Shall it be rotated to have B0 on x_probe?
                     raise ValueError('Magnet V2.1 is not yet implemented')
 
             if is_pathfile:
