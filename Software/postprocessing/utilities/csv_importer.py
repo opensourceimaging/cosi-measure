@@ -1,16 +1,16 @@
 import numpy as np
 
-def csv_import(filename, position_bz=5):
+def csv_import(filename, position_b0=5):
     '''
     # Args
 
-    - filename:string. Name of a field file. Format: X[mm],Y[mm],Z[mm],Bx[mT],By[mT],Bz[mT]
+    - filename:string. Name of a field file. Format: X[mm],Y[mm],Z[mm],Bx[mT],By[mT],Bz[mT]. The first 3 coloums are fixed as x,y,z and the following coloums can be different. Which one is the main B0-component shall be defined by position_b0.
 
-    - position_bz:int Position of the main component of the field inside the csv file.
+    - position_b0:int Position of the main component of the field inside the csv file. Default: 5
 
     # Returns
 
-    - Bz_array. 3D-array which cointains the measurement data in point, which is also a 3D-array of shape (3,)
+    - Bz_array. 3D-array which cointains the measurement data in point. Only the main component as defined by position_b0 is returned.
 
     - x_values. np.ndarary. The X-values along the x-axis on which the measurement data is accquired.
 
@@ -41,7 +41,7 @@ def csv_import(filename, position_bz=5):
         x = float(parts[0])
         y = float(parts[1])
         z = float(parts[2])
-        bz = float(parts[position_bz])
+        bz = float(parts[position_b0])
         data.append((x, y, z, bz))
     
     # Extract unique x, y, z coordinates to determine the shape of the 3D array
@@ -50,7 +50,7 @@ def csv_import(filename, position_bz=5):
     z_values = sorted(set([d[2] for d in data]))
     
     # Create a 3D array initialized with zeros
-    Bz_array = np.zeros((len(x_values), len(y_values), len(z_values)))
+    B0_array = np.zeros((len(x_values), len(y_values), len(z_values)))
     
     # Create dictionaries to map coordinates to indices
     x_to_index = {x: i for i, x in enumerate(x_values)}
@@ -66,10 +66,10 @@ def csv_import(filename, position_bz=5):
         # Check if the mapping is correct
         if i is not None and j is not None and k is not None:
             #print(f"Mapping (x, y, z) = ({x}, {y}, {z}) to (i, j, k) = ({i}, {j}, {k}) and storing bz = {bz}")
-            Bz_array[i, j, k] = bz
+            B0_array[i, j, k] = bz
         else:
             print(f"Error mapping (x, y, z) = ({x}, {y}, {z})")
 
-    Bz_array[Bz_array == 0] = np.nan
+    B0_array[B0_array == 0] = np.nan
     
-    return Bz_array, np.array(x_values), np.array(y_values), np.array(z_values)
+    return B0_array, np.array(x_values), np.array(y_values), np.array(z_values)

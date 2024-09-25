@@ -1,7 +1,7 @@
 from ..utilities.csv_importer import csv_import
 from postprocessing.visualizer.plot_slices import plot_center_slices
 
-def evaluate_extrempoints(file_extrema_before, file_extrema_after, description=''):
+def evaluate_extrempoints(file_extrema_before, file_extrema_after, description='', position_b0=3):
     '''
     wrapper for quickly plotting values of extrempoints in different ways.
 
@@ -13,13 +13,15 @@ def evaluate_extrempoints(file_extrema_before, file_extrema_after, description='
 
     - description:str, optional. This will be added to the titles of the plots.
 
+    - position_bz:int, optional. The position of the main B0-field inside the csv data.
+
     # Returns
 
     - None. Plots will be shown.
     
     '''
-    field_before, x_values, y_values, z_values = csv_import(file_extrema_before, position_bz=3)
-    field_after, x_values, y_values, z_values = csv_import(file_extrema_after, position_bz=3)
+    field_before, x_values, y_values, z_values = csv_import(file_extrema_before, position_b0=position_b0)
+    field_after, x_values, y_values, z_values = csv_import(file_extrema_after, position_b0=position_b0)
     diff_field = field_after - field_before
     diff_ppm = ((field_after-field_before)/field_before) * 1e6
 
