@@ -1,10 +1,26 @@
 # COSI Measure
 
-![COSI Measure](setup-overview.jpg)
+
+># ⚠️ Repository Deprecated
+>
+>This repository is **outdated** and no longer actively maintained.
+>
+>All **new development, updates, and issue tracking have moved** to our new repository on GitLab:
+>
+>👉 **[https://gitlab.com/osii/tools/cosi-measure/](https://gitlab.com/osii/tools/cosi-measure/)**
+>
+>Please visit the new repository for the latest code, documentation, and contributions.
+>
+>Thank you for your understanding!
+
+___
+
+![COSI Measure](cosi_v2.0.png)
 
 <!-- TOC -->
 
 - [COSI Measure](#cosi-measure)
+- [⚠️ Repository Deprecated](#-repository-deprecated)
     - [Description](#description)
     - [System specifications](#system-specifications)
     - [Versions and Branches](#versions-and-branches)
